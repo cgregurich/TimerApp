@@ -1,5 +1,8 @@
 import tkinter as tk
 
+# jeff gay
+
+
 class Timer(tk.Frame):
 	def __init__(self, master):
 		super().__init__(master)
