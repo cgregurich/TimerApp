@@ -1,0 +1,10 @@
+todo:
+
+validate timer user entry: only numbers, numbers within a valid range
+styling
+
+spacing for the buttons (the way the text changes shift the sizes and shit)
+
+
+
+
