@@ -90,7 +90,7 @@ class Timer(tk.Tk):
 			self.entry_seconds.delete(0, tk.END)
 		self.change_control()
 
-# added in colins branch
+# removed the old comment and added this in new-branch
 
 
 	def _get_time_entered_in_seconds(self):
