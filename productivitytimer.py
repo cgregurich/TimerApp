@@ -45,16 +45,15 @@ class Timer(tk.Tk):
 		self.lbl_time.grid(row=0, column=0)
 
 	def control_button_clicked(self):
+
 		if self.timer_mode == self.STOPPED:
 			self.timer_mode = self.RUNNING
 			self.start_timer()
 		elif self.timer_mode == self.RUNNING:
 			self.timer_mode = self.PAUSED
-			print('FIXME: pause the timer')
 			# pause the timer
 		elif self.timer_mode == self.PAUSED:
 			self.timer_mode = self.RUNNING
-			print('FIXME: Resume the timer')
 			#resume the timer
 		self.change_control()
 
@@ -91,6 +90,8 @@ class Timer(tk.Tk):
 
 	def _get_time_entered_in_seconds(self):
 		"""Helper method that returns total number of time in seconds"""
+		if not self._is_entered_time_valid():
+			return -1
 		h = tk.IntVar()
 		m = tk.IntVar()
 		s = tk.IntVar()
@@ -98,6 +99,28 @@ class Timer(tk.Tk):
 		m.set(self.entry_minutes.get() or 0)
 		s.set(self.entry_seconds.get() or 0)
 		return (h.get() * 3600 + m.get() * 60 + s.get())
+
+	def _is_entered_time_valid(self):
+		try
+			int(self.entry_hours.get() or 0)
+			int(self.entry_minutes.get() or 0)
+			int(self.entry_seconds.get() or 0)
+			
+		except ValueError:
+			messagebox.showerror("Invalid Time", "Time entered must be a valid time")
+			return False
+
+		times = (self.entry_hours.get(), self.entry_minutes.get(), self.entry_seconds.get())
+		
+		for time in times:
+			if int(time or 0) < 0:
+				messagebox.showerror("Invalid Time", "Time entered can't be negative")
+				return False
+		return True
+
+
+
+
 
 
 	def timer_loop(self, seconds):
