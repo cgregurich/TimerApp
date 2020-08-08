@@ -1,16 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from locals import *
+from settings import *
 
 class Timer(tk.Tk):
 	def __init__(self):
 		tk.Tk.__init__(self)
 		
 
-		self.RUNNING = "running"
-		self.STOPPED = "stopped"
-		self.PAUSED = "paused"
-		self.timer_mode = self.STOPPED
+	
+		self.mode = STOPPED
 		self.frame_entries = tk.Frame(self, bd=3)
 		self.frame_entries.grid(row=0, column=0)
 		self.frame_buttons = tk.Frame(self, bd=3)
@@ -26,7 +26,7 @@ class Timer(tk.Tk):
 
 	def test(self):
 		"""Method used for testing whatever needs to be tested."""
-		print(f"self.timer_mode: {self.timer_mode}")
+		print(f"self.mode: {self.mode}")
 
 
 	def draw_timer(self):
@@ -40,7 +40,7 @@ class Timer(tk.Tk):
 
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg='light blue', bg='black', font=("Consolas", 24, "bold"))
+		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=TIMER_FG, bg=TIMER_BG, font=TIMER_FONT)
 
 
 		# Put widgets on frame
@@ -55,36 +55,36 @@ class Timer(tk.Tk):
 
 	def control_button_clicked(self):
 
-		if self.timer_mode == self.STOPPED:
+		if self.mode == STOPPED:
 			
-			self.timer_mode = self.RUNNING
+			self.mode = RUNNING
 			self.start_timer()
 
-		elif self.timer_mode == self.RUNNING:
-			self.timer_mode = self.PAUSED
+		elif self.mode == RUNNING:
+			self.mode = PAUSED
 
-		elif self.timer_mode == self.PAUSED:
-			self.timer_mode = self.RUNNING
+		elif self.mode == PAUSED:
+			self.mode = RUNNING
 
 		self.change_control()
 		self.change_entries_state()
 
 
 	def change_control(self):
-		if self.timer_mode == self.RUNNING:
+		if self.mode == RUNNING:
 			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Pause'
-		elif self.timer_mode == self.PAUSED:
+		elif self.mode == PAUSED:
 			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Resume'
-		elif self.timer_mode == self.STOPPED:
+		elif self.mode == STOPPED:
 			self.btn_cancel.config(state=tk.DISABLED)
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
 
 	def change_entries_state(self):
-		if self.timer_mode == self.STOPPED:
+		if self.mode == STOPPED:
 			for e in self.entries:
 				e.config(state=tk.NORMAL)
 		else: # RUNNING or PAUSED
@@ -97,13 +97,14 @@ class Timer(tk.Tk):
 		if seconds > 0:
 			self.timer_loop(seconds)
 		else:
-			self.timer_mode = self.STOPPED
+			self.mode = STOPPED
 
 
 	def cancel_button_clicked(self):
-		prompt = messagebox.askyesno(message='Are you sure you want to cancel?')
-		if prompt == True:
-			self.timer_mode = self.STOPPED
+		ans = messagebox.askyesno('Are you sure you want to cancel?')
+		if ans == True:
+			self.mode = STOPPED
+			self.change_entries_state()
 			self.lbl_time.config(text="00:00:00")
 			self.entry_hours.delete(0, tk.END)
 			self.entry_minutes.delete(0, tk.END)
@@ -153,10 +154,10 @@ class Timer(tk.Tk):
 		# Continue looping if timer is not done
 		x = 0
 		if seconds != 0:
-			if self.timer_mode == self.RUNNING:
+			if self.mode == RUNNING:
 				self._redraw_timer_label(hours_left, minutes_left, seconds_left)
 				x = 1
-			elif self.timer_mode == self.STOPPED:
+			elif self.mode == STOPPED:
 				seconds = 0
 
 

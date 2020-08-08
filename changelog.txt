@@ -1,3 +1,8 @@
 8-7-20:
 - Added validation for timer entry
 - Disable entries when timer is non-stopped
+8-8-20:
+- Added stopwatch module and functionality
+- Added module for settings (colors and fonts)
+- Added module for locals (contains constants such as RUNNING, PAUSED, STOPPED)
+- Renamed productivitytimer.py to timer.py

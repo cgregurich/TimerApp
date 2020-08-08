@@ -7,4 +7,4 @@ spacing for the buttons (the way the text changes shift the sizes and shit)
 
 
 
-
+?? Should the timer/stopwatch pause when the user hits cancel and is looking at messagebox window?
