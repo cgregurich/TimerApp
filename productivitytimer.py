@@ -29,6 +29,8 @@ class Timer(tk.Tk):
 		self.entry_minutes = tk.Entry(self.frame_entries)
 		self.entry_seconds = tk.Entry(self.frame_entries)
 
+		self.entries = (self.entry_hours, self.entry_minutes, self.entry_seconds)
+
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg='light blue', bg='black', font=("Consolas", 24, "bold"))
@@ -46,6 +48,8 @@ class Timer(tk.Tk):
 
 	def control_button_clicked(self):
 		if self.timer_mode == self.STOPPED:
+			for e in self.entries:
+				e.config(state=tk.DISABLED)
 			self.timer_mode = self.RUNNING
 			self.start_timer()
 		elif self.timer_mode == self.RUNNING:
