@@ -18,8 +18,15 @@ class Timer(tk.Tk):
 		self.frame_timer_display = tk.Frame(self, bd=3)
 		self.frame_timer_display.grid(row=2, column=0)
 
+		# FOR TESTING
+		# btn_test = tk.Button(self, text="TEST", command=self.test)
+		# btn_test.grid(row=0, column=0)
+
 		self.draw_timer()
 
+	def test(self):
+		"""Method used for testing whatever needs to be tested."""
+		print(f"self.timer_mode: {self.timer_mode}")
 
 
 	def draw_timer(self):
@@ -49,17 +56,19 @@ class Timer(tk.Tk):
 	def control_button_clicked(self):
 
 		if self.timer_mode == self.STOPPED:
-			for e in self.entries:
-				e.config(state=tk.DISABLED)
+			
 			self.timer_mode = self.RUNNING
 			self.start_timer()
+
 		elif self.timer_mode == self.RUNNING:
 			self.timer_mode = self.PAUSED
-			# pause the timer
+
 		elif self.timer_mode == self.PAUSED:
 			self.timer_mode = self.RUNNING
-			#resume the timer
+
 		self.change_control()
+		self.change_entries_state()
+
 
 	def change_control(self):
 		if self.timer_mode == self.RUNNING:
@@ -73,12 +82,23 @@ class Timer(tk.Tk):
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
+
+	def change_entries_state(self):
+		if self.timer_mode == self.STOPPED:
+			for e in self.entries:
+				e.config(state=tk.NORMAL)
+		else: # RUNNING or PAUSED
+			for e in self.entries:
+					e.config(state=tk.DISABLED)
+
+
 	def start_timer(self):
 		seconds = self._get_time_entered_in_seconds()
 		if seconds > 0:
 			self.timer_loop(seconds)
 		else:
 			self.timer_mode = self.STOPPED
+
 
 	def cancel_button_clicked(self):
 		prompt = messagebox.askyesno(message='Are you sure you want to cancel?')
@@ -89,8 +109,7 @@ class Timer(tk.Tk):
 			self.entry_minutes.delete(0, tk.END)
 			self.entry_seconds.delete(0, tk.END)
 		self.change_control()
-
-# removed the old comment and added this in new-branch
+		self.change_entries_state()
 
 
 	def _get_time_entered_in_seconds(self):
@@ -105,8 +124,9 @@ class Timer(tk.Tk):
 		s.set(self.entry_seconds.get() or 0)
 		return (h.get() * 3600 + m.get() * 60 + s.get())
 
+
 	def _is_entered_time_valid(self):
-		try
+		try:
 			int(self.entry_hours.get() or 0)
 			int(self.entry_minutes.get() or 0)
 			int(self.entry_seconds.get() or 0)
@@ -122,10 +142,6 @@ class Timer(tk.Tk):
 				messagebox.showerror("Invalid Time", "Time entered can't be negative")
 				return False
 		return True
-
-
-
-
 
 
 	def timer_loop(self, seconds):
@@ -145,8 +161,6 @@ class Timer(tk.Tk):
 
 
 			self.after(1000, self.timer_loop, seconds - x)
-
-		
 
 
 	def _redraw_timer_label(self, h, m, s):
