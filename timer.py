@@ -142,6 +142,9 @@ class Timer(tk.Tk):
 		if self.check_for_weed(h.get(), m.get(), s.get()):
 			return 0
 
+		if self.sixty_nine_test(h.get(), m.get(), s.get()):
+			return 0
+
 		return (h.get() * 3600 + m.get() * 60 + s.get())
 
 	def check_for_weed(self, h, m, s):
@@ -150,12 +153,24 @@ class Timer(tk.Tk):
 			pygame.mixer.music.play()
 			return True
 
-		elif h == 4 and m == 20 or m == 4 and m == 20:
+		elif h == 4 and m == 20 or m == 4 and s == 20:
 			pygame.mixer.music.load("weed.mp3")
 			pygame.mixer.music.play()
 			return True
 		return False
 
+
+	def sixty_nine_test(self, h, m, s):
+		if h == 69 or m == 69 or s == 69:
+			pygame.mixer.music.load("AWWW_F_YEAH.mp3")
+			pygame.mixer.music.play()
+			return True
+
+		elif h == 6 and m == 9 or m == 6 and s == 9:
+			pygame.mixer.music.load("weed.mp3")
+			pygame.mixer.music.play()
+			return True
+		return False
 
 
 	def _is_entered_time_valid(self):

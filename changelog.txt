@@ -10,3 +10,6 @@
 - Timer app now pauses when cancel prompt open
 - Added titles to stopwatch and timer windows
 - Added sound effect to timer
+8-9-20:
+- Fixed typo in check_for_weed easter egg method
+- Added sixty_nine_test easter egg method
