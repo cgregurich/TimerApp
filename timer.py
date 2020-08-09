@@ -138,7 +138,24 @@ class Timer(tk.Tk):
 		h.set(self.entry_hours.get() or 0)
 		m.set(self.entry_minutes.get() or 0)
 		s.set(self.entry_seconds.get() or 0)
+
+		if self.check_for_weed(h.get(), m.get(), s.get()):
+			return 0
+
 		return (h.get() * 3600 + m.get() * 60 + s.get())
+
+	def check_for_weed(self, h, m, s):
+		if h == 420 or m == 420 or s == 420:
+			pygame.mixer.music.load("weed.mp3")
+			pygame.mixer.music.play()
+			return True
+
+		elif h == 4 and m == 20 or m == 4 and m == 20:
+			pygame.mixer.music.load("weed.mp3")
+			pygame.mixer.music.play()
+			return True
+		return False
+
 
 
 	def _is_entered_time_valid(self):
