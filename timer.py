@@ -11,8 +11,7 @@ class Timer(tk.Tk):
 		self.title('Timer')
 		
 		pygame.mixer.init()
-		pygame.mixer.music.load("dingsoundeffect.mp3")
-	
+
 		self.mode = STOPPED
 		self.frame_entries = tk.Frame(self, bd=3)
 		self.frame_entries.grid(row=0, column=0)
@@ -56,6 +55,17 @@ class Timer(tk.Tk):
 		self.btn_control.grid(row=0, column=1)
 
 		self.lbl_time.grid(row=0, column=0)
+
+	
+	def sound_effect_selection(self, mode):
+		if mode == WEED:
+			pygame.mixer.music.load("weed.mp3")
+		elif mode == SIXTY_NINE:
+			pygame.mixer.music.load("AWWW_F_YEAH.mp3")
+		else:
+			pygame.mixer.music.load("dingsoundeffect.mp3")
+
+
 
 	def control_button_clicked(self):
 
@@ -101,6 +111,7 @@ class Timer(tk.Tk):
 		if seconds > 0:
 			self.end_type = AUTOMATIC
 			self.timer_loop(seconds)
+			self.sound_effect_selection(self.mode)
 		else:
 			self.mode = STOPPED
 
@@ -141,22 +152,26 @@ class Timer(tk.Tk):
 
 		if self.check_for_weed(h.get(), m.get(), s.get()):
 			return 0
-
-		if self.sixty_nine_test(h.get(), m.get(), s.get()):
+		
+		elif self.sixty_nine_test(h.get(), m.get(), s.get()):
 			return 0
 
 		return (h.get() * 3600 + m.get() * 60 + s.get())
 
 	def check_for_weed(self, h, m, s):
 		if h == 420 or m == 420 or s == 420:
-			pygame.mixer.music.load("weed.mp3")
+			self.mode = WEED
+			self.sound_effect_selection(self.mode)
 			pygame.mixer.music.play()
+			self.mode = STOPPED
 			return True
 
 		elif h == 4 and m == 20 or m == 4 and s == 20:
-			pygame.mixer.music.load("weed.mp3")
+			self.mode = WEED
+			self.sound_effect_selection(self.mode)
 			pygame.mixer.music.play()
 			return True
+			self.mode = STOPPED
 		return False
 
 
@@ -167,7 +182,7 @@ class Timer(tk.Tk):
 			return True
 
 		elif h == 6 and m == 9 or m == 6 and s == 9:
-			pygame.mixer.music.load("weed.mp3")
+			pygame.mixer.music.load("AWWW_F_YEAH.mp3")
 			pygame.mixer.music.play()
 			return True
 		return False
