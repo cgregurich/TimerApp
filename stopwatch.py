@@ -7,6 +7,7 @@ from settings import *
 class Stopwatch(tk.Tk):
 	def __init__(self):
 		tk.Tk.__init__(self)
+		self.title('Stopwatch')
 
 		self.mode = STOPPED
 
@@ -19,7 +20,7 @@ class Stopwatch(tk.Tk):
 		self.frame_buttons.grid(row=1, column=0)
 
 		# Button for testing
-		tk.Button(self, text="TEST", command=self.test).grid(row=2, column=2)
+		# tk.Button(self, text="TEST", command=self.test).grid(row=2, column=2)
 
 		self.draw_timer()
 
@@ -44,10 +45,13 @@ class Stopwatch(tk.Tk):
 	def cancel_button_clicked(self):
 		"""Prompts user to confirm stopping timer. Displays message and waits
 		for user's answer"""
+		self.mode = PAUSED
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
 			self.mode = STOPPED
 			self.lbl_time.config(text="00:00:00")
+		else:
+			self.mode = RUNNING
 		self.change_control()
 
 		

@@ -1,10 +1,13 @@
 todo:
 
-validate timer user entry: only numbers, numbers within a valid range
-styling
-
 spacing for the buttons (the way the text changes shift the sizes and shit)
 
+set self.mode to STOPPED when timer runs out
+
+?bind enter key to start
 
 
-?? Should the timer/stopwatch pause when the user hits cancel and is looking at messagebox window?
+
+ideas:
+
+make todo app, connect to timer.

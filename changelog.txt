@@ -6,3 +6,7 @@
 - Added module for settings (colors and fonts)
 - Added module for locals (contains constants such as RUNNING, PAUSED, STOPPED)
 - Renamed productivitytimer.py to timer.py
+- Fixed timer app functionality
+- Timer app now pauses when cancel prompt open
+- Added titles to stopwatch and timer windows
+- Added sound effect to timer

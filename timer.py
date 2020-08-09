@@ -3,12 +3,15 @@ from tkinter import ttk
 from tkinter import messagebox
 from locals import *
 from settings import *
+import pygame
 
 class Timer(tk.Tk):
 	def __init__(self):
 		tk.Tk.__init__(self)
+		self.title('Timer')
 		
-
+		pygame.mixer.init()
+		pygame.mixer.music.load("dingsoundeffect.mp3")
 	
 		self.mode = STOPPED
 		self.frame_entries = tk.Frame(self, bd=3)
@@ -17,6 +20,7 @@ class Timer(tk.Tk):
 		self.frame_buttons.grid(row=1, column=0)
 		self.frame_timer_display = tk.Frame(self, bd=3)
 		self.frame_timer_display.grid(row=2, column=0)
+		self.end_type = None
 
 		# FOR TESTING
 		# btn_test = tk.Button(self, text="TEST", command=self.test)
@@ -95,22 +99,33 @@ class Timer(tk.Tk):
 	def start_timer(self):
 		seconds = self._get_time_entered_in_seconds()
 		if seconds > 0:
+			self.end_type = AUTOMATIC
 			self.timer_loop(seconds)
 		else:
 			self.mode = STOPPED
 
 
 	def cancel_button_clicked(self):
-		ans = messagebox.askyesno('Are you sure you want to cancel?')
+		self.mode = PAUSED
+		ans = messagebox.askyesno('', 'Are you sure you want to cancel?')
 		if ans == True:
-			self.mode = STOPPED
-			self.change_entries_state()
-			self.lbl_time.config(text="00:00:00")
-			self.entry_hours.delete(0, tk.END)
-			self.entry_minutes.delete(0, tk.END)
-			self.entry_seconds.delete(0, tk.END)
+			self.end_type = MANUAL
+			self.reset_timer()
+		else:
+			self.mode = RUNNING
 		self.change_control()
 		self.change_entries_state()
+
+	def reset_timer(self):
+		"""Helper to reset the timer when it runs down or is cancelled."""
+		self.mode = STOPPED
+		self.change_entries_state()
+		self.lbl_time.config(text="00:00:00")
+		self.entry_hours.delete(0, tk.END)
+		self.entry_minutes.delete(0, tk.END)
+		self.entry_seconds.delete(0, tk.END)
+
+
 
 
 	def _get_time_entered_in_seconds(self):
@@ -153,15 +168,26 @@ class Timer(tk.Tk):
 		
 		# Continue looping if timer is not done
 		x = 0
+			
+
 		if seconds != 0:
 			if self.mode == RUNNING:
 				self._redraw_timer_label(hours_left, minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
 				seconds = 0
-
-
+				self._redraw_timer_label(0, 0, 0)
+				return
 			self.after(1000, self.timer_loop, seconds - x)
+		elif self.end_type == AUTOMATIC:
+			self._play_timer_end_sound()
+			self.reset_timer()
+			self.change_control()
+		
+			
+
+	def _play_timer_end_sound(self):
+		pygame.mixer.music.play()
 
 
 	def _redraw_timer_label(self, h, m, s):
