@@ -42,6 +42,7 @@ class Timer(tk.Tk):
 		self.entries = (self.entry_hours, self.entry_minutes, self.entry_seconds)
 
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
+		self.btn_control.bind('enter')
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=TIMER_FG, bg=TIMER_BG, font=TIMER_FONT)
 
