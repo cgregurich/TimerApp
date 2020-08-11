@@ -15,3 +15,6 @@
 - Added sixty_nine_test easter egg method
 - Fixed bug where after entering in 420 or 69, then running the timer normally, the the sound upon the timers rundown would be the previously activated easter_egg sound rather than the ding. I did this by creating two new modes called WEED and SIXTY_NINE. I then created a new method to select and load the correct mp3 file based on the mode.
 - Made above changes shorter; removed new methods and constants from locals.py
+8-10-20:
+- Implemented Pomodoro functionality
+- Created Pomo settings in settings module
