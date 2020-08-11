@@ -12,11 +12,14 @@ continue looking for bugs in all three timers
 
 start on hooking up the database to the program
 
-make main menu
-
-main settings GUI
 
 make fancy charts and stuff ??
+
+create settings button and GUI
+
+settings for timer color scheme???
+
+research if tkinter can have cool animations for timers instead of a basic digital clock
 
 ideas:
 
