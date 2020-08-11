@@ -21,6 +21,8 @@ settings for timer color scheme???
 
 research if tkinter can have cool animations for timers instead of a basic digital clock
 
+create folder for sound effects
+download multiple sound effects to have options in settings
 ideas:
 
 make todo app, connect to timer.
