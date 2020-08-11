@@ -6,8 +6,6 @@ import settings
 import pygame
 
 
-import mainmenu
-
 
 class Timer(tk.Frame):
 	def __init__(self, parent, controller):
@@ -36,7 +34,7 @@ class Timer(tk.Frame):
 	def draw_timer(self):
 
 		# Create widgets
-		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame(mainmenu.MainMenu))
+		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
 		btn_back.grid(row=0, column=0)
 
 		self.entry_hours = tk.Entry(self.frame_entries)

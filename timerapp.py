@@ -23,11 +23,11 @@ class TimerApp(tk.Tk):
 		for F in (MainMenu, Timer, Stopwatch, Pomodoro):
 			frame = F(container, self)
 
-			self.frames[F] = frame
+			self.frames[F.__name__] = frame
 
 			frame.grid(row=0, column=0, sticky="nsew")
 
-		self.show_frame(MainMenu)
+		self.show_frame('MainMenu')
 
 	def show_frame(self, cont):
 		frame = self.frames[cont]

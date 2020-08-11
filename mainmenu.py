@@ -1,7 +1,5 @@
 import tkinter as tk
-from timer import Timer
-from stopwatch import Stopwatch
-from pomodoro import Pomodoro
+
 
 
 
@@ -13,9 +11,9 @@ class MainMenu(tk.Frame):
 		self.draw_menu()
 
 	def draw_menu(self):
-		btn_timer = tk.Button(self, text="Timer", command=lambda: self.controller.show_frame(Timer))
-		btn_stopwatch = tk.Button(self, text="Stopwatch", command=lambda: self.controller.show_frame(Stopwatch))
-		btn_pomo = tk.Button(self, text="Pomodoro", command=lambda: self.controller.show_frame(Pomodoro))
+		btn_timer = tk.Button(self, text="Timer", command=lambda: self.controller.show_frame('Timer'))
+		btn_stopwatch = tk.Button(self, text="Stopwatch", command=lambda: self.controller.show_frame('Stopwatch'))
+		btn_pomo = tk.Button(self, text="Pomodoro", command=lambda: self.controller.show_frame('Pomodoro'))
 		# btn_settings = tk.Button(self, text="Settings", command=lambda: controller.show_frame(Settings))
 
 		

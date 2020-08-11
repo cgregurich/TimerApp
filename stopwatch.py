@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from locals import *
 import settings
-import mainmenu
+
 
 class Stopwatch(tk.Frame):
 	def __init__(self, parent, controller):
@@ -38,7 +38,7 @@ class Stopwatch(tk.Frame):
 
 	def draw_timer(self):
 		"""Draws buttons and display label on to main frame"""
-		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame(mainmenu.MainMenu)).grid(row=0, column=0)
+		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu')).grid(row=0, column=0)
 
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=settings.STOPWATCH_FG, bg=settings.STOPWATCH_BG, font=settings.STOPWATCH_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
