@@ -18,3 +18,8 @@
 8-10-20:
 - Implemented Pomodoro functionality
 - Created Pomo settings in settings module
+8-11-20:
+- Created main menu
+- Refactored Timer, Stopwatch, and Pomo -> all classes inherit from Frame instead of Tk in order for the app to easily switch between modes
+- Created TimerApp module/class. This is the base of the application
+- Created a working back button for all three timers
