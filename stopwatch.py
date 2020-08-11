@@ -3,21 +3,25 @@ from tkinter import ttk
 from tkinter import messagebox
 from locals import *
 import settings
+import mainmenu
 
-class Stopwatch(tk.Tk):
-	def __init__(self):
-		tk.Tk.__init__(self)
-		self.title('Stopwatch')
+class Stopwatch(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
+		
+		self.controller = controller
 
 		self.mode = STOPPED
 
 		# Create sub-frames
+		self.frame_back_button = tk.Frame(self)
 		self.frame_timer_display = tk.Frame(self)
 		self.frame_buttons = tk.Frame(self)
 
 		# Put sub-frames on main frame
-		self.frame_timer_display.grid(row=0, column=0)
-		self.frame_buttons.grid(row=1, column=0)
+		self.frame_back_button.grid(row=0, column=0)
+		self.frame_timer_display.grid(row=1, column=1)
+		self.frame_buttons.grid(row=2, column=1)
 
 		# Button for testing
 		# tk.Button(self, text="TEST", command=self.test).grid(row=2, column=2)
@@ -34,6 +38,8 @@ class Stopwatch(tk.Tk):
 
 	def draw_timer(self):
 		"""Draws buttons and display label on to main frame"""
+		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame(mainmenu.MainMenu)).grid(row=0, column=0)
+
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=settings.STOPWATCH_FG, bg=settings.STOPWATCH_BG, font=settings.STOPWATCH_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
@@ -109,6 +115,9 @@ class Stopwatch(tk.Tk):
 		"""Redraws timer label in format HH:MM:SS"""
 		new_time = "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 		self.lbl_time.config(text=new_time)
+
+	def reset(self):
+		pass
 
 
 

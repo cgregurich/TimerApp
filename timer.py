@@ -5,36 +5,40 @@ from locals import *
 import settings
 import pygame
 
-class Timer(tk.Tk):
-	def __init__(self):
-		tk.Tk.__init__(self)
-		self.title('Timer')
+
+import mainmenu
+
+
+class Timer(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
+
+		self.controller = controller
+		
 		
 		pygame.mixer.init()
 
 		self.mode = STOPPED
+		self.frame_back_button = tk.Frame(self)
+		self.frame_back_button.grid(row=0, column=0)
 		self.frame_entries = tk.Frame(self, bd=3)
-		self.frame_entries.grid(row=0, column=0)
+		self.frame_entries.grid(row=0, column=1)
 		self.frame_buttons = tk.Frame(self, bd=3)
-		self.frame_buttons.grid(row=1, column=0)
+		self.frame_buttons.grid(row=1, column=1)
 		self.frame_timer_display = tk.Frame(self, bd=3)
-		self.frame_timer_display.grid(row=2, column=0)
+		self.frame_timer_display.grid(row=2, column=1)
 		self.end_type = None
 
-		# FOR TESTING
-		# btn_test = tk.Button(self, text="TEST", command=self.test)
-		# btn_test.grid(row=0, column=0)
 
 		self.draw_timer()
-
-	def test(self):
-		"""Method used for testing whatever needs to be tested."""
-		print(f"self.mode: {self.mode}")
 
 
 	def draw_timer(self):
 
 		# Create widgets
+		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame(mainmenu.MainMenu))
+		btn_back.grid(row=0, column=0)
+
 		self.entry_hours = tk.Entry(self.frame_entries)
 		self.entry_minutes = tk.Entry(self.frame_entries)
 		self.entry_seconds = tk.Entry(self.frame_entries)
@@ -56,8 +60,6 @@ class Timer(tk.Tk):
 		self.btn_control.grid(row=0, column=1)
 
 		self.lbl_time.grid(row=0, column=0)
-
-
 
 
 
@@ -233,6 +235,9 @@ class Timer(tk.Tk):
 	def _redraw_timer_label(self, h, m, s):
 		new_time = "{:02}:{:02}:{:02}".format(h, m, s)
 		self.lbl_time.config(text=new_time)
+
+	def reset(self):
+		pass
 
 
 def main():

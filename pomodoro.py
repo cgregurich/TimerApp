@@ -5,22 +5,24 @@ from locals import *
 import settings
 import pygame
 from tkinter import messagebox
+import mainmenu
 
-
-class Pomodoro(tk.Tk):
-	def __init__(self):
-		tk.Tk.__init__(self)
-		self.title('Pomodoro')
-		self.geometry("200x100")
-
+class Pomodoro(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
+		
+		self.controller = controller
 		pygame.mixer.init()
 		pygame.mixer.music.load("dingsoundeffect.mp3")
 
+
+		self.frame_back_button = tk.Frame(self)
 		self.frame_timer_display = tk.Frame(self)
 		self.frame_buttons = tk.Frame(self)
 
-		self.frame_timer_display.grid(row=0, column=0)
-		self.frame_buttons.grid(row=1, column=0)
+		self.frame_back_button.grid(row=0, column=0)
+		self.frame_timer_display.grid(row=1, column=1)
+		self.frame_buttons.grid(row=2, column=1)
 
 		self.pomo_mode = WORK
 		self.mode = STOPPED
@@ -32,6 +34,9 @@ class Pomodoro(tk.Tk):
 
 	def draw_timer(self):
 		"""Draws buttons and display label on to main frame"""
+
+		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame(mainmenu.MainMenu)).grid(row=0, column=0)
+
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00', fg=settings.STOPWATCH_FG, bg=settings.STOPWATCH_BG, font=settings.STOPWATCH_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
@@ -39,6 +44,7 @@ class Pomodoro(tk.Tk):
 		self.lbl_time.grid(row=0, column=0)
 		self.btn_cancel.grid(row=0, column=0)
 		self.btn_control.grid(row=0, column=1)
+
 
 	def control_button_clicked(self):
 		if self.mode == STOPPED:
@@ -54,9 +60,14 @@ class Pomodoro(tk.Tk):
 
 		self.change_control()
 
+
 	def cancel_button_clicked(self):
 		self.mode = PAUSED
-		ans = messagebox.askyesno('', 'Are you sure you want to cancel?')
+		if self.pomo_mode == WORK:
+			msg = 'Are you sure you want to cancel this pomo?'
+		else:
+			msg = 'Are you sure you want to skip this break?'
+		ans = messagebox.askyesno('', msg)
 		if ans == True:
 			if self.pomo_mode == BREAK:
 				self.change_pomo_mode()
@@ -83,10 +94,12 @@ class Pomodoro(tk.Tk):
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
+
 	def start_timer(self):
 		seconds = settings.POMO_WORK_TIME if self.pomo_mode == WORK else settings.POMO_BREAK_TIME
 		self.end_type = AUTOMATIC
 		self.timer_loop(seconds)
+
 
 	def timer_loop(self, seconds):
 		minutes_left, seconds_left = divmod(seconds, 60)
@@ -107,6 +120,7 @@ class Pomodoro(tk.Tk):
 			self.change_control()
 			self.change_pomo_mode()
 
+
 	def reset_timer(self):
 		self.mode = STOPPED
 		self._redraw_timer_label(0,0)
@@ -118,12 +132,18 @@ class Pomodoro(tk.Tk):
 		else:
 			self.pomo_mode = WORK
 
+
 	def _play_timer_end_sound(self):
 		pygame.mixer.music.play()
+
 
 	def _redraw_timer_label(self, m, s):
 		new_time = "{:02}:{:02}".format(m, s)
 		self.lbl_time.config(text=new_time)
+
+
+	def reset(self):
+		pass
 
 def main():
 	pomo = Pomodoro()
