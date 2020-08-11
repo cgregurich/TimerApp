@@ -11,6 +11,7 @@ class Pomodoro(tk.Tk):
 	def __init__(self):
 		tk.Tk.__init__(self)
 		self.title('Pomodoro')
+		self.geometry("200x100")
 
 		pygame.mixer.init()
 		pygame.mixer.music.load("dingsoundeffect.mp3")
@@ -99,7 +100,7 @@ class Pomodoro(tk.Tk):
 				seconds = 0
 				self._redraw_timer_label(0, 0)
 				return
-			self.after(10, self.timer_loop, seconds - x)
+			self.after(1000, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			self._play_timer_end_sound()
 			self.reset_timer()
