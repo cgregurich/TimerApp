@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
-from settings import *
+import settings
 
 class Stopwatch(tk.Tk):
 	def __init__(self):
@@ -34,7 +34,7 @@ class Stopwatch(tk.Tk):
 
 	def draw_timer(self):
 		"""Draws buttons and display label on to main frame"""
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=STOPWATCH_FG, bg=STOPWATCH_BG, font=STOPWATCH_FONT)
+		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=settings.STOPWATCH_FG, bg=settings.STOPWATCH_BG, font=settings.STOPWATCH_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
 

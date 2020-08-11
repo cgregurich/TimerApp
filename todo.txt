@@ -2,11 +2,21 @@ todo:
 
 spacing for the buttons (the way the text changes shift the sizes and shit)
 
-set self.mode to STOPPED when timer runs out
+
 
 ?bind enter key to start
 
+validation in settings to make sure the time is less than an hour
 
+continue looking for bugs in all three timers
+
+start on hooking up the database to the program
+
+make main menu
+
+main settings GUI
+
+make fancy charts and stuff ??
 
 ideas:
 
