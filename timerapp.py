@@ -3,6 +3,7 @@ from mainmenu import MainMenu
 from timer import Timer
 from stopwatch import Stopwatch
 from pomodoro import Pomodoro
+from settings import Settings
 
 
 
@@ -13,6 +14,8 @@ class TimerApp(tk.Tk):
 
 		self.title("Productivity Time")
 
+		
+
 		container = tk.Frame(self)
 		container.pack(side="top", fill="both", expand=True)
 		container.grid_rowconfigure(0, weight=1)
@@ -20,7 +23,7 @@ class TimerApp(tk.Tk):
 
 		self.frames = {}
 
-		for F in (MainMenu, Timer, Stopwatch, Pomodoro):
+		for F in (MainMenu, Timer, Stopwatch, Pomodoro, Settings):
 			frame = F(container, self)
 
 			self.frames[F.__name__] = frame
