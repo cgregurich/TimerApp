@@ -1,12 +1,45 @@
-TIMER_FG = 'light blue'
-TIMER_BG = 'black'
+import tkinter as tk
+import storedsettings
+from tkinter import colorchooser
 
-STOPWATCH_FG = 'light blue'
-STOPWATCH_BG = 'black'
+class Settings(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
 
-TIMER_FONT = ('Consolas', 24, 'bold')
+		self.controller = controller
+		self.draw_window()
 
-STOPWATCH_FONT = ('Consolas', 24, 'bold')
 
-POMO_WORK_TIME = 25 * 60 # in seconds
-POMO_BREAK_TIME = 5 * 60 # in seconds
+	def draw_window(self):
+		tk.Button(self, text="Back", command=lambda: self.controller.show_frame("MainMenu")).grid(row=0, column=0)
+		tk.Button(self, text="Change FG", command=lambda: self.change_color("fg")).grid(row=1, column=1)
+		tk.Button(self, text="Change BG", command=lambda: self.change_color("bg")).grid(row=2, column=1)
+
+		self.lbl_clock = tk.Label(self, text="12:34:56", fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
+		self.lbl_clock.grid(row=1, column=2)
+
+		# button for testing
+		tk.Button(self, text="TEST", command=self.test).grid(row=3, column=1)
+
+	def test(self):
+		print(f"settings.CLOCK_FG: {storedsettings.CLOCK_FG}")
+		print(f"settings.CLOCK_BG: {storedsettings.CLOCK_BG}")
+
+	def change_color(self, option):
+		color = colorchooser.askcolor()
+		if option == "fg":
+			storedsettings.CLOCK_FG = color[1]
+		elif option == "bg":
+			storedsettings.CLOCK_BG = color[1]
+		self.redraw_timer()
+
+	def redraw_timer(self):
+		self.lbl_clock.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
+
+		
+
+
+
+
+	def reset(self):
+		pass
