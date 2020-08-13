@@ -37,3 +37,6 @@
 - Fixed bug where stopwatch wouldn't roll over to an hour properly
 - User settings are now applied to clocks once clock is reopened
 - Clocks continue running when user goes back to main menu (design choice; which is better?)
+- Now saves color settings that the user changes. Still need to debug this functionality more thoroughly.
+- Created module ConfigManager to manage creation and modification of usersettings.ini
+- Changed values in storedsettings.py to pull from ConfigManager
