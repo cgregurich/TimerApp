@@ -2,7 +2,6 @@ import tkinter as tk
 
 
 
-
 class MainMenu(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
