@@ -21,17 +21,21 @@ class Settings(tk.Frame):
 		self.lbl_clock = tk.Label(self, text="12:34:56", fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
 		self.lbl_clock.grid(row=1, column=2)
 
+		
+		
 		# button for testing
 		tk.Button(self, text="TEST", command=self.test).grid(row=3, column=1)
 
 	def test(self):
-		print(f"settings.CLOCK_FG: {storedsettings.CLOCK_FG}")
-		print(f"settings.CLOCK_BG: {storedsettings.CLOCK_BG}")
+		thing = self.mgr.get('SETTINGS', 'CLOCK_FG')
+		print(f"thing: {thing}")
 
 	def change_color(self, option):
 		color = colorchooser.askcolor()
 		if option == "fg":
+			# saves color to usersettings.ini
 			self.mgr.change_setting('CLOCK_FG', color[1])
+			# immediately changes value in storedsettings so clock's change color
 			storedsettings.CLOCK_FG = color[1]
 		elif option == "bg":
 			self.mgr.change_setting('CLOCK_BG', color[1])
