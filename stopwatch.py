@@ -107,7 +107,7 @@ class Stopwatch(tk.Frame):
 			
 		elif self.mode == STOPPED:
 			return
-		self.after(5, self.stopwatch_loop, s+x)
+		self.after(1000, self.stopwatch_loop, s+x)
 
 			
 
