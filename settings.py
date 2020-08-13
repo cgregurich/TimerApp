@@ -1,10 +1,13 @@
 import tkinter as tk
 import storedsettings
 from tkinter import colorchooser
+from configmanager import ConfigManager
 
 class Settings(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
+
+		self.mgr = ConfigManager()
 
 		self.controller = controller
 		self.draw_window()
@@ -28,8 +31,10 @@ class Settings(tk.Frame):
 	def change_color(self, option):
 		color = colorchooser.askcolor()
 		if option == "fg":
+			self.mgr.change_setting('CLOCK_FG', color[1])
 			storedsettings.CLOCK_FG = color[1]
 		elif option == "bg":
+			self.mgr.change_setting('CLOCK_BG', color[1])
 			storedsettings.CLOCK_BG = color[1]
 		self.redraw_timer()
 

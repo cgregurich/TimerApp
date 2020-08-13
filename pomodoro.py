@@ -141,10 +141,11 @@ class Pomodoro(tk.Frame):
 		new_time = "{:02}:{:02}".format(m, s)
 		self.lbl_time.config(text=new_time)
 
+	def change_settings(self):
+		self.lbl_time.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
 
 	def reset(self):
-		# THIS SHOULD ALSO CLEAR THE SCREEN INSTEAD OF JUST REDRAWING
-		self.draw_clock()
+		self.change_settings()
 
 def main():
 	pomo = Pomodoro()

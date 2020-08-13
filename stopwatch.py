@@ -116,8 +116,14 @@ class Stopwatch(tk.Frame):
 		new_time = "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 		self.lbl_time.config(text=new_time)
 
+	def change_settings(self):
+		self.lbl_time.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
+
+
+
 	def reset(self):
-		self.draw_clock()
+		self.change_settings()
+
 
 
 

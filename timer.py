@@ -234,8 +234,21 @@ class Timer(tk.Frame):
 		new_time = "{:02}:{:02}:{:02}".format(h, m, s)
 		self.lbl_time.config(text=new_time)
 
+	def destroy_widgets(self):
+		self.entry_hours.destroy()
+		self.entry_minutes.destroy()
+		self.entry_seconds.destroy()
+		self.btn_control.destroy()
+		self.btn_cancel.destroy()
+		self.lbl_time.destroy()
+
+	def change_settings(self):
+		self.lbl_time.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
+
+
+
 	def reset(self):
-		self.draw_clock()
+		self.change_settings()
 
 
 def main():

@@ -8,6 +8,8 @@ from settings import Settings
 
 
 
+
+
 class TimerApp(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)

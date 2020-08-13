@@ -1,8 +1,7 @@
 todo:
 
 
-!!!! RESET METHODS SHOULD ALSO CLEAR THE SCREEN INSTEAD OF JUST DRAWING OVER THE CURRENT SCREEN !!!!
-!!!! HUGE BUG WITH CHANGING SETTINGS WHILE CLOCK IS RUNNING !!!!
+- QUESTION: Should clocks continue running when user goes back to main menu?? They currently do. 
 
 - save settings (not sure how; database? .ini?)
 

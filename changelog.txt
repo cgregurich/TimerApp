@@ -35,3 +35,5 @@
 - Set reset methods in all three clocks to simply redraw the clocks
 8-13-20:
 - Fixed bug where stopwatch wouldn't roll over to an hour properly
+- User settings are now applied to clocks once clock is reopened
+- Clocks continue running when user goes back to main menu (design choice; which is better?)
