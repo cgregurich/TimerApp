@@ -1,28 +1,38 @@
 todo:
 
-spacing for the buttons (the way the text changes shift the sizes and shit)
+!!!! RESET METHODS SHOULD ALSO CLEAR THE SCREEN INSTEAD OF JUST DRAWING OVER THE CURRENT SCREEN !!!!
+
+- save settings (not sure how; database? .ini?)
+
+- add pomo settings to settings menu
+
+- change settings button to have a cog instead of saying settings
+
+- spacing for the buttons (the way the text changes shift the sizes and shit)
 
 
 
-?bind enter key to start
+- ?bind enter key to start
 
-validation in settings to make sure the time is less than an hour
+- validation in settings to make sure the time is less than an hour
 
-continue looking for bugs in all three timers
+- continue looking for bugs in all three timers
 
-start on hooking up the database to the program
+- start on hooking up the database to the program
 
 
-make fancy charts and stuff ??
+- make fancy charts and stuff ??
 
-create settings button and GUI
 
-settings for timer color scheme???
 
-research if tkinter can have cool animations for timers instead of a basic digital clock
 
-create folder for sound effects
-download multiple sound effects to have options in settings
+
+- research if tkinter can have cool animations for timers instead of a basic digital clock
+
+- create folder for sound effects
+- download multiple sound effects to have options in settings
+
+
 ideas:
 
 make todo app, connect to timer.
