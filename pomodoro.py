@@ -13,7 +13,7 @@ class Pomodoro(tk.Frame):
 		
 		self.controller = controller
 		pygame.mixer.init()
-		pygame.mixer.music.load("dingsoundeffect.mp3")
+		pygame.mixer.music.load("resources/sounds/dingsoundeffect.mp3")
 
 
 		self.frame_back_button = tk.Frame(self)
