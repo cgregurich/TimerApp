@@ -1,5 +1,13 @@
-CLOCK_FG = 'light blue'
-CLOCK_BG = 'black'
+from configmanager import ConfigManager
+
+
+mgr = ConfigManager()
+
+
+
+
+CLOCK_FG = mgr.get("SETTINGS", "CLOCK_FG")
+CLOCK_BG = mgr.get("SETTINGS", "CLOCK_BG")
 
 
 CLOCK_FONT = ('Consolas', 24, 'bold')
