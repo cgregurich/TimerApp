@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
-import settings
+import storedsettings
 import pygame
 
 
@@ -28,10 +28,10 @@ class Timer(tk.Frame):
 		self.end_type = None
 
 
-		self.draw_timer()
+		self.draw_clock()
 
 
-	def draw_timer(self):
+	def draw_clock(self):
 
 		# Create widgets
 		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
@@ -46,7 +46,7 @@ class Timer(tk.Frame):
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
 		self.btn_control.bind('enter')
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=settings.TIMER_FG, bg=settings.TIMER_BG, font=settings.TIMER_FONT)
+		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
 
 
 		# Put widgets on frame
@@ -213,10 +213,10 @@ class Timer(tk.Frame):
 
 		if seconds != 0:
 			if self.mode == RUNNING:
-				self._redraw_timer_label(hours_left, minutes_left, seconds_left)
+				self._redraw_clock_label(hours_left, minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
-				self._redraw_timer_label(0, 0, 0)
+				self._redraw_clock_label(0, 0, 0)
 				return
 			self.after(1000, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
@@ -230,12 +230,12 @@ class Timer(tk.Frame):
 		pygame.mixer.music.play()
 
 
-	def _redraw_timer_label(self, h, m, s):
+	def _redraw_clock_label(self, h, m, s):
 		new_time = "{:02}:{:02}:{:02}".format(h, m, s)
 		self.lbl_time.config(text=new_time)
 
 	def reset(self):
-		pass
+		self.draw_clock()
 
 
 def main():

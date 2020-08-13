@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
-import settings
+import storedsettings
 
 
 class Stopwatch(tk.Frame):
@@ -26,7 +26,7 @@ class Stopwatch(tk.Frame):
 		# Button for testing
 		# tk.Button(self, text="TEST", command=self.test).grid(row=2, column=2)
 
-		self.draw_timer()
+		self.draw_clock()
 
 
 	def test(self):
@@ -36,11 +36,11 @@ class Stopwatch(tk.Frame):
 
 
 
-	def draw_timer(self):
+	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
 		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu')).grid(row=0, column=0)
 
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=settings.STOPWATCH_FG, bg=settings.STOPWATCH_BG, font=settings.STOPWATCH_FONT)
+		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
 
@@ -102,7 +102,7 @@ class Stopwatch(tk.Frame):
 
 		x = 0
 		if self.mode == RUNNING:
-			self._redraw_timer_label(hours, minutes, seconds)
+			self._redraw_clock_label(hours, minutes, seconds)
 			x = 1
 			
 		elif self.mode == STOPPED:
@@ -111,13 +111,13 @@ class Stopwatch(tk.Frame):
 
 			
 
-	def _redraw_timer_label(self, hours, minutes, seconds):
+	def _redraw_clock_label(self, hours, minutes, seconds):
 		"""Redraws timer label in format HH:MM:SS"""
 		new_time = "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 		self.lbl_time.config(text=new_time)
 
 	def reset(self):
-		pass
+		self.draw_clock()
 
 
 

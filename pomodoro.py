@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from stopwatch import Stopwatch
 from locals import *
-import settings
+import storedsettings
 import pygame
 from tkinter import messagebox
 
@@ -29,15 +29,15 @@ class Pomodoro(tk.Frame):
 
 		self.end_type = None
 
-		self.draw_timer()
+		self.draw_clock()
 
 
-	def draw_timer(self):
+	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
 
 		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu')).grid(row=0, column=0)
 
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00', fg=settings.STOPWATCH_FG, bg=settings.STOPWATCH_BG, font=settings.STOPWATCH_FONT)
+		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
 
@@ -96,7 +96,7 @@ class Pomodoro(tk.Frame):
 
 
 	def start_timer(self):
-		seconds = settings.POMO_WORK_TIME if self.pomo_mode == WORK else settings.POMO_BREAK_TIME
+		seconds = storedsettings.POMO_WORK_TIME if self.pomo_mode == WORK else storedsettings.POMO_BREAK_TIME
 		self.end_type = AUTOMATIC
 		self.timer_loop(seconds)
 
@@ -107,11 +107,11 @@ class Pomodoro(tk.Frame):
 		x = 0
 		if seconds != 0:
 			if self.mode == RUNNING:
-				self._redraw_timer_label(minutes_left, seconds_left)
+				self._redraw_clock_label(minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
 				seconds = 0
-				self._redraw_timer_label(0, 0)
+				self._redraw_clock_label(0, 0)
 				return
 			self.after(1000, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
@@ -123,7 +123,7 @@ class Pomodoro(tk.Frame):
 
 	def reset_timer(self):
 		self.mode = STOPPED
-		self._redraw_timer_label(0,0)
+		self._redraw_clock_label(0,0)
 
 
 	def change_pomo_mode(self):
@@ -137,13 +137,14 @@ class Pomodoro(tk.Frame):
 		pygame.mixer.music.play()
 
 
-	def _redraw_timer_label(self, m, s):
+	def _redraw_clock_label(self, m, s):
 		new_time = "{:02}:{:02}".format(m, s)
 		self.lbl_time.config(text=new_time)
 
 
 	def reset(self):
-		pass
+		# THIS SHOULD ALSO CLEAR THE SCREEN INSTEAD OF JUST REDRAWING
+		self.draw_clock()
 
 def main():
 	pomo = Pomodoro()
