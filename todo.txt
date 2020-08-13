@@ -1,9 +1,16 @@
-todo:
+todo (recent at top):
+
+- Design color schemes for whole application?
+
+- Figure out how to make distributable .exe
+
+!!! weird bug where sometimes the program doesn't really shut down all the way; cmd doesn't open up (this started after messing with configparser and settings being saved) !!!
+
+
 
 
 - QUESTION: Should clocks continue running when user goes back to main menu?? They currently do. 
 
-- save settings (not sure how; database? .ini?)
 
 - add pomo settings to settings menu
 
