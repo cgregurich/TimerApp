@@ -1,5 +1,7 @@
 todo (recent at top):
 
+- Test to make sure usersettings.ini is generated with a new download
+
 - Design color schemes for whole application?
 
 - Figure out how to make distributable .exe
