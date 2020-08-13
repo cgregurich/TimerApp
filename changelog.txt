@@ -33,4 +33,5 @@
 - Settings menu includes an example timer to display how color changes will look
 - Changed method names in all three clocks (draw_timer changed to draw_clock; redraw_timer_label changed to redraw_clock_label)
 - Set reset methods in all three clocks to simply redraw the clocks
-
+8-13-20:
+- Fixed bug where stopwatch wouldn't roll over to an hour properly
