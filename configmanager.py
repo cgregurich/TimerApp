@@ -13,6 +13,7 @@ class ConfigManager(configparser.ConfigParser):
 		else:
 			self.read(self.FILE_NAME)
 
+
 	def create_config_file(self):
 		self['SETTINGS'] = {
 			'CLOCK_FG': '#000000',
