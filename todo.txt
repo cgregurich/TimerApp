@@ -7,6 +7,7 @@ todo (recent at top):
 - Figure out how to make distributable .exe
 
 !!! weird bug where sometimes the program doesn't really shut down all the way; cmd doesn't open up (this started after messing with configparser and settings being saved) !!!
+above bug can be triggered by: -> change FG, change BG, open timer, close app (not 100% of the time??)
 
 
 
