@@ -40,3 +40,6 @@
 - Now saves color settings that the user changes. Still need to debug this functionality more thoroughly.
 - Created module ConfigManager to manage creation and modification of usersettings.ini
 - Changed values in storedsettings.py to pull from ConfigManager
+8-14-20:
+- Added pomo time settings to settings menu (still need to style, label, validate, etc.)
+- Pomo time settings are now saved
