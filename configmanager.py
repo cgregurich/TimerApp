@@ -12,8 +12,7 @@ class ConfigManager(configparser.ConfigParser):
 			self.create_config_file()
 		else:
 			self.read(self.FILE_NAME)
-		
-
+	
 
 	def create_config_file(self):
 		self['SETTINGS'] = {
