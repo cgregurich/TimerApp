@@ -43,3 +43,7 @@
 8-14-20:
 - Added pomo time settings to settings menu (still need to style, label, validate, etc.)
 - Pomo time settings are now saved
+8-16-20:
+- Organized settings menu
+- Color changing buttons now are just squares of color
+- Fixed bug when changing colors where you open color picker and immediately cancel/x out
