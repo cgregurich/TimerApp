@@ -9,37 +9,60 @@ class Settings(tk.Frame):
 
 		self.mgr = ConfigManager()
 
+
+		self.frame_labels = tk.Frame(self)
+		self.frame_options = tk.Frame(self)
+		self.frame_example = tk.Frame(self)
+
+
+		self.frame_labels.grid(row=1, column=1)
+		self.frame_options.grid(row=1, column=2)
+		self.frame_example.grid(row=1, column=3)
+
+
 		self.controller = controller
 		self.draw_window()
 
 
 	def draw_window(self):
+		PADY = 5
+
 		tk.Button(self, text="Back", command=self.back_clicked).grid(row=0, column=0)
-		tk.Button(self, text="Change FG", command=lambda: self.change_color("fg")).grid(row=1, column=1)
-		tk.Button(self, text="Change BG", command=lambda: self.change_color("bg")).grid(row=2, column=1)
 
-		# clock to show what selected colors will look like
-		self.lbl_clock = tk.Label(self, text="12:34:56", fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
-		self.lbl_clock.grid(row=1, column=2)
+		# Labels for what each setting is for
+		tk.Label(self.frame_labels, text="Background").grid(row=0, column=0, pady=PADY)
+		tk.Label(self.frame_labels, text="Foreground").grid(row=1, column=0, pady=PADY)
+		tk.Label(self.frame_labels, text="Pomo Work Time").grid(row=3, column=0, pady=PADY)
+		tk.Label(self.frame_labels, text="Pomo Break Time").grid(row=4, column=0, pady=PADY)
 
-		# Entry widgets for work and break time in pomo timer
-		self.entry_pomo_work = tk.Entry(self)
-		self.entry_pomo_break = tk.Entry(self)
+		# Colored buttons for changing clock colors
+		self.btn_fg = tk.Button(self.frame_options, bg=storedsettings.CLOCK_FG, width=3, command=lambda: self.change_color("fg"))
+		self.btn_bg = tk.Button(self.frame_options, bg=storedsettings.CLOCK_BG, width=3, command=lambda: self.change_color("bg"))
+		self.btn_bg.grid(row=0, column=0, pady=PADY)
+		self.btn_fg.grid(row=1, column=0, pady=PADY)
+
+		# Example clock to show how chosen colors will look
+		self.lbl_clock = tk.Label(self.frame_example, text="12:34:56", fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
+		self.lbl_clock.grid(row=0, column=0, sticky="N")
+
+		# Create Entries for pomo work and break times
+		self.entry_pomo_work = tk.Entry(self.frame_options)
+		self.entry_pomo_break = tk.Entry(self.frame_options)
+		# Clears current info and inserts saved settings, displayed as minutes
 		self.entry_pomo_work.delete(0, tk.END)
 		self.entry_pomo_break.delete(0, tk.END)
 		self.entry_pomo_work.insert(0, storedsettings.POMO_WORK_TIME // 60)
 		self.entry_pomo_break.insert(0, storedsettings.POMO_BREAK_TIME // 60)
-		self.entry_pomo_work.grid(row=4, column=1)
-		self.entry_pomo_break.grid(row=5, column=1)
+		self.entry_pomo_work.grid(row=2, column=0, pady=PADY)
+		self.entry_pomo_break.grid(row=3, column=0, pady=PADY)
 
 		
-		# button for testing
-		tk.Button(self, text="TEST", command=self.test).grid(row=3, column=1)
+
 
 	def back_clicked(self):
 		"""Saves settings and goes back to main menu"""
 		
-		# user will enter minutes, but timer logic is in seconds
+		# user will enter minutes, but timer logic is in seconds, so multiply by 60
 		pomo_work = int(self.entry_pomo_work.get()) * 60
 		pomo_break = int(self.entry_pomo_break.get()) * 60
 		self.mgr.change_setting('POMO_WORK_TIME', str(pomo_work))
@@ -50,29 +73,29 @@ class Settings(tk.Frame):
 		self.controller.show_frame('MainMenu')
 
 
-	def test(self):
-		thing = self.mgr.get('SETTINGS', 'CLOCK_FG')
-		print(f"thing: {thing}")
 
 	def change_color(self, option):
+		# askcolor returns a tuple of format ((r, g, b) hexcode); color[1] is the hex code
 		color = colorchooser.askcolor()
+		if None in color:
+			return
+		
 		if option == "fg":
 			# saves color to usersettings.ini
 			self.mgr.change_setting('CLOCK_FG', color[1])
 			# immediately changes value in storedsettings so clock's change color
 			storedsettings.CLOCK_FG = color[1]
+			self.btn_fg.config(bg=color[1])
 		elif option == "bg":
 			self.mgr.change_setting('CLOCK_BG', color[1])
 			storedsettings.CLOCK_BG = color[1]
+			self.btn_bg.config(bg=color[1])
 		self.redraw_timer()
 
 	def redraw_timer(self):
 		self.lbl_clock.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
 
 		
-
-
-
 
 	def reset(self):
 		pass
