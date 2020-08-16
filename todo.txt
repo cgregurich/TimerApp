@@ -16,7 +16,6 @@ seems to happen on the first run of things???
 - QUESTION: Should clocks continue running when user goes back to main menu?? They currently do. 
 
 
-- add pomo settings to settings menu
 
 - change settings button to have a cog instead of saying settings
 
