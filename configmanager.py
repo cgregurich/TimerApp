@@ -17,7 +17,10 @@ class ConfigManager(configparser.ConfigParser):
 	def create_config_file(self):
 		self['SETTINGS'] = {
 			'CLOCK_FG': '#000000',
-			'CLOCK_BG': '#FFFFFF'
+			'CLOCK_BG': '#DDDDDD',
+			# Pomo times are in seconds
+			'POMO_WORK_TIME': '1500', # aka 25 minutes
+			'POMO_BREAK_TIME': '300' # aka 5 minutes
 		}
 		with open(self.FILE_NAME, 'w') as configfile:
 			self.write(configfile)
