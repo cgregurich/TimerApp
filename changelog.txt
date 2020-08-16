@@ -47,3 +47,4 @@
 - Organized settings menu
 - Color changing buttons now are just squares of color
 - Fixed bug when changing colors where you open color picker and immediately cancel/x out
+- Fixed how configmanager saves pomo timer settings
