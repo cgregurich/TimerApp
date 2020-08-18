@@ -1,5 +1,31 @@
 todo (recent at top):
 
+
+UH OOH BIG BOO BOO IN TASKS.PY -> WHEN NO TASKS IN DB THERE IS AN ERROR
+
+
+DATABASE FUNCTIONALITY
+- Create session class
+- Specify current activity/task
+- Create the data access object (writes to and reads from database)
+
+
+
+
+ACTIVITIES
+- Dropdown menu for selecting current activity
+- Activities frame for adding/deleting activities
+
+
+
+
+
+
+
+
+
+
+
 - Test to make sure usersettings.ini is generated with a new download
 
 - Design color schemes for whole application?
