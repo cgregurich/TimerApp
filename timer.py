@@ -13,7 +13,8 @@ class Timer(tk.Frame):
 
 		self.controller = controller
 		
-		
+
+
 		pygame.mixer.init()
 
 		self.mode = STOPPED
@@ -62,7 +63,7 @@ class Timer(tk.Frame):
 
 
 
-	def control_button_clicked(self):
+	def control_button_clicked(self, event=None):
 		if self.mode == STOPPED:
 			
 			self.mode = RUNNING

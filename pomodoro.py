@@ -34,7 +34,6 @@ class Pomodoro(tk.Frame):
 
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
-
 		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu')).grid(row=0, column=0)
 
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
@@ -46,7 +45,10 @@ class Pomodoro(tk.Frame):
 		self.btn_control.grid(row=0, column=1)
 
 
-	def control_button_clicked(self):
+
+
+
+	def control_button_clicked(self, event=None):
 		if self.mode == STOPPED:
 			
 			self.mode = RUNNING

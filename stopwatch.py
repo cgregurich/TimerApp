@@ -8,6 +8,7 @@ import storedsettings
 class Stopwatch(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
+
 		
 		self.controller = controller
 
@@ -31,14 +32,16 @@ class Stopwatch(tk.Frame):
 
 	def test(self):
 		"""Method for testing whatever needs to be tested"""
-		print(f"self.mode: {self.mode}")
+		print("unbinding i hope")
+		self.controller.unbind('<Return>')
 
 
 
 
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
-		tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu')).grid(row=0, column=0)
+		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back.grid(row=0, column=0)
 
 		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
 		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
@@ -60,10 +63,10 @@ class Stopwatch(tk.Frame):
 			self.mode = RUNNING
 		self.change_control()
 
-		
+	
 
 
-	def control_button_clicked(self):
+	def control_button_clicked(self, event=None):
 		"""Changes mode and control button text when the control button is clicked"""
 		if self.mode == STOPPED:
 			self.mode = RUNNING
@@ -94,6 +97,7 @@ class Stopwatch(tk.Frame):
 
 	def start_stopwatch(self):
 		self.stopwatch_loop(0)
+
 
 	def stopwatch_loop(self, s):
 		"""Runs the stopwatch. Only stops when user stops or pauses it"""
