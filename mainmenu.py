@@ -14,6 +14,7 @@ class MainMenu(tk.Frame):
 		btn_stopwatch = tk.Button(self, text="Stopwatch", command=lambda: self.controller.show_frame('Stopwatch'))
 		btn_pomo = tk.Button(self, text="Pomodoro", command=lambda: self.controller.show_frame('Pomodoro'))
 		btn_settings = tk.Button(self, text="Settings", command=lambda: self.controller.show_frame('Settings'))
+		btn_activities = tk.Button(self, text="Tasks", command=lambda: self.controller.show_frame("Tasks"))
 
 		
 
@@ -23,6 +24,7 @@ class MainMenu(tk.Frame):
 		btn_stopwatch.grid(row=1, column=0, pady=PADY)
 		btn_pomo.grid(row=2, column=0, pady=PADY)
 		btn_settings.grid(row=0, column=1, pady=PADY)
+		btn_activities.grid(row=3, column=1, pady=PADY)
 
 	def reset(self):
 		pass
