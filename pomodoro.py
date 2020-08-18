@@ -81,11 +81,12 @@ class Pomodoro(tk.Frame):
 
 
 	def change_control(self):
+		if self.pomo_mode == BREAK:
+			self.btn_cancel.config(text="Skip")
+		else:
+			self.btn_cancel.config(text="Cancel")
 		if self.mode == RUNNING:
-			if self.pomo_mode == BREAK:
-				self.btn_cancel.config(text="Skip")
-			else:
-				self.btn_cancel.config(text="Cancel")
+			
 			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Pause'
 		elif self.mode == PAUSED:
@@ -115,12 +116,13 @@ class Pomodoro(tk.Frame):
 				seconds = 0
 				self._redraw_clock_label(0, 0)
 				return
-			self.after(1000, self.timer_loop, seconds - x)
+			self.after(10, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			self._play_timer_end_sound()
 			self.reset_timer()
-			self.change_control()
 			self.change_pomo_mode()
+			self.change_control()
+			
 
 
 	def reset_timer(self):
