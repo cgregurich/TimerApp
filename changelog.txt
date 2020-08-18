@@ -48,3 +48,7 @@
 - Color changing buttons now are just squares of color
 - Fixed bug when changing colors where you open color picker and immediately cancel/x out
 - Fixed how configmanager saves pomo timer settings
+8-17-20:
+- Bound start/pause for open timer to enter
+- Created TaskDAO (and task db of course)
+- Created TaskGUI (debug further)
