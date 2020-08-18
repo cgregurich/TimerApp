@@ -52,3 +52,5 @@
 - Bound start/pause for open timer to enter
 - Created TaskDAO (and task db of course)
 - Created TaskGUI (debug further)
+8-18-20:
+- Fixed bug in pomo where left button would say "skip" when break timer finished
