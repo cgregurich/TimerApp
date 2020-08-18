@@ -4,12 +4,13 @@ from timer import Timer
 from stopwatch import Stopwatch
 from pomodoro import Pomodoro
 from settings import Settings
+from tasks import Tasks
 
 
 
 
 
-
+# Controller class -> Controls which frame is on top
 class TimerApp(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
@@ -25,19 +26,35 @@ class TimerApp(tk.Tk):
 
 		self.frames = {}
 
-		for F in (MainMenu, Timer, Stopwatch, Pomodoro, Settings):
-			frame = F(container, self)
 
-			self.frames[F.__name__] = frame
+		self.clocks = ("Timer", "Stopwatch", "Pomodoro")
+
+
+		for gui_class in (MainMenu, Timer, Stopwatch, Pomodoro, Settings, Tasks):
+			frame = gui_class(container, self)
+
+			self.frames[gui_class.__name__] = frame
 
 			frame.grid(row=0, column=0, sticky="nsew")
 
 		self.show_frame('MainMenu')
 
-	def show_frame(self, cont):
-		frame = self.frames[cont]
+
+
+	def show_frame(self, gui_class):
+		frame = self.frames[gui_class]
+		self.change_bindings(gui_class, frame)
 		frame.reset()
 		frame.tkraise()
+
+
+
+	def change_bindings(self, gui_class, frame):
+		if gui_class == 'MainMenu':
+			self.unbind('<Return>')
+		elif gui_class in self.clocks:
+			self.bind('<Return>', frame.control_button_clicked)
+
 
 def main():
 	app = TimerApp()
