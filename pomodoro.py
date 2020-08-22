@@ -75,9 +75,11 @@ class Pomodoro(tk.Frame):
 			msg = 'Are you sure you want to skip this break?'
 		ans = messagebox.askyesno('', msg)
 		if ans == True:
-			if self.pomo_mode == BREAK:
-				self.change_pomo_mode()
 			self.end_type = MANUAL
+			if self.pomo_mode != BREAK:
+				self.get_time_spent()
+			else:
+				self.change_pomo_mode()
 			self.reset_timer()
 		else:
 			self.mode = RUNNING
@@ -104,6 +106,7 @@ class Pomodoro(tk.Frame):
 
 	def start_timer(self):
 		seconds = storedsettings.POMO_WORK_TIME if self.pomo_mode == WORK else storedsettings.POMO_BREAK_TIME
+		self.original_time = seconds
 		self.end_type = AUTOMATIC
 		self.timer_loop(seconds)
 
@@ -112,6 +115,7 @@ class Pomodoro(tk.Frame):
 		minutes_left, seconds_left = divmod(seconds, 60)
 
 		x = 0
+		self.time_left = seconds
 		if seconds != 0:
 			if self.mode == RUNNING:
 				self._redraw_clock_label(minutes_left, seconds_left)
@@ -120,8 +124,10 @@ class Pomodoro(tk.Frame):
 				seconds = 0
 				self._redraw_clock_label(0, 0)
 				return
-			self.timer_id = self.after(1000, self.timer_loop, seconds - x)
+			self.timer_id = self.after(10, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
+			if self.pomo_mode != BREAK:
+				self.get_time_spent()
 			self._play_timer_end_sound()
 			self.reset_timer()
 			self.change_pomo_mode()
@@ -155,6 +161,13 @@ class Pomodoro(tk.Frame):
 
 	def reset(self):
 		self.change_settings()
+
+	def get_time_spent(self):
+		if self.end_type == MANUAL:
+			self.time_spent = self.original_time - self.time_left
+		elif self.end_type == AUTOMATIC:
+			self.time_spent = self.original_time
+		print(self.time_spent)
 
 def main():
 	pomo = Pomodoro()
