@@ -29,6 +29,8 @@ class Pomodoro(tk.Frame):
 
 		self.end_type = None
 
+		self.timer_id = None
+
 		self.draw_clock()
 
 
@@ -108,7 +110,6 @@ class Pomodoro(tk.Frame):
 
 	def timer_loop(self, seconds):
 		minutes_left, seconds_left = divmod(seconds, 60)
-		print(f"self.mode: {self.mode}")
 
 		x = 0
 		if seconds != 0:
@@ -116,11 +117,10 @@ class Pomodoro(tk.Frame):
 				self._redraw_clock_label(minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
-				print("STOPPED")
 				seconds = 0
 				self._redraw_clock_label(0, 0)
 				return
-			self.after(1000, self.timer_loop, seconds - x)
+			self.timer_id = self.after(1000, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			self._play_timer_end_sound()
 			self.reset_timer()
@@ -130,7 +130,9 @@ class Pomodoro(tk.Frame):
 	
 	def reset_timer(self):
 		self.mode = STOPPED
+		self.after_cancel(self.timer_id)
 		self._redraw_clock_label(0,0)
+
 
 
 	def change_pomo_mode(self):
