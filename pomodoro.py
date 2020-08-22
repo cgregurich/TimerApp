@@ -50,7 +50,6 @@ class Pomodoro(tk.Frame):
 
 
 
-
 	def control_button_clicked(self, event=None):
 		if self.mode == STOPPED:
 			
@@ -109,6 +108,7 @@ class Pomodoro(tk.Frame):
 
 	def timer_loop(self, seconds):
 		minutes_left, seconds_left = divmod(seconds, 60)
+		print(f"self.mode: {self.mode}")
 
 		x = 0
 		if seconds != 0:
@@ -116,6 +116,7 @@ class Pomodoro(tk.Frame):
 				self._redraw_clock_label(minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
+				print("STOPPED")
 				seconds = 0
 				self._redraw_clock_label(0, 0)
 				return
@@ -125,9 +126,8 @@ class Pomodoro(tk.Frame):
 			self.reset_timer()
 			self.change_pomo_mode()
 			self.change_control()
-			
-
-
+		
+	
 	def reset_timer(self):
 		self.mode = STOPPED
 		self._redraw_clock_label(0,0)
