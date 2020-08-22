@@ -44,6 +44,9 @@ class Pomodoro(tk.Frame):
 		self.btn_cancel.grid(row=0, column=0)
 		self.btn_control.grid(row=0, column=1)
 
+		# button for testing
+		tk.Button(self, text="Change pomo mode", command=self.change_pomo_mode).grid(row=3, column=0)
+
 
 
 
