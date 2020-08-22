@@ -1,28 +1,38 @@
 from datetime import datetime
 
 class Session():
-	def __init__(self, data=None):
-		if data:
-			self.data = data
+	def __init__(self, info=None):
+		if info:
+			self.info = info
 		else:
 			cur_date = self.get_current_date()
 			cur_time = self.get_current_time()
-			self.data = {'time_logged': None, 'time_completed': cur_time, 'date_completed': cur_date, 'task': None}
+			self.info = { 'task': None, 'time_logged': None, 'time_completed': cur_time, 'date_completed': cur_date}
 
 
 
 	def __str__(self):
 		return_str = ""
-		for key, value in self.data.items():
-			return_str += f"{key}: {value} "
+		for key, value in self.info.items():
+			return_str += f"{key}: {value}  "
 		return return_str.strip()
 
+	def info_as_tuple(self):
+		"""Returns the values from class dict info as a tuple"""
+		return tuple(self.info.values())
 
-	def get_data(self):
-		return self.data
+	def get_info(self):
+		return self.info
 
-	def set_data(self, data):
-		self.data = data
+	def set_info(self, info):
+		self.info = info
+
+	def set_time_logged(self, time_logged):
+		"""Arg time_logged is in seconds"""
+		self.info['time_logged'] = time_logged
+
+	def set_task(self, task):
+		self.info['task'] = task
 
 	def get_current_time(self):
 		"""Returns string of current time in format HH:MM"""
