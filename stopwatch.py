@@ -5,6 +5,9 @@ from locals import *
 import storedsettings
 
 
+# THIS IS MADE ON MASTER
+
+
 class Stopwatch(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
