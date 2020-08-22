@@ -167,7 +167,7 @@ class Pomodoro(tk.Frame):
 			self.time_spent = self.original_time - self.time_left
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
-		print(self.time_spent)
+
 
 def main():
 	pomo = Pomodoro()

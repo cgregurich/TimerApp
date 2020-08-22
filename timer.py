@@ -258,10 +258,9 @@ class Timer(tk.Frame):
 
 	def get_time_spent(self):
 		if self.end_type == MANUAL:
-			time_spent = self.original_time - self.time_left
+			self.time_spent = self.original_time - self.time_left
 		elif self.end_type == AUTOMATIC:
-			time_spent = self.original_time
-		return time_spent
+			self.time_spent = self.original_time
 
 
 
