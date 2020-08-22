@@ -59,13 +59,7 @@ class Stopwatch(tk.Frame):
 		self.mode = PAUSED
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
-<<<<<<< HEAD
-			print(self.get_time_spent())
-			self.mode = STOPPED
-			self.lbl_time.config(text="00:00:00")
-=======
 			self.reset_clock()
->>>>>>> 8f93ad5dffd4ed37660ab834ded486721d35f637
 		else:
 			self.mode = RUNNING
 		self.change_control()
@@ -113,7 +107,7 @@ class Stopwatch(tk.Frame):
 	def stopwatch_loop(self, s):
 		"""Runs the stopwatch. Only stops when user stops or pauses it"""
 		hours, seconds = divmod(s, 3600)
-		minutes, seconds = divmod(seconds, 60)
+		minutes, second = divmod(seconds, 60)
 
 		x = 0
 		self.time_spent = s
