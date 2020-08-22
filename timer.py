@@ -13,7 +13,7 @@ class Timer(tk.Frame):
 
 		self.controller = controller
 		
-
+		self.time_save = 'Yes'
 
 		pygame.mixer.init()
 
@@ -102,6 +102,7 @@ class Timer(tk.Frame):
 
 
 	def start_timer(self):
+		self.original_time = self._get_time_entered_in_seconds()
 		seconds = self._get_time_entered_in_seconds()
 		if seconds > 0:
 			self.end_type = AUTOMATIC
@@ -115,6 +116,7 @@ class Timer(tk.Frame):
 		ans = messagebox.askyesno('', 'Are you sure you want to cancel?')
 		if ans == True:
 			self.end_type = MANUAL
+			print(self.get_time_spent())
 			self.reset_timer()
 		else:
 			self.mode = RUNNING
@@ -214,6 +216,7 @@ class Timer(tk.Frame):
 			
 
 		if seconds != 0:
+			self.time_left = seconds
 			if self.mode == RUNNING:
 				self._redraw_clock_label(hours_left, minutes_left, seconds_left)
 				x = 1
@@ -222,6 +225,7 @@ class Timer(tk.Frame):
 				return
 			self.after(1000, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
+			print(self.get_time_spent())
 			self._play_timer_end_sound()
 			self.reset_timer()
 			self.change_control()
@@ -251,6 +255,14 @@ class Timer(tk.Frame):
 
 	def reset(self):
 		self.change_settings()
+
+	def get_time_spent(self):
+		if self.end_type == MANUAL:
+			time_spent = self.original_time - self.time_left
+		elif self.end_type == AUTOMATIC:
+			time_spent = self.original_time
+		return time_spent
+
 
 
 def main():

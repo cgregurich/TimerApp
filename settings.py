@@ -34,16 +34,21 @@ class Settings(tk.Frame):
 		tk.Label(self.frame_labels, text="Foreground").grid(row=1, column=0, pady=PADY)
 		tk.Label(self.frame_labels, text="Pomo Work Time").grid(row=3, column=0, pady=PADY)
 		tk.Label(self.frame_labels, text="Pomo Break Time").grid(row=4, column=0, pady=PADY)
+		tk.Label(self.frame_labels, text="Time Autosave").grid(row=5, column=0, pady=PADY)
 
 		# Colored buttons for changing clock colors
+		AUTOSAVE = 'None'
 		self.btn_fg = tk.Button(self.frame_options, bg=storedsettings.CLOCK_FG, width=3, command=lambda: self.change_color("fg"))
 		self.btn_bg = tk.Button(self.frame_options, bg=storedsettings.CLOCK_BG, width=3, command=lambda: self.change_color("bg"))
+		self.btn_save_op = tk.Button(self.frame_options, width=3, text=AUTOSAVE, command=lambda: print('button clicked'))
 		self.btn_bg.grid(row=0, column=0, pady=PADY)
 		self.btn_fg.grid(row=1, column=0, pady=PADY)
+		self.btn_save_op.grid(row=4, column=0, pady=PADY)
+
 
 		# Example clock to show how chosen colors will look
 		self.lbl_clock = tk.Label(self.frame_example, text="12:34:56", fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
-		self.lbl_clock.grid(row=0, column=0, sticky="N")
+		self.lbl_clock.grid(row=3, column=0, sticky="N")
 
 		# Create Entries for pomo work and break times
 		self.entry_pomo_work = tk.Entry(self.frame_options)
@@ -55,8 +60,6 @@ class Settings(tk.Frame):
 		self.entry_pomo_break.insert(0, storedsettings.POMO_BREAK_TIME // 60)
 		self.entry_pomo_work.grid(row=2, column=0, pady=PADY)
 		self.entry_pomo_break.grid(row=3, column=0, pady=PADY)
-
-		
 
 
 	def back_clicked(self):

@@ -57,6 +57,7 @@ class Stopwatch(tk.Frame):
 		self.mode = PAUSED
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
+			print(self.get_time_spent())
 			self.mode = STOPPED
 			self.lbl_time.config(text="00:00:00")
 		else:
@@ -105,6 +106,7 @@ class Stopwatch(tk.Frame):
 		minutes, seconds = divmod(seconds, 60)
 
 		x = 0
+		self.time_spent = s
 		if self.mode == RUNNING:
 			self._redraw_clock_label(hours, minutes, seconds)
 			x = 1
@@ -129,8 +131,10 @@ class Stopwatch(tk.Frame):
 		self.change_settings()
 
 
-
-
+	def get_time_spent(self):
+		time_spent = self.time_spent
+		return time_spent
+		#interact with DB
 
 
 
