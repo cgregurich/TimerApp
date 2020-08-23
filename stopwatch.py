@@ -66,13 +66,17 @@ class Stopwatch(tk.Frame):
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
 			self.reset_clock()
-			self.save_session()
+			
 		else:
 			self.mode = RUNNING
 		self.change_control()
 
 	def reset_clock(self):
 		self.mode = STOPPED
+		ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted() }")
+		if ans:
+			self.save_session()
+
 		self._redraw_clock_label(0, 0, 0)
 		self.after_cancel(self.timer_id)
 
@@ -114,7 +118,7 @@ class Stopwatch(tk.Frame):
 	def stopwatch_loop(self, s):
 		"""Runs the stopwatch. Only stops when user stops or pauses it"""
 		hours, seconds = divmod(s, 3600)
-		minutes, second = divmod(seconds, 60)
+		minutes, seconds = divmod(seconds, 60)
 
 		x = 0
 		self.time_spent = s
@@ -124,7 +128,7 @@ class Stopwatch(tk.Frame):
 			
 		elif self.mode == STOPPED:
 			return
-		self.timer_id = self.after(1000, self.stopwatch_loop, s+x)
+		self.timer_id = self.after(100, self.stopwatch_loop, s+x)
 
 			
 
@@ -141,6 +145,12 @@ class Stopwatch(tk.Frame):
 	def reset(self):
 		self.change_settings()
 
+
+	def get_time_spent_formatted(self):
+		total_seconds = self.get_time_spent()
+		hours, seconds = divmod(total_seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		return f"{hours}:{minutes}:{seconds}"
 
 	def get_time_spent(self):
 		return self.time_spent

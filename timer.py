@@ -232,14 +232,15 @@ class Timer(tk.Frame):
 		"""Helper to reset the timer when it runs down or is cancelled."""
 		self.mode = STOPPED
 		self.change_entries_state()
-
-		if storedsettings.AUTO_SAVE == 0:
-			ans = messagebox.showyesno("Would you like to log this time?", f"{self.get_time_spent}")
+		self._redraw_clock_label(0, 0, 0)
+		if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
+			ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
 			if ans:
 				self.save_session()
 		else:
 			self.save_session()
-		self.lbl_time.config(text="00:00:00")
+
+		
 		self.entry_hours.delete(0, tk.END)
 		self.entry_minutes.delete(0, tk.END)
 		self.entry_seconds.delete(0, tk.END)
@@ -275,6 +276,12 @@ class Timer(tk.Frame):
 
 	def reset(self):
 		self.change_settings()
+
+	def get_time_spent_formatted(self):
+		total_seconds = self.get_time_spent()
+		hours, seconds = divmod(total_seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		return f"{hours}:{minutes}:{seconds}"
 
 	def get_time_spent(self):
 		if self.end_type == MANUAL:
