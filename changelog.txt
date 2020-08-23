@@ -56,3 +56,8 @@
 - Fixed bug in pomo where left button would say "skip" when break timer finished
 8-22-20:
 - Created method to record the time spent on an activity in seconds.
+- Created Session class
+- Created SessionDAO class
+- Implemented saving sessions to the database
+- Added autosave setting
+- Added dropdown for selecting current task to main menu
