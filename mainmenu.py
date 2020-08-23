@@ -24,7 +24,7 @@ class MainMenu(tk.Frame):
 		PADY = 5
 		self.grid_columnconfigure(0, weight=1) # centers buttons in the frame
 		lbl_task.grid(row=0, column=0)
-		om_current_task.grid(row=1, column=0, pady=PADY)
+		om_current_task.grid(row=1, column=0)
 		btn_timer.grid(row=2, column=0, pady=PADY)
 		btn_stopwatch.grid(row=3, column=0, pady=PADY)
 		btn_pomo.grid(row=4, column=0, pady=PADY)

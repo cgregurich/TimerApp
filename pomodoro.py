@@ -81,11 +81,8 @@ class Pomodoro(tk.Frame):
 		ans = messagebox.askyesno('', msg)
 		if ans == True:
 			self.end_type = MANUAL
-			if self.pomo_mode != BREAK:
-				self.get_time_spent()
-			else:
-				self.change_pomo_mode()
 			self.reset_timer()
+			self.change_pomo_mode()
 		else:
 			self.mode = RUNNING
 		self.change_control()
@@ -129,7 +126,7 @@ class Pomodoro(tk.Frame):
 				seconds = 0
 				self._redraw_clock_label(0, 0)
 				return
-			self.timer_id = self.after(1000, self.timer_loop, seconds - x)
+			self.timer_id = self.after(10, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			if self.pomo_mode != BREAK:
 				self.get_time_spent()
@@ -138,11 +135,30 @@ class Pomodoro(tk.Frame):
 			self.change_pomo_mode()
 			self.change_control()
 		
+
 	
 	def reset_timer(self):
 		self.mode = STOPPED
 		self.after_cancel(self.timer_id)
 		self._redraw_clock_label(0,0)
+		if self.pomo_mode == WORK:
+			if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
+				ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
+				if ans:
+					self.save_session()
+			else:
+				self.save_session()
+
+
+		
+
+
+	def save_session(self):
+		task = self.controller.get_current_task()
+		time_logged = self.get_time_spent()
+		session = Session(task, time_logged)
+		sessiondao.insert_session(session)
+
 
 
 
@@ -167,12 +183,21 @@ class Pomodoro(tk.Frame):
 	def reset(self):
 		self.change_settings()
 
+
+		
+
+	def get_time_spent_formatted(self):
+		total_seconds = self.get_time_spent()
+		minutes, seconds = divmod(total_seconds, 60)
+		return f"{minutes}:{seconds}"
+
+
 	def get_time_spent(self):
 		if self.end_type == MANUAL:
 			self.time_spent = self.original_time - self.time_left
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
-		print(f"time being saved: {self.time_spent}")
+		return self.time_spent
 
 
 def main():
