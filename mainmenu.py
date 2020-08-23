@@ -1,24 +1,26 @@
-import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 from taskdao import TaskDAO
+
 
 taskdao = TaskDAO()
 
 
-class MainMenu(tk.Frame):
+class MainMenu(Frame):
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
+		Frame.__init__(self, parent)
 		self.controller = controller
 		self.ran = False
 		self.draw_menu()
 
 	def draw_menu(self):
-		btn_timer = tk.Button(self, text="Timer", command=lambda: self.controller.show_frame('Timer'))
-		btn_stopwatch = tk.Button(self, text="Stopwatch", command=lambda: self.controller.show_frame('Stopwatch'))
-		btn_pomo = tk.Button(self, text="Pomodoro", command=lambda: self.controller.show_frame('Pomodoro'))
-		btn_settings = tk.Button(self, text="Settings", command=lambda: self.controller.show_frame('Settings'))
-		btn_activities = tk.Button(self, text="Tasks", command=lambda: self.controller.show_frame("Tasks"))
-		self.om_current_task = tk.OptionMenu(self, self.controller.current_task ,*taskdao.get_all_tasks())
-		lbl_task = tk.Label(self, text="What are you working on?")
+		btn_timer = ttk.Button(self, text="Timer", command=lambda: self.controller.show_frame('Timer'))
+		btn_stopwatch = ttk.Button(self, text="Stopwatch", command=lambda: self.controller.show_frame('Stopwatch'))
+		btn_pomo = ttk.Button(self, text="Pomodoro", command=lambda: self.controller.show_frame('Pomodoro'))
+		btn_settings = ttk.Button(self, text="Settings", command=lambda: self.controller.show_frame('Settings'))
+		btn_activities = ttk.Button(self, text="Tasks", command=lambda: self.controller.show_frame("Tasks"))
+		self.om_current_task = ttk.OptionMenu(self, self.controller.current_task, "--",  *taskdao.get_all_tasks())
+		lbl_task = Label(self, text="What are you working on?")
 		
 
 		PADY = 5
@@ -33,7 +35,7 @@ class MainMenu(tk.Frame):
 		
 	def refresh_option_menu(self):
 		self.om_current_task.destroy()
-		self.om_current_task = tk.OptionMenu(self, self.controller.current_task, *taskdao.get_all_tasks())
+		self.om_current_task = ttk.OptionMenu(self, self.controller.current_task, "--",  *taskdao.get_all_tasks())
 		self.om_current_task.grid(row=1, column=0)
 
 	def reset(self):
