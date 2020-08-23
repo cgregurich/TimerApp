@@ -5,7 +5,10 @@ from locals import *
 import storedsettings
 
 
-# THIS IS MADE ON MASTER
+from session import Session
+from sessiondao import SessionDAO
+
+sessiondao = SessionDAO()
 
 
 class Stopwatch(tk.Frame):
@@ -63,6 +66,7 @@ class Stopwatch(tk.Frame):
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
 			self.reset_clock()
+			self.save_session()
 		else:
 			self.mode = RUNNING
 		self.change_control()
@@ -139,9 +143,16 @@ class Stopwatch(tk.Frame):
 
 
 	def get_time_spent(self):
-		time_spent = self.time_spent
-		return time_spent
-		#interact with DB
+		return self.time_spent
+		
+	def save_session(self):
+		task = self.controller.get_current_task()
+		time_logged = self.get_time_spent()
+		session = Session(task, time_logged)
+		sessiondao.insert_session(session)
+
+		
+		
 
 
 

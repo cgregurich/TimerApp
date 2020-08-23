@@ -1,5 +1,8 @@
 todo (recent at top):
 
+TODO AS OF 8-22-20:
+BUG with how current time is grabbed. Not sure why. Example: 19:09 is saved as 19:9, 19:00 is saved as 19:0
+
 
 UH OOH BIG BOO BOO IN TASKS.PY -> WHEN NO TASKS IN DB THERE IS AN ERROR
 

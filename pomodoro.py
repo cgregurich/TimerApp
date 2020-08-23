@@ -6,6 +6,11 @@ import storedsettings
 import pygame
 from tkinter import messagebox
 
+from session import Session
+from sessiondao import SessionDAO
+
+sessiondao = SessionDAO()
+
 
 class Pomodoro(tk.Frame):
 	def __init__(self, parent, controller):
@@ -167,6 +172,7 @@ class Pomodoro(tk.Frame):
 			self.time_spent = self.original_time - self.time_left
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
+		print(f"time being saved: {self.time_spent}")
 
 
 def main():

@@ -5,6 +5,11 @@ from locals import *
 import storedsettings
 import pygame
 
+from session import Session
+from sessiondao import SessionDAO
+
+sessiondao = SessionDAO()
+
 
 
 class Timer(tk.Frame):
@@ -116,21 +121,13 @@ class Timer(tk.Frame):
 		ans = messagebox.askyesno('', 'Are you sure you want to cancel?')
 		if ans == True:
 			self.end_type = MANUAL
-			print(self.get_time_spent())
 			self.reset_timer()
 		else:
 			self.mode = RUNNING
 		self.change_control()
 		self.change_entries_state()
 
-	def reset_timer(self):
-		"""Helper to reset the timer when it runs down or is cancelled."""
-		self.mode = STOPPED
-		self.change_entries_state()
-		self.lbl_time.config(text="00:00:00")
-		self.entry_hours.delete(0, tk.END)
-		self.entry_minutes.delete(0, tk.END)
-		self.entry_seconds.delete(0, tk.END)
+	
 
 
 
@@ -223,13 +220,36 @@ class Timer(tk.Frame):
 			elif self.mode == STOPPED:
 				self._redraw_clock_label(0, 0, 0)
 				return
-			self.after(1000, self.timer_loop, seconds - x)
+			self.after(10, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			print(self.get_time_spent())
 			self._play_timer_end_sound()
 			self.reset_timer()
 			self.change_control()
 		
+
+	def reset_timer(self):
+		"""Helper to reset the timer when it runs down or is cancelled."""
+		self.mode = STOPPED
+		self.change_entries_state()
+
+		if storedsettings.AUTO_SAVE == 0:
+			ans = messagebox.showyesno("Would you like to log this time?", f"{self.get_time_spent}")
+			if ans:
+				self.save_session()
+		else:
+			self.save_session()
+		self.lbl_time.config(text="00:00:00")
+		self.entry_hours.delete(0, tk.END)
+		self.entry_minutes.delete(0, tk.END)
+		self.entry_seconds.delete(0, tk.END)
+
+	def save_session(self):
+		task = self.controller.get_current_task()
+		time_logged = self.get_time_spent()
+		session = Session(task, time_logged)
+		sessiondao.insert_session(session)
+
 			
 
 	def _play_timer_end_sound(self):
@@ -261,6 +281,8 @@ class Timer(tk.Frame):
 			self.time_spent = self.original_time - self.time_left
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
+		return self.time_spent
+
 
 
 

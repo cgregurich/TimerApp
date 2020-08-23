@@ -1,13 +1,10 @@
 from datetime import datetime
 
 class Session():
-	def __init__(self, info=None):
-		if info:
-			self.info = info
-		else:
-			cur_date = self.get_current_date()
-			cur_time = self.get_current_time()
-			self.info = { 'task': None, 'time_logged': None, 'time_completed': cur_time, 'date_completed': cur_date}
+	def __init__(self, task, time_logged):
+		cur_date = self.get_current_date()
+		cur_time = self.get_current_time()
+		self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
 
 
 

@@ -17,6 +17,9 @@ class TimerApp(tk.Tk):
 
 		self.title("Productivity Time")
 
+		self.current_task = tk.StringVar()
+		self.current_task.set("--")
+
 		
 
 		container = tk.Frame(self)
@@ -54,6 +57,13 @@ class TimerApp(tk.Tk):
 			self.unbind('<Return>')
 		elif gui_class in self.clocks:
 			self.bind('<Return>', frame.control_button_clicked)
+
+
+# NEED TO IMPLEMENT GRABBING CURRENTLY SELECT TASK!!!!!!!
+
+	def get_current_task(self):
+		return self.current_task.get()
+
 
 
 def main():
