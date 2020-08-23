@@ -13,3 +13,4 @@ BREAK = "break"
 
 OFF = 'off'
 ON = 'on'
+AUTOSAVE = 'AUTOSAVE'

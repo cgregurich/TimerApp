@@ -56,3 +56,5 @@
 - Fixed bug in pomo where left button would say "skip" when break timer finished
 8-22-20:
 - Created method to record the time spent on an activity in seconds.
+- fixed stopwatch bug
+- added autosave to settings

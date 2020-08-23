@@ -110,7 +110,7 @@ class Stopwatch(tk.Frame):
 	def stopwatch_loop(self, s):
 		"""Runs the stopwatch. Only stops when user stops or pauses it"""
 		hours, seconds = divmod(s, 3600)
-		minutes, second = divmod(seconds, 60)
+		minutes, seconds = divmod(s, 60)
 
 		x = 0
 		self.time_spent = s
@@ -120,7 +120,7 @@ class Stopwatch(tk.Frame):
 			
 		elif self.mode == STOPPED:
 			return
-		self.timer_id = self.after(1000, self.stopwatch_loop, s+x)
+		self.timer_id = self.after(100, self.stopwatch_loop, s+x)
 
 			
 

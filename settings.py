@@ -24,6 +24,10 @@ class Settings(tk.Frame):
 		self.controller = controller
 		self.draw_window()
 
+		if storedsettings.AUTOSAVE == '1':
+			self.save_mode = ON
+		else:
+			self.save_mode = OFF
 
 	def draw_window(self):
 		PADY = 5
@@ -38,10 +42,9 @@ class Settings(tk.Frame):
 		tk.Label(self.frame_labels, text="Time Autosave").grid(row=5, column=0, pady=PADY)
 
 		# Colored buttons for changing clock colors
-		AUTOSAVE = 'None'
 		self.btn_fg = tk.Button(self.frame_options, bg=storedsettings.CLOCK_FG, width=3, command=lambda: self.change_color("fg"))
 		self.btn_bg = tk.Button(self.frame_options, bg=storedsettings.CLOCK_BG, width=3, command=lambda: self.change_color("bg"))
-		self.btn_save_op = tk.Button(self.frame_options, width=3, text=AUTOSAVE, command=lambda: self.autosave_clicked())
+		self.btn_save_op = tk.Button(self.frame_options, width=3, text='ON', command=self.autosave_clicked)
 		self.btn_bg.grid(row=0, column=0, pady=PADY)
 		self.btn_fg.grid(row=1, column=0, pady=PADY)
 		self.btn_save_op.grid(row=4, column=0, pady=PADY)
@@ -63,6 +66,23 @@ class Settings(tk.Frame):
 		self.entry_pomo_break.grid(row=3, column=0, pady=PADY)
 
 
+	def autosave_clicked(self):
+		self.change_auto_save_mode()
+		self.change_auto_save_button()
+	
+
+	def change_auto_save_mode(self):
+		if self.save_mode == OFF:
+			self.save_mode = ON
+		else:
+			self.save_mode = OFF
+
+	def change_auto_save_button(self):
+		if self.save_mode == ON:
+			self.btn_save_op.config(text='ON')
+		else:
+			self.btn_save_op.config(text='OFF')
+
 	def back_clicked(self):
 		"""Saves settings and goes back to main menu"""
 		
@@ -74,22 +94,16 @@ class Settings(tk.Frame):
 		storedsettings.POMO_WORK_TIME = pomo_work
 		storedsettings.POMO_BREAK_TIME = pomo_break
 
+		if self.save_mode == ON:
+			self.mgr.change_setting('AUTOSAVE', str(1))
+			storedsettings.AUTOSAVE = '1'
+		else:
+			self.mgr.change_setting('AUTOSAVE', str(0))
+			storedsettings.AUTOSAVE = '0'
+
 		self.controller.show_frame('MainMenu')
 
-
-	def change_save_mode(self):
-		if self.save_mode == ON:
-			self.save_mode = OFF
-		else:
-			self.save_mode = ON
-
-	def store_save_mode(self):
-		ConfigManager.change_setting('AUTOSAVE', self.save_mode)
-
-	def autosave_clicked(self):
-		self.change_save_mode()
-		self.store_save_mode()
-		print(storedsettings.AUTO_SAVE)
+		print(storedsettings.AUTOSAVE)
 
 		
 	def change_color(self, option):
