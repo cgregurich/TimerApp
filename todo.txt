@@ -2,6 +2,8 @@ todo (recent at top):
 
 LOG FRAME IDEAS:
 
+figure out scrollbar and datetime objects
+
 choose a day, or past 7 days, or past 30 days
 view all of a task (sorted by date)
 

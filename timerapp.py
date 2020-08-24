@@ -5,7 +5,7 @@ from stopwatch import Stopwatch
 from pomodoro import Pomodoro
 from settings import Settings
 from tasks import Tasks
-
+from displaydata import DisplayData
 
 
 
@@ -33,7 +33,8 @@ class TimerApp(tk.Tk):
 		self.clocks = ("Timer", "Stopwatch", "Pomodoro")
 
 
-		for gui_class in (MainMenu, Timer, Stopwatch, Pomodoro, Settings, Tasks):
+		for gui_class in (MainMenu, Timer, Stopwatch, Pomodoro, 
+			Settings, Tasks, DisplayData):
 			frame = gui_class(container, self)
 
 			self.frames[gui_class.__name__] = frame

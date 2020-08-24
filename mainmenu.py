@@ -21,6 +21,7 @@ class MainMenu(Frame):
 		btn_activities = ttk.Button(self, text="Tasks", command=lambda: self.controller.show_frame("Tasks"))
 		self.om_current_task = ttk.OptionMenu(self, self.controller.current_task, "--",  *taskdao.get_all_tasks())
 		lbl_task = Label(self, text="What are you working on?")
+		btn_displaydata = ttk.Button(self, text="Display Data", command=lambda: self.controller.show_frame("DisplayData"))
 		
 
 		PADY = 5
@@ -32,10 +33,11 @@ class MainMenu(Frame):
 		btn_pomo.grid(row=4, column=0, pady=PADY)
 		btn_settings.grid(row=0, column=1, pady=PADY)
 		btn_activities.grid(row=3, column=1, pady=PADY)
+		btn_displaydata.grid(row=5, column=0, pady=PADY)
 		
 	def refresh_option_menu(self):
 		self.om_current_task.destroy()
-		self.om_current_task = ttk.OptionMenu(self, self.controller.current_task, "--",  *taskdao.get_all_tasks())
+		self.om_current_task = ttk.OptionMenu(self, self.controller.current_task, self.controller.current_task.get(),  *taskdao.get_all_tasks())
 		self.om_current_task.grid(row=1, column=0)
 
 	def reset(self):

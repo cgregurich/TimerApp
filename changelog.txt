@@ -65,3 +65,4 @@
 - Added dropdown for selecting current task to main menu
 8-23-20:
 - Started stylizing widgets (settings and mainmenu done)
+- started on window to display previous sessions, much left to do.
