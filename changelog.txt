@@ -66,3 +66,6 @@
 8-23-20:
 - Started stylizing widgets (settings and mainmenu done)
 - started on window to display previous sessions, much left to do.
+8-24-20:
+- Added a debug setting to usersettings, configmanager, and mainmenu
+- Added a WAIT value to storedsettings for above debug functionality
