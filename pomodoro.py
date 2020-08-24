@@ -126,7 +126,7 @@ class Pomodoro(tk.Frame):
 				seconds = 0
 				self._redraw_clock_label(0, 0)
 				return
-			self.timer_id = self.after(10, self.timer_loop, seconds - x)
+			self.timer_id = self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			if self.pomo_mode != BREAK:
 				self.get_time_spent()

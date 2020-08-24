@@ -129,7 +129,7 @@ class Stopwatch(tk.Frame):
 			
 		elif self.mode == STOPPED:
 			return
-		self.timer_id = self.after(100, self.stopwatch_loop, s+x)
+		self.timer_id = self.after(storedsettings.WAIT, self.stopwatch_loop, s+x)
 
 			
 

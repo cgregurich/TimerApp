@@ -220,7 +220,7 @@ class Timer(tk.Frame):
 			elif self.mode == STOPPED:
 				self._redraw_clock_label(0, 0, 0)
 				return
-			self.after(10, self.timer_loop, seconds - x)
+			self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			print(self.get_time_spent())
 			self._play_timer_end_sound()
