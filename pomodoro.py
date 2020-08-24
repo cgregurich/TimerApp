@@ -9,6 +9,8 @@ from tkinter import messagebox
 from session import Session
 from sessiondao import SessionDAO
 
+import datetime
+
 sessiondao = SessionDAO()
 
 
@@ -123,8 +125,6 @@ class Pomodoro(tk.Frame):
 				self._redraw_clock_label(minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
-				seconds = 0
-				self._redraw_clock_label(0, 0)
 				return
 			self.timer_id = self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
@@ -134,33 +134,7 @@ class Pomodoro(tk.Frame):
 			self.reset_timer()
 			self.change_pomo_mode()
 			self.change_control()
-		
-
 	
-	def reset_timer(self):
-		self.mode = STOPPED
-		self.after_cancel(self.timer_id)
-		self._redraw_clock_label(0,0)
-		if self.pomo_mode == WORK:
-			if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
-				ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
-				if ans:
-					self.save_session()
-			else:
-				self.save_session()
-
-
-		
-
-
-	def save_session(self):
-		task = self.controller.get_current_task()
-		time_logged = self.get_time_spent()
-		session = Session(task, time_logged)
-		sessiondao.insert_session(session)
-
-
-
 
 	def change_pomo_mode(self):
 		if self.pomo_mode == WORK:
@@ -184,17 +158,46 @@ class Pomodoro(tk.Frame):
 		self.change_settings()
 
 
+	def reset_timer(self):
+		self.mode = STOPPED
+		self.after_cancel(self.timer_id)
+		if self.pomo_mode == WORK:
+			if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
+				ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
+				if ans:
+					self.save_session()
+			else:
+				self.save_session()
+		self._redraw_clock_label(0,0)
+
+
+	def save_session(self):
+		"""Creates a Session object with the clock's time 
+		and saves it to the database."""
+		task = self.controller.get_current_task()
+		time_logged = self.get_time_spent_as_seconds()
+		session = Session(task, time_logged)
+		sessiondao.insert_session(session)
+
 		
 
 	def get_time_spent_formatted(self):
-		total_seconds = self.get_time_spent()
-		minutes, seconds = divmod(total_seconds, 60)
-		return f"{minutes}:{seconds}"
+		"""Returns time spent formatted as MM:SS"""
+		time_obj = self.get_time_spent()
+		return time_obj.strftime("%M:%S")
 
 
 	def get_time_spent(self):
+		"""Returns a datetime.time object"""
+		total_seconds = self.get_time_spent_as_seconds()
+		minutes, seconds = divmod(total_seconds, 60)
+		time_obj = datetime.time(0, minutes, seconds)
+		return time_obj
+
+	def get_time_spent_as_seconds(self):
 		if self.end_type == MANUAL:
-			self.time_spent = self.original_time - self.time_left
+			# - 1 because of how the timer loop logic works, the recorded time is off by 1
+			self.time_spent = self.original_time - self.time_left - 1
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
 		return self.time_spent

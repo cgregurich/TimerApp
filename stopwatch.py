@@ -7,6 +7,7 @@ import storedsettings
 
 from session import Session
 from sessiondao import SessionDAO
+import datetime
 
 sessiondao = SessionDAO()
 
@@ -76,9 +77,9 @@ class Stopwatch(tk.Frame):
 		ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted() }")
 		if ans:
 			self.save_session()
-
-		self._redraw_clock_label(0, 0, 0)
 		self.after_cancel(self.timer_id)
+		self._redraw_clock_label(0, 0, 0)
+
 
 
 
@@ -148,17 +149,25 @@ class Stopwatch(tk.Frame):
 
 
 	def get_time_spent_formatted(self):
-		total_seconds = self.get_time_spent()
-		hours, seconds = divmod(total_seconds, 3600)
-		minutes, seconds = divmod(seconds, 60)
-		return f"{hours}:{minutes}:{seconds}"
+		"""Returns time spent formatted as HH:MM:SS"""
+		time_obj = self.get_time_spent()
+		return time_obj.strftime("%H:%M:%S")
 
 	def get_time_spent(self):
-		return self.time_spent
+		"""Returns a datetime.time object"""
+		total_seconds = self.get_time_spent_as_seconds()
+		hours, seconds = divmod(total_seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		time_obj = datetime.time(hours, minutes, seconds)
+		return time_obj
+
+	def get_time_spent_as_seconds(self):
+		# - 1 because of how the timer loop logic works, the recorded time is off by 1
+		return self.time_spent - 1
 		
 	def save_session(self):
 		task = self.controller.get_current_task()
-		time_logged = self.get_time_spent()
+		time_logged = self.get_time_spent_as_seconds()
 		session = Session(task, time_logged)
 		sessiondao.insert_session(session)
 

@@ -8,6 +8,8 @@ import pygame
 from session import Session
 from sessiondao import SessionDAO
 
+import datetime
+
 sessiondao = SessionDAO()
 
 
@@ -16,11 +18,12 @@ class Timer(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 
+		pygame.mixer.init()
+
 		self.controller = controller
 		
-		self.time_save = 'Yes'
 
-		pygame.mixer.init()
+		
 
 		self.mode = STOPPED
 		self.frame_back_button = tk.Frame(self)
@@ -31,8 +34,10 @@ class Timer(tk.Frame):
 		self.frame_buttons.grid(row=1, column=1)
 		self.frame_timer_display = tk.Frame(self, bd=3)
 		self.frame_timer_display.grid(row=2, column=1)
-		self.end_type = None
 
+
+		self.end_type = None
+		self.timer_id = None
 
 		self.draw_clock()
 
@@ -218,11 +223,9 @@ class Timer(tk.Frame):
 				self._redraw_clock_label(hours_left, minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
-				self._redraw_clock_label(0, 0, 0)
 				return
-			self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
+			self.timer_id = self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
-			print(self.get_time_spent())
 			self._play_timer_end_sound()
 			self.reset_timer()
 			self.change_control()
@@ -232,22 +235,24 @@ class Timer(tk.Frame):
 		"""Helper to reset the timer when it runs down or is cancelled."""
 		self.mode = STOPPED
 		self.change_entries_state()
-		self._redraw_clock_label(0, 0, 0)
+		self.after_cancel(self.timer_id)
 		if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
 			ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
 			if ans:
 				self.save_session()
 		else:
 			self.save_session()
+		
 
 		
 		self.entry_hours.delete(0, tk.END)
 		self.entry_minutes.delete(0, tk.END)
 		self.entry_seconds.delete(0, tk.END)
+		self._redraw_clock_label(0, 0, 0)
 
 	def save_session(self):
 		task = self.controller.get_current_task()
-		time_logged = self.get_time_spent()
+		time_logged = self.get_time_spent_as_seconds()
 		session = Session(task, time_logged)
 		sessiondao.insert_session(session)
 
@@ -261,6 +266,8 @@ class Timer(tk.Frame):
 		new_time = "{:02}:{:02}:{:02}".format(h, m, s)
 		self.lbl_time.config(text=new_time)
 
+
+	# THIS ISN'T EVEN USED ANYWHERE???????????
 	def destroy_widgets(self):
 		self.entry_hours.destroy()
 		self.entry_minutes.destroy()
@@ -274,22 +281,32 @@ class Timer(tk.Frame):
 
 
 
-	def reset(self):
-		self.change_settings()
 
 	def get_time_spent_formatted(self):
-		total_seconds = self.get_time_spent()
-		hours, seconds = divmod(total_seconds, 3600)
-		minutes, seconds = divmod(seconds, 60)
-		return f"{hours}:{minutes}:{seconds}"
+		"""Returns time spent formatted as HH:MM:SS"""
+		time_obj = self.get_time_spent()
+		return time_obj.strftime("%H:%M:%S")
 
 	def get_time_spent(self):
+		"""Returns a datetime.time object"""
+		total_seconds = self.get_time_spent_as_seconds()
+		hours, seconds = divmod(total_seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+
+		time_obj = datetime.time(hours, minutes, seconds)
+		return time_obj
+
+	def get_time_spent_as_seconds(self):
 		if self.end_type == MANUAL:
-			self.time_spent = self.original_time - self.time_left
+			# - 1 because of how the timer loop logic works, the recorded time is off by 1
+			self.time_spent = self.original_time - self.time_left - 1
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
 		return self.time_spent
 
+
+	def reset(self):
+		self.change_settings()
 
 
 
