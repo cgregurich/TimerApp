@@ -1,4 +1,4 @@
-import tkinter as tk
+from tkinter import *
 from mainmenu import MainMenu
 from timer import Timer
 from stopwatch import Stopwatch
@@ -6,23 +6,26 @@ from pomodoro import Pomodoro
 from settings import Settings
 from tasks import Tasks
 from displaydata import DisplayData
+from configmanager import ConfigManager
 
 
 
 
 # Controller class -> Controls which frame is on top
-class TimerApp(tk.Tk):
+class TimerApp(Tk):
 	def __init__(self, *args, **kwargs):
-		tk.Tk.__init__(self, *args, **kwargs)
+		Tk.__init__(self, *args, **kwargs)
 
 		self.title("Productivity Time")
 
-		self.current_task = tk.StringVar()
+		self.current_task = StringVar()
 		self.current_task.set("--")
+		self.debug = BooleanVar()
+		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
 
 		
 
-		container = tk.Frame(self)
+		container = Frame(self)
 		container.pack(side="top", fill="both", expand=True)
 		container.grid_rowconfigure(0, weight=1)
 		container.grid_columnconfigure(0, weight=1)
