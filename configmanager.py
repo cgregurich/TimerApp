@@ -21,7 +21,8 @@ class ConfigManager(configparser.ConfigParser):
 			# Pomo times are in seconds
 			'POMO_WORK_TIME': '1500', # aka 25 minutes
 			'POMO_BREAK_TIME': '300', # aka 5 minutes
-			'AUTOSAVE': '1'
+			'AUTOSAVE': '1',
+			'DEBUG': '0'
 		}
 		with open(self.FILE_NAME, 'w') as configfile:
 			self.write(configfile)
