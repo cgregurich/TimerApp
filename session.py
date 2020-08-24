@@ -33,17 +33,13 @@ class Session():
 
 	def get_current_time(self):
 		"""Returns string of current time in format HH:MM"""
-		hour = datetime.now().time().hour
-		minute = datetime.now().time().minute
-		return f"{hour}:{minute}"
+		now = datetime.now()
+		return now.strftime("%H:%M")
 
 	def get_current_date(self):
 		"""Returns string of current time in format MM-DD-YY"""
-		date = datetime.now().date()
-		month = date.month
-		day = date.day
-		year = date.year
-		return f"{month}-{day}-{year}"
+		today = datetime.now()
+		return today.strftime("%m-%d-%Y")
 
 
 	@property
