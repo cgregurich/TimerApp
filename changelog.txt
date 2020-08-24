@@ -69,3 +69,5 @@
 8-24-20:
 - Added a debug setting to usersettings, configmanager, and mainmenu
 - Added a WAIT value to storedsettings for above debug functionality
+- Fixed time formatting in session class and in messageboxes in timer classes
+- Fixed clocks clearing display after answering cancel prompt. Now clear after answering save prompt
