@@ -23,14 +23,14 @@
 - Refactored Timer, Stopwatch, and Pomo -> all classes inherit from Frame instead of Tk in order for the app to easily switch between modes
 - Created TimerApp module/class. This is the base of the application
 - Created a working back button for all three timers
-- Changed how TimerApp shows frames (changed key frames dict to string representation of Frame name instead of frame class as object; now don't have to import modules to use show frames)
+- Changed how TimerApp shows frames (changed key frames dict to string representation of Frame name instead of frame class as object; now don't have to import modules to use show frames)ings menu (settings are not saved)
+- Settings menu includes an example 
 8-12-20:
 - Renamed settings module to storedsettings
 - Created settings module for the settings GUI
 - Changed FG and BG color settings in storedsettings to be universal instead of specific to each clock
 - Created settings GUI accessed through the main menu
-- Created basic FG and BG color changer in settings menu (settings are not saved)
-- Settings menu includes an example timer to display how color changes will look
+- Created basic FG and BG color changer in setttimer to display how color changes will look
 - Changed method names in all three clocks (draw_timer changed to draw_clock; redraw_timer_label changed to redraw_clock_label)
 - Set reset methods in all three clocks to simply redraw the clocks
 8-13-20:

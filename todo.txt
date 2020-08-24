@@ -1,5 +1,15 @@
 todo (recent at top):
 
+LOG FRAME IDEAS:
+
+choose a day, or past 7 days, or past 30 days
+view all of a task (sorted by date)
+
+
+
+Style all widgets
+figure out how to display saved times
+
 TODO AS OF 8-22-20:
 BUG with how current time is grabbed. Not sure why. Example: 19:09 is saved as 19:9, 19:00 is saved as 19:0
 
