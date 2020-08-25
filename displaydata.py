@@ -60,7 +60,7 @@ class DisplayData(Frame):
 	def draw_sessions(self):
 
 		sessions = self.get_selected_day_sessions()
-		for i, s in sessions.enumerate():
+		# for i, s in sessions.enumerate():
 
 		for i in range(len(sessions)):
 			ttk.Label(self.scrollable_frame, text=selected_day_sessions[i]).grid(row=i, column=0)
