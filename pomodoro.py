@@ -84,7 +84,8 @@ class Pomodoro(tk.Frame):
 		if ans == True:
 			self.end_type = MANUAL
 			self.reset_timer()
-			self.change_pomo_mode()
+			if self.pomo_mode == BREAK:
+				self.change_pomo_mode()
 		else:
 			self.mode = RUNNING
 		self.change_control()
