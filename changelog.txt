@@ -71,3 +71,5 @@
 - Added a WAIT value to storedsettings for above debug functionality
 - Fixed time formatting in session class and in messageboxes in timer classes
 - Fixed clocks clearing display after answering cancel prompt. Now clear after answering save prompt
+8-25-20:
+- Fixed pomo bug where cancelling a work session would still switch to break
