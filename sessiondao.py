@@ -45,9 +45,24 @@ class SessionDAO():
 
 		for tup in tup_list:
 			info_dict = {'task':tup[0], 'time_logged':tup[1], 'time_completed':tup[2], 'date_completed':tup[3]}
-			session_list.append(Session(info_dict))
+			s = Session()
+			s.set_info_from_dict(info_dict)
+			session_list.append(s)
 
 		return session_list
+
+	def get_all_sessions_from_date(self, date):
+		"""Arg date must be datetime.date object"""
+		all_sessions = self.get_all_sessions()
+		sessions_list = []
+		for session in all_sessions:
+			session_datetime_obj = session.get_date_obj()
+			if session_datetime_obj == date:
+				sessions_list.append(session)
+
+		return sessions_list
+
+
 
 
 

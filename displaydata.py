@@ -2,6 +2,10 @@ from tkinter import *
 from tkinter import ttk
 from session import Session
 from sessiondao import SessionDAO
+import datetime as dt
+from datetime import date
+
+sessiondao = SessionDAO()
 
 class DisplayData(Frame):
 	def __init__(self, parent, controller):
@@ -54,9 +58,19 @@ class DisplayData(Frame):
 
 
 	def draw_sessions(self):
-		for i in range(50):
-			ttk.Label(self.scrollable_frame, text="Sample scrolling label").grid(row=i, column=0)
 
+		sessions = self.get_selected_day_sessions()
+		for i, s in sessions.enumerate():
+
+		for i in range(len(sessions)):
+			ttk.Label(self.scrollable_frame, text=selected_day_sessions[i]).grid(row=i, column=0)
+		
+
+	def get_selected_day_sessions(self):	
+		today = dt.datetime.now().date()
+		selected_day_sessions = sessiondao.get_all_sessions_from_date(today)
+		return selected_day_sessions
+		
 
 	def reset(self):
 		pass

@@ -2,7 +2,7 @@ todo (recent at top):
 
 LOG FRAME IDEAS:
 
-figure out scrollbar and datetime objects
+figure out calendar objects
 
 choose a day, or past 7 days, or past 30 days
 view all of a task (sorted by date)
@@ -13,7 +13,7 @@ Style all widgets
 figure out how to display saved times
 
 TODO AS OF 8-22-20:
-BUG with how current time is grabbed. Not sure why. Example: 19:09 is saved as 19:9, 19:00 is saved as 19:0
+
 
 
 UH OOH BIG BOO BOO IN TASKS.PY -> WHEN NO TASKS IN DB THERE IS AN ERROR
@@ -25,25 +25,7 @@ DATABASE FUNCTIONALITY
 - Create the data access object (writes to and reads from database)
 
 
-
-
-ACTIVITIES
-- Dropdown menu for selecting current activity
-- Activities frame for adding/deleting activities
-
-
-
-
-
-
-
-
-
-
-
-- Test to make sure usersettings.ini is generated with a new download
-
-- Design color schemes for whole application?
+- Figure out more advanced color schemes
 
 - Figure out how to make distributable .exe
 
@@ -54,27 +36,18 @@ seems to happen on the first run of things???
 
 
 
-- QUESTION: Should clocks continue running when user goes back to main menu?? They currently do. 
-
-
-
 - change settings button to have a cog instead of saying settings
 
 - spacing for the buttons (the way the text changes shift the sizes and shit)
 
-
-
-- ?bind enter key to start
-
-- validation in settings to make sure the time is less than an hour
+- bind enter key to add task
 
 - continue looking for bugs in all three timers
 
 - start on hooking up the database to the program
 
-
 - make fancy charts and stuff ??
-
+rs
 
 
 
@@ -83,6 +56,13 @@ seems to happen on the first run of things???
 
 - create folder for sound effects
 - download multiple sound effects to have options in settings
+
+ToDo for DISPLAYDATA:
+
+- figure out how resize when fullscreen
+- column headers for data
+- make the displayed data fit
+- make spreadsheet-style grid for displaying the data.
 
 
 ideas:

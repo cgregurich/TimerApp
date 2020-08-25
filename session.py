@@ -1,10 +1,14 @@
 from datetime import datetime
 
 class Session():
-	def __init__(self, task, time_logged):
-		cur_date = self.get_current_date()
-		cur_time = self.get_current_time()
-		self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
+	def __init__(self, task=None, time_logged=None):
+		if task and time_logged:
+			cur_date = self.get_current_date()
+			cur_time = self.get_current_time()
+			self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
+		else:
+			self.info = { 'task': None, 'time_logged': None, 'time_completed': None, 'date_completed': None}
+
 
 
 
@@ -13,6 +17,9 @@ class Session():
 		for key, value in self.info.items():
 			return_str += f"{key}: {value}  "
 		return return_str.strip()
+
+	def set_info_from_dict(self, dict):
+		self.info = dict
 
 	def info_as_tuple(self):
 		"""Returns the values from class dict info as a tuple"""
@@ -40,6 +47,14 @@ class Session():
 		"""Returns string of current time in format MM-DD-YY"""
 		today = datetime.now()
 		return today.strftime("%m-%d-%Y")
+
+	def get_date_obj(self):
+		date_list = self.date_completed.split('-')
+		month = int(date_list[0])
+		day = int(date_list[1])
+		year = int(date_list[2])
+		obj = datetime(year, month, day).date()
+		return obj
 
 
 	@property
