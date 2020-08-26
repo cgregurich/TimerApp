@@ -25,6 +25,20 @@ class Session():
 		"""Returns the values from class dict info as a tuple"""
 		return tuple(self.info.values())
 
+	def get_info_for_display(self):
+		info = list(self.info.values())
+		info[1] = self._format_seconds_to_time(self.time_logged)
+		return info
+
+	def _format_seconds_to_time(self, s):
+		hours, seconds = divmod(s, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		# Create datetime object
+		time = datetime.now()
+		time = time.replace(hour=hours, minute=minutes, second=seconds)
+		return time.strftime("%H:%M:%S")
+
+
 	def get_info(self):
 		return self.info
 
@@ -46,13 +60,13 @@ class Session():
 	def get_current_date(self):
 		"""Returns string of current time in format MM-DD-YY"""
 		today = datetime.now()
-		return today.strftime("%m-%d-%Y")
+		return today.strftime("%m-%d-%y")
 
 	def get_date_obj(self):
 		date_list = self.date_completed.split('-')
 		month = int(date_list[0])
 		day = int(date_list[1])
-		year = int(date_list[2])
+		year = int(date_list[2]) + 2000
 		obj = datetime(year, month, day).date()
 		return obj
 
