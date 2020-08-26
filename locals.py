@@ -14,3 +14,9 @@ BREAK = "break"
 OFF = 'off'
 ON = 'on'
 AUTOSAVE = 'AUTOSAVE'
+
+# constants for DisplayData
+DAY = "day"
+WEEK = "week"
+MONTH = "month"
+TASK = "task"
