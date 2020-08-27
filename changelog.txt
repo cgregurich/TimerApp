@@ -77,3 +77,6 @@
 - Started on formatting DisplayData display
 - Added radio buttons for choosing display type
 - Added method to Session for getting formatted info
+- Fixed bug that capped time display at 24 hours
+- Started formating session display
+- Changed font in displaydata to monospace

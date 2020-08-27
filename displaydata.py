@@ -91,7 +91,7 @@ class DisplayData(Frame):
 		self.clear_screen()
 		# check what mode (selected day, last 7, last 30, selected task)
 		if self.rb_var.get() == DAY:
-			sessions = self.get_selected_day_sessions()
+			all_sessions = self.get_selected_day_sessions()
 		elif self.rb_var.get() == WEEK:
 			pass
 
@@ -104,14 +104,16 @@ class DisplayData(Frame):
 
 		# for i in range(len(sessions)):
 		# 	ttk.Label(self.scrollable_frame, text=sessions[i]).grid(row=i, column=0)
-		for s in sessions:
+		self.draw_sessions_to_screen(all_sessions)
+		
+
+
+	def draw_sessions_to_screen(self, all_sessions):
+		"""sessions is a list of Session objects"""
+		for s in all_sessions:
 			row = self.create_session_row(s)
 			self.session_rows.append(row)
 			self._draw_row(row)
-
-
-	def draw_sessions_to_screen(self, sessions):
-		"""sessions is a list of Session objects"""
 
 		
 
@@ -124,9 +126,8 @@ class DisplayData(Frame):
 	def create_session_row(self, session):
 		"""Receives Session obj as arg.
 		Returns a list of lists of labels"""
-		row = []
 		info = session.get_info_for_display()
-		row = [Label(self.scrollable_frame, text=i) for i in info]
+		row = [Label(self.scrollable_frame, text=i, width=10, font=MONOSPACED) for i in info]
 		return row
 
 	def _draw_row(self, row):

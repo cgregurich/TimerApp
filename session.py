@@ -26,6 +26,8 @@ class Session():
 		return tuple(self.info.values())
 
 	def get_info_for_display(self):
+		"""Returns a list of the Session's info in format
+		[task, time_logged -> HH:MM:SS, time_completed, date_completed]"""
 		info = list(self.info.values())
 		info[1] = self._format_seconds_to_time(self.time_logged)
 		return info
@@ -34,9 +36,16 @@ class Session():
 		hours, seconds = divmod(s, 3600)
 		minutes, seconds = divmod(seconds, 60)
 		# Create datetime object
-		time = datetime.now()
-		time = time.replace(hour=hours, minute=minutes, second=seconds)
-		return time.strftime("%H:%M:%S")
+		if hours > 0:
+			t = "{:}:{:0>2}:{:0>2}".format(hours, minutes, seconds)
+			time = "{:>11}".format(t)
+		elif minutes > 0:
+			t = "{:}:{:0>2}".format(minutes, seconds)
+			time = "{:>11}".format(t)
+		else:
+			t = (seconds)
+			time = "{:>11}".format(t)
+		return time
 
 
 	def get_info(self):

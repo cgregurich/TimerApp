@@ -20,3 +20,6 @@ DAY = "day"
 WEEK = "week"
 MONTH = "month"
 TASK = "task"
+
+# FONTS
+MONOSPACED = ("Consolas", 10)
