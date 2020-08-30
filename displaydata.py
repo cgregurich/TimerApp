@@ -17,10 +17,12 @@ class DisplayData(Frame):
 		self.frame_back = Frame(self)
 		self.frame_controls = Frame(self)
 		self.frame_scroll = Frame(self)
+		self.frame_bottom_scrollbar = Frame(self)
 
 		self.frame_back.grid(row=0, column=0)
 		self.frame_controls.grid(row=0, column=1)
 		self.frame_scroll.grid(row=1, column=1)
+		self.frame_bottom_scrollbar.grid(row=2, column=1)
 
 		self.session_rows = [] # list of lists of labels
 
@@ -53,6 +55,7 @@ class DisplayData(Frame):
 
 		self.display_canvas = Canvas(self.frame_scroll)
 		self.scrollbar = ttk.Scrollbar(self.frame_scroll, orient="vertical", command=self.display_canvas.yview)
+		self.sideways_scrollbar = ttk.Scrollbar(self.frame_bottom_scrollbar, orient="horizontal", command=self.display_canvas.xview)
 		self.scrollable_frame = ttk.Frame(self.display_canvas)
 
 		self.scrollable_frame.bind(
@@ -65,9 +68,11 @@ class DisplayData(Frame):
 		self.display_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
 
 		self.display_canvas.configure(yscrollcommand=self.scrollbar.set)
+		self.display_canvas.configure(xscrollcommand=self.sideways_scrollbar.set)
 
 		self.display_canvas.pack(side="left", fill="both", expand=True)
 		self.scrollbar.pack(side="right", fill="y")
+		self.sideways_scrollbar.pack(side="bottom", fill="x")
 
 		self.controller.bind_all("<MouseWheel>", self._on_mousewheel)
 
@@ -88,7 +93,7 @@ class DisplayData(Frame):
 		
 
 	def draw_sessions(self):
-		self.clear_screen()
+		self._clear_screen()
 		# check what mode (selected day, last 7, last 30, selected task)
 		if self.rb_var.get() == DAY:
 			all_sessions = self.get_selected_day_sessions()
@@ -100,22 +105,40 @@ class DisplayData(Frame):
 
 		elif self.rb_var.get() == TASK:
 			pass
-		# for i, s in sessions.enumerate():
 
-		# for i in range(len(sessions)):
-		# 	ttk.Label(self.scrollable_frame, text=sessions[i]).grid(row=i, column=0)
+
 		self.draw_sessions_to_screen(all_sessions)
 		
+	def _calc_col_widths(self, all_sessions):
+		"""Calculates how wide each column should be depending
+		on the Session objects' data given in the arg all_sessions"""
+		self.col_widths = [0, 0, 0, 0]
+		for s in all_sessions:
+			s_info = s.get_info_for_display()
+			for i in range(len(self.col_widths)):
+				if len(s_info[i]) > self.col_widths[i]:
+					self.col_widths[i] = len(s_info[i])
+
+		PADDING = 2
+		for i in range(len(self.col_widths)):
+			self.col_widths[i] += PADDING
+
+
+
+
+
 
 
 	def draw_sessions_to_screen(self, all_sessions):
 		"""sessions is a list of Session objects"""
+		self._calc_col_widths(all_sessions)
 		for s in all_sessions:
 			row = self.create_session_row(s)
 			self.session_rows.append(row)
 			self._draw_row(row)
-
 		
+				
+
 
 	def get_selected_day_sessions(self):	
 		day = self.grab_date_from_cal()
@@ -127,7 +150,7 @@ class DisplayData(Frame):
 		"""Receives Session obj as arg.
 		Returns a list of lists of labels"""
 		info = session.get_info_for_display()
-		row = [Label(self.scrollable_frame, text=i, width=10, font=MONOSPACED) for i in info]
+		row = [Label(self.scrollable_frame, text=info[i], width=self.col_widths[i], font=MONOSPACED) for i in range(len(self.col_widths))]
 		return row
 
 	def _draw_row(self, row):
@@ -139,7 +162,7 @@ class DisplayData(Frame):
 
 
 
-	def clear_screen(self):
+	def _clear_screen(self):
 		for row in self.session_rows:
 			for lbl in row:
 				lbl.destroy()
@@ -147,4 +170,4 @@ class DisplayData(Frame):
 
 
 	def reset(self):
-		pass
+		self.draw_sessions()

@@ -37,16 +37,19 @@ class Session():
 		minutes, seconds = divmod(seconds, 60)
 		# Create datetime object
 		if hours > 0:
-			t = "{:}:{:0>2}:{:0>2}".format(hours, minutes, seconds)
+			t = "{:0>2}h {:0>2}m {:0>2}s".format(hours, minutes, seconds)
 			time = "{:>11}".format(t)
 		elif minutes > 0:
-			t = "{:}:{:0>2}".format(minutes, seconds)
+			t = "{:0>2}m {:0>2}s".format(minutes, seconds)
 			time = "{:>11}".format(t)
 		else:
-			t = (seconds)
+			t = "{:0>2}s".format(seconds)
 			time = "{:>11}".format(t)
 		return time
 
+
+	# 5h 20m 12s
+	# 5:20:12
 
 	def get_info(self):
 		return self.info
