@@ -14,22 +14,20 @@ class DisplayData(Frame):
 		Frame.__init__(self, parent)
 		self.controller = controller
 
-		self.frame_back = Frame(self)
 		self.frame_controls = Frame(self)
-		self.frame_scroll = Frame(self)
-		self.frame_bottom_scrollbar = Frame(self)
 
-		self.frame_back.grid(row=0, column=0)
-		self.frame_controls.grid(row=0, column=1)
-		self.frame_scroll.grid(row=1, column=1)
-		self.frame_bottom_scrollbar.grid(row=2, column=1)
+
+
+		self.frame_controls.grid(row=0, column=0)
+
+
 
 		self.session_rows = [] # list of lists of labels
 
 		self.draw_window()
 
 	def draw_window(self):
-		btn_back = ttk.Button(self.frame_back, text="Back", command=lambda: self.controller.show_frame("MainMenu"))
+		btn_back = ttk.Button(self.frame_controls, text="Back", command=lambda: self.controller.show_frame("MainMenu"))
 		btn_back.grid(row=0, column=0)
 
 
@@ -42,10 +40,10 @@ class DisplayData(Frame):
 		rb_month = Radiobutton(self.frame_controls, text="Month", variable=self.rb_var, value=MONTH)
 		rb_task = Radiobutton(self.frame_controls, text="Task", variable=self.rb_var, value=TASK)
 
-		rb_day.grid(row=0, column=0)
-		rb_week.grid(row=0, column=1)
-		rb_month.grid(row=0, column=2)
-		rb_task.grid(row=0, column=3)
+		rb_day.grid(row=0, column=1)
+		rb_week.grid(row=0, column=2)
+		rb_month.grid(row=0, column=3)
+		rb_task.grid(row=0, column=4)
 
 		today = dt.datetime.now()
 		self.cal = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
@@ -53,9 +51,10 @@ class DisplayData(Frame):
 		self.btn_test = ttk.Button(self.frame_controls, text="test", command=self.draw_sessions)
 		self.btn_test.grid(row=1, column=1)
 
-		self.display_canvas = Canvas(self.frame_scroll)
-		self.scrollbar = ttk.Scrollbar(self.frame_scroll, orient="vertical", command=self.display_canvas.yview)
-		self.sideways_scrollbar = ttk.Scrollbar(self.frame_bottom_scrollbar, orient="horizontal", command=self.display_canvas.xview)
+		# CREATE SCROLLABLE WINDOW
+		self.display_canvas = Canvas(self)
+		self.yscrollbar = ttk.Scrollbar(self, orient="vertical", command=self.display_canvas.yview)
+		self.xscrollbar = ttk.Scrollbar(self, orient="horizontal", command=self.display_canvas.xview)
 		self.scrollable_frame = ttk.Frame(self.display_canvas)
 
 		self.scrollable_frame.bind(
@@ -67,12 +66,13 @@ class DisplayData(Frame):
 
 		self.display_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
 
-		self.display_canvas.configure(yscrollcommand=self.scrollbar.set)
-		self.display_canvas.configure(xscrollcommand=self.sideways_scrollbar.set)
 
-		self.display_canvas.pack(side="left", fill="both", expand=True)
-		self.scrollbar.pack(side="right", fill="y")
-		self.sideways_scrollbar.pack(side="bottom", fill="x")
+		self.display_canvas.configure(yscrollcommand=self.yscrollbar.set)
+		self.display_canvas.configure(xscrollcommand=self.xscrollbar.set)
+
+		self.display_canvas.grid(row=1, column=0)
+		self.yscrollbar.grid(row=1, column=2, sticky='nsew')
+		self.xscrollbar.grid(row=3, column=0, sticky='nsew')
 
 		self.controller.bind_all("<MouseWheel>", self._on_mousewheel)
 
@@ -132,6 +132,7 @@ class DisplayData(Frame):
 	def draw_sessions_to_screen(self, all_sessions):
 		"""sessions is a list of Session objects"""
 		self._calc_col_widths(all_sessions)
+
 		for s in all_sessions:
 			row = self.create_session_row(s)
 			self.session_rows.append(row)
@@ -156,8 +157,14 @@ class DisplayData(Frame):
 	def _draw_row(self, row):
 		r = len(self.session_rows)
 		c = 0
+		if r % 2 != 0:
+			color = "#ddd"
+		else:
+			color = "#AFAFAF"
+
 		for lbl in row:
 			lbl.grid(row=r, column=c)
+			lbl.config(bg=color)
 			c += 1
 
 

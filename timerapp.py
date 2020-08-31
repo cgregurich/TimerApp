@@ -18,6 +18,7 @@ class TimerApp(Tk):
 
 		self.title("Productivity Time")
 
+
 		self.current_task = StringVar()
 		self.current_task.set("--")
 		self.debug = BooleanVar()

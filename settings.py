@@ -26,7 +26,7 @@ class Settings(Frame):
 
 		self.frame_labels.grid(row=1, column=1)
 		self.frame_options.grid(row=1, column=2)
-		self.frame_example.grid(row=1, column=3)
+		self.frame_example.grid(row=0, column=1)
 
 
 		self.controller = controller
