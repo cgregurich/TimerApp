@@ -1,5 +1,10 @@
 todo (recent at top):
 
+(added 8-31)DISPLAY DATA: 
+- Show totals of each task at top/bottom
+- Maybe have a button to click to display the list of every session
+	but otherwise just display the totals?
+
 LOG FRAME IDEAS:
 
 figure out calendar objects
