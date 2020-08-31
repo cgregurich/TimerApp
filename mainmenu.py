@@ -57,7 +57,7 @@ class MainMenu(Frame):
 		cur_value = self.mgr.get_setting('SETTINGS', 'DEBUG')
 		new_value = '1' if cur_value == '0' else '0'
 		self.mgr.change_setting('DEBUG', new_value)
-		storedsettings.WAIT = 1000 if new_value == '0' else '1'
+		storedsettings.WAIT = 1000 if new_value == '0' else '10'
 
 		
 
