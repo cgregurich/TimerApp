@@ -110,6 +110,8 @@ class Pomodoro(tk.Frame):
 
 
 	def start_timer(self):
+		self.change_sound_file()
+
 		seconds = storedsettings.POMO_WORK_TIME if self.pomo_mode == WORK else storedsettings.POMO_BREAK_TIME
 		self.original_time = seconds
 		self.end_type = AUTOMATIC
@@ -170,6 +172,17 @@ class Pomodoro(tk.Frame):
 			else:
 				self.save_session()
 		self._redraw_clock_label(0,0)
+
+		# self.change_sound_file()
+
+
+	def change_sound_file(self):
+		if self.pomo_mode == BREAK:
+			pygame.mixer.music.load("resources/sounds/break_done.mp3")
+		elif self.pomo_mode == WORK:
+			pygame.mixer.music.load("resources/sounds/dingsoundeffect.mp3")
+
+
 
 
 	def save_session(self):
