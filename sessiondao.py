@@ -62,6 +62,15 @@ class SessionDAO():
 
 		return sessions_list
 
+	def get_all_sessions_by_task(self, task):
+		"""ARG task : str"""
+		with self.conn:
+			self.c.execute("""SELECT * FROM sessions WHERE task = ?""", (task,))
+			tup_list = self.c.fetchall()
+
+		return self._convert_tup_list_to_session_list(tup_list)
+
+
 
 
 
