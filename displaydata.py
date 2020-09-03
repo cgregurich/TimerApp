@@ -7,6 +7,15 @@ import datetime as dt
 from datetime import date
 from tkcalendar import *
 
+
+
+# WORKING ON 7-2-20: 
+# Get radio buttons at top to work -> Week, Month, Task
+# Display total for the selected mode
+# First: get task rb to work
+
+
+
 sessiondao = SessionDAO()
 
 class DisplayData(Frame):
@@ -15,14 +24,11 @@ class DisplayData(Frame):
 		self.controller = controller
 
 		self.frame_controls = Frame(self)
-
-
-
 		self.frame_controls.grid(row=0, column=0)
 
-
-
 		self.session_rows = [] # list of lists of labels
+
+		self.input_widgets = {}
 
 		self.draw_window()
 
@@ -35,19 +41,17 @@ class DisplayData(Frame):
 
 		self.rb_var = StringVar()
 		self.rb_var.set(DAY)
-		rb_day = Radiobutton(self.frame_controls, text="Day", variable=self.rb_var, value=DAY)
-		rb_week = Radiobutton(self.frame_controls, text="Week", variable=self.rb_var, value=WEEK)
-		rb_month = Radiobutton(self.frame_controls, text="Month", variable=self.rb_var, value=MONTH)
-		rb_task = Radiobutton(self.frame_controls, text="Task", variable=self.rb_var, value=TASK)
+		rb_day = Radiobutton(self.frame_controls, text="Day", variable=self.rb_var, value=DAY, command=self.rb_clicked)
+		rb_week = Radiobutton(self.frame_controls, text="Week", variable=self.rb_var, value=WEEK, command=self.rb_clicked)
+		rb_month = Radiobutton(self.frame_controls, text="Month", variable=self.rb_var, value=MONTH, command=self.rb_clicked)
+		rb_task = Radiobutton(self.frame_controls, text="Task", variable=self.rb_var, value=TASK, command=self.rb_clicked)
 
 		rb_day.grid(row=0, column=1)
 		rb_week.grid(row=0, column=2)
 		rb_month.grid(row=0, column=3)
 		rb_task.grid(row=0, column=4)
 
-		today = dt.datetime.now()
-		self.cal = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
-		self.cal.grid(row=1, column=0)
+		
 		self.btn_test = ttk.Button(self.frame_controls, text="test", command=self.draw_sessions)
 		self.btn_test.grid(row=1, column=1)
 
@@ -76,7 +80,43 @@ class DisplayData(Frame):
 
 		self.controller.bind_all("<MouseWheel>", self._on_mousewheel)
 
+
+
+		self.change_input_widgets()
 		self.draw_sessions()
+
+	def rb_clicked(self):
+		"""Method for when any of the radio buttons are clicked"""
+		self._clear_input_widgets()
+		self.change_input_widgets()
+
+
+	def change_input_widgets(self):
+		mode = self.rb_var.get()
+		if mode == DAY:
+			self.draw_calendar()
+
+		elif mode == WEEK:
+			print("TODO: Week chosen")
+
+		elif mode == MONTH:
+			print("TODO: Month chosen")
+
+		elif mode == TASK:
+			self.draw_task_entry()
+
+
+	def draw_calendar(self):
+		today = dt.datetime.now()
+		cal = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
+		cal.grid(row=1, column=0)
+		self.input_widgets['calendar'] = cal
+
+	def draw_task_entry(self):
+		entry = ttk.Entry(self.frame_controls)
+		entry.grid(row=1, column=0)
+		self.input_widgets['entry'] = entry
+
 
 	def _on_mousewheel(self, event):
 		self.display_canvas.yview_scroll(-1*(event.delta//120), "units")
@@ -84,7 +124,7 @@ class DisplayData(Frame):
 
 	def grab_date_from_cal(self):
 		"""Returns the current selected date as a datetime.datetime.date obj"""
-		date_str = self.cal.get()
+		date_str = self.input_widgets['calendar'].get()
 		date_info = [int(i) for i in date_str.split('/')]
 		month, day, year = tuple(date_info)
 		year += 2000
@@ -104,10 +144,13 @@ class DisplayData(Frame):
 			pass
 
 		elif self.rb_var.get() == TASK:
-			pass
+			task = self.input_widgets['entry'].get()
+			all_sessions = sessiondao.get_all_sessions_by_task(task)
 
 
 		self.draw_sessions_to_screen(all_sessions)
+
+	
 		
 	def _calc_col_widths(self, all_sessions):
 		"""Calculates how wide each column should be depending
@@ -122,12 +165,6 @@ class DisplayData(Frame):
 		PADDING = 2
 		for i in range(len(self.col_widths)):
 			self.col_widths[i] += PADDING
-
-
-
-
-
-
 
 	def draw_sessions_to_screen(self, all_sessions):
 		"""sessions is a list of Session objects"""
@@ -170,9 +207,17 @@ class DisplayData(Frame):
 
 
 	def _clear_screen(self):
+		# Clear labels
 		for row in self.session_rows:
 			for lbl in row:
 				lbl.destroy()
+		self.session_rows = []
+
+	def _clear_input_widgets(self):
+		# Clear input section (calendar/entry)
+		for widget in self.input_widgets.values():
+			widget.destroy()
+		self.input_widgets = {}
 
 
 
