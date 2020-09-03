@@ -80,3 +80,6 @@
 - Fixed bug that capped time display at 24 hours
 - Started formating session display
 - Changed font in displaydata to monospace
+9-2-20:
+- Fixed menu (for functionality, not style)
+- Began implementing task search functionality in DisplayData
