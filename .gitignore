@@ -5,3 +5,4 @@ task.db
 session.db
 testingpomo.py
 testingsession.py
+autocompleteentry.py
