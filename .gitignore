@@ -6,3 +6,6 @@ session.db
 testingpomo.py
 testingsession.py
 autocompleteentry.py
+build/
+dist/
+timerapp.spec
