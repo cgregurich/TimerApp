@@ -16,7 +16,7 @@ class Tasks(tk.Frame):
 
 		self.controller = controller
 		self.selected_task = tk.StringVar()
-		self.selected_task.set("--")
+		self.selected_task.set("")
 		self.draw_window()
 
 	def draw_window(self):
@@ -50,22 +50,30 @@ class Tasks(tk.Frame):
 			return
 		taskdao.delete_task(task)
 		self.refresh_task_menu()
-		self.selected_task.set("--")
+		self.selected_task.set("")
 
 
 
 	def add_clicked(self):
 		task = self.entry_task.get()
-		if not self.is_task_unique(task):
-			messagebox.showerror("Error", "Duplicate names not allowed faggot")
-			return 
+		if not self.is_task_entered_valid():
+			return
+		
 		taskdao.insert_task(task)
 
 		self.entry_task.delete(0, 
 			tk.END)
-		self.selected_task.set("--")
+		self.selected_task.set("")
 
 		self.refresh_task_menu()
+
+	def is_task_entered_valid(self):
+		task = self.entry_task.get()
+		if not self.is_task_unique(task) or not task:
+			messagebox.showerror("Error", f"There is already a task called '{task}'")
+			return False
+		else:
+			return True
 
 	def refresh_task_menu(self):
 		self.om_tasks.destroy()
