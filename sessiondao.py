@@ -1,7 +1,7 @@
 import sqlite3
 
 from session import Session
-
+import datetime as dt
 
 class SessionDAO():
 	def __init__(self, db_name='session.db'):
@@ -61,6 +61,28 @@ class SessionDAO():
 				sessions_list.append(session)
 
 		return sessions_list
+
+	def get_all_sessions_between_dates(self, start, end):
+		"""Returns list of Session objects that have a date_completed on and between
+		start and end"""
+
+		dates = self._generate_dates_between(start, end)
+		sessions = []
+		for date in dates:
+			sessions += self.get_all_sessions_from_date(date)
+		return sessions
+
+
+
+	def _generate_dates_between(self, start, end):
+		"""Returns a list of date objects starting at start and ended on end"""
+		dates = [start]
+		temp = start
+		while temp <= end:
+			dates.append(temp)
+			temp += dt.timedelta(days=1)
+		return dates
+
 
 	def get_all_sessions_by_task(self, task):
 		"""ARG task : str"""
