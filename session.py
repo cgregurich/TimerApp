@@ -75,6 +75,8 @@ class Session():
 		return today.strftime("%m-%d-%y")
 
 	def get_date_obj(self):
+		if not self.date_completed:
+			return
 		date_list = self.date_completed.split('-')
 		month = int(date_list[0])
 		day = int(date_list[1])
