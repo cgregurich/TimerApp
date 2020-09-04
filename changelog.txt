@@ -87,3 +87,5 @@
 - Added total time display in DisplayData
 - Added autocomplete search for task in DisplayData
 - Changed default/non-selected task to empty string instead of "--"
+9-4-20:
+- Implemented week and month display in DisplayData

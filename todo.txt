@@ -1,5 +1,13 @@
 todo (recent at top):
 
+
+
+HAVENT PUSHED:
+where i left off: making week and month display in displaydata work. Right now month doesn't display anything; bug with session dao ????
+because week DOES work
+
+
+
 (added 8-31)DISPLAY DATA: 
 - Show totals of each task at top/bottom
 - Maybe have a button to click to display the list of every session
