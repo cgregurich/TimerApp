@@ -9,6 +9,7 @@ from datetime import date
 from tkcalendar import *
 
 import autocomplete
+import calendar
 
 
 
@@ -29,6 +30,9 @@ class DisplayData(Frame):
 
 		self.frame_totals = Frame(self)
 		self.frame_totals.grid(row=1, column=0)
+
+		self.frame_totals.grid_columnconfigure(0, weight=1)
+		self.frame_totals.grid_rowconfigure(0, weight=1)
 
 		self.frame_data = Frame(self)
 		self.frame_data.grid(row=2, column=0)
@@ -60,9 +64,9 @@ class DisplayData(Frame):
 		rb_month.grid(row=0, column=3)
 		rb_task.grid(row=0, column=4)
 
-		
 		self.btn_view = ttk.Button(self.frame_controls, text="View", command=self.draw_sessions)
 		self.btn_view.grid(row=1, column=1)
+		
 
 		# CREATE SCROLLABLE WINDOW
 		self.display_canvas = Canvas(self.frame_data)
@@ -100,26 +104,75 @@ class DisplayData(Frame):
 		self.change_input_widgets()
 
 
+
+
 	def change_input_widgets(self):
 		mode = self.rb_var.get()
 		if mode == DAY:
 			self.draw_calendar()
 
 		elif mode == WEEK:
-			print("TODO: Week chosen")
+			self.draw_week_widgets()
+			
 
 		elif mode == MONTH:
-			print("TODO: Month chosen")
+			self.draw_month_widgets()
 
 		elif mode == TASK:
 			self.draw_autocomplete()
+
+
+
+	def draw_month_widgets(self):
+		"""Draws two calendar pickers; one set to today, one set to a week ago"""
+
+		today = dt.datetime.now()
+		# Quick and dirty fix for if it's January; 1 - 1 != 12
+		if today.month == 1:
+			days_in_month = calendar.monthrange(today.year, 12)[1]
+		else:
+			days_in_month = calendar.monthrange(today.year, today.month-1)[1]
+		month_ago = today - dt.timedelta(days=days_in_month)
+
+		start = DateEntry(self.frame_controls, selectmode="day", year=month_ago.year, month=month_ago.month, day=month_ago.day)
+		start.grid(row=1, column=0)
+
+		
+		end = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
+		end.grid(row=1, column=1)
+
+		self.btn_view.grid(row=1, column=2)
+
+		self.input_widgets['calendar_end'] = end
+		self.input_widgets['calendar_start'] = start
+
+	def draw_week_widgets(self):
+		"""Draws two calendar pickers; one set to today, one set to a week ago"""
+
+		today = dt.datetime.now()
+		week_ago = today - dt.timedelta(days=7)
+
+		start = DateEntry(self.frame_controls, selectmode="day", year=week_ago.year, month=week_ago.month, day=week_ago.day)
+		start.grid(row=1, column=0)
+
+		
+		end = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
+		end.grid(row=1, column=1)
+
+		self.btn_view.grid(row=1, column=2)
+
+		
+
+		self.input_widgets['calendar_end'] = end
+		self.input_widgets['calendar_start'] = start
+
 
 
 	def draw_calendar(self):
 		today = dt.datetime.now()
 		cal = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
 		cal.grid(row=1, column=0)
-		self.input_widgets['calendar'] = cal
+		self.input_widgets['calendar_end'] = cal
 
 	def draw_autocomplete(self):
 		entry = autocomplete.AutoComplete(self.frame_controls, options=taskdao.get_all_tasks())
@@ -131,9 +184,9 @@ class DisplayData(Frame):
 		self.display_canvas.yview_scroll(-1*(event.delta//120), "units")
 
 
-	def grab_date_from_cal(self):
-		"""Returns the current selected date as a datetime.datetime.date obj"""
-		date_str = self.input_widgets['calendar'].get()
+	def grab_date_from_cal(self, cal_name):
+		"""Returns the current selected date as a datetime.datetime.date obj (???)"""
+		date_str = self.input_widgets[cal_name].get()
 		date_info = [int(i) for i in date_str.split('/')]
 		month, day, year = tuple(date_info)
 		year += 2000
@@ -148,10 +201,10 @@ class DisplayData(Frame):
 		if self.rb_var.get() == DAY:
 			sessions_list = self.get_selected_day_sessions()
 		elif self.rb_var.get() == WEEK:
-			pass
+			sessions_list = self.get_selected_timeframe_sessions()
 
 		elif self.rb_var.get() == MONTH:
-			pass
+			sessions_list = self.get_selected_timeframe_sessions()
 
 		elif self.rb_var.get() == TASK:
 			task = self.input_widgets['entry'].get()
@@ -160,6 +213,18 @@ class DisplayData(Frame):
 
 		self.draw_sessions_to_screen(sessions_list)
 		self.draw_totals(sessions_list)
+
+
+	def get_selected_timeframe_sessions(self):
+		"""Method used for when in week or month mode (two calendar widgets exist)
+		Grabs date from both and retrieves all Sessions from between those dates, inclusive"""
+		start = self.grab_date_from_cal('calendar_start')
+		end = self.grab_date_from_cal('calendar_end')
+		sessions = sessiondao.get_all_sessions_between_dates(start, end)
+		return sessions
+
+
+
 
 	def draw_totals(self, sessions_list):
 		tasks_time_dict = self._create_tasks_time_dict(sessions_list)
@@ -175,9 +240,12 @@ class DisplayData(Frame):
 		time: int (seconds)
 		"""
 		formatted_time = self._format_seconds(seconds)
-		lbl = Label(self.frame_totals, text=f"{task}: {formatted_time}", font=MONOSPACED)
-		lbl.grid(row=len(self.total_labels), column=0)
-		self.total_labels.append(lbl)
+		lbl_task = Label(self.frame_totals, text=f"{task}:", font=MONOSPACED)
+		lbl_time = Label(self.frame_totals, text=formatted_time, font=MONOSPACED)
+		lbl_task.grid(row=len(self.total_labels), column=0)
+		lbl_time.grid(row=len(self.total_labels), column=1)
+		self.total_labels.append(lbl_task)
+		self.total_labels.append(lbl_time)
 
 	def _format_seconds(self, total_seconds):
 		hours, seconds = divmod(total_seconds, 3600)
@@ -236,7 +304,7 @@ class DisplayData(Frame):
 
 
 	def get_selected_day_sessions(self):	
-		day = self.grab_date_from_cal()
+		day = self.grab_date_from_cal('calendar_end')
 		selected_day_sessions = sessiondao.get_all_sessions_from_date(day)
 
 		return selected_day_sessions
