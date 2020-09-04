@@ -3,20 +3,21 @@ from tkinter import ttk
 from locals import *
 from session import Session
 from sessiondao import SessionDAO
+from taskdao import TaskDAO
 import datetime as dt
 from datetime import date
 from tkcalendar import *
 
+import autocomplete
 
 
-# WORKING ON 7-2-20: 
-# Get radio buttons at top to work -> Week, Month, Task
-# Display total for the selected mode
-# First: get task rb to work
+
 
 
 
 sessiondao = SessionDAO()
+taskdao = TaskDAO()
+
 
 class DisplayData(Frame):
 	def __init__(self, parent, controller):
@@ -26,9 +27,17 @@ class DisplayData(Frame):
 		self.frame_controls = Frame(self)
 		self.frame_controls.grid(row=0, column=0)
 
+		self.frame_totals = Frame(self)
+		self.frame_totals.grid(row=1, column=0)
+
+		self.frame_data = Frame(self)
+		self.frame_data.grid(row=2, column=0)
+
 		self.session_rows = [] # list of lists of labels
 
 		self.input_widgets = {}
+
+		self.total_labels = []
 
 		self.draw_window()
 
@@ -41,10 +50,10 @@ class DisplayData(Frame):
 
 		self.rb_var = StringVar()
 		self.rb_var.set(DAY)
-		rb_day = Radiobutton(self.frame_controls, text="Day", variable=self.rb_var, value=DAY, command=self.rb_clicked)
-		rb_week = Radiobutton(self.frame_controls, text="Week", variable=self.rb_var, value=WEEK, command=self.rb_clicked)
-		rb_month = Radiobutton(self.frame_controls, text="Month", variable=self.rb_var, value=MONTH, command=self.rb_clicked)
-		rb_task = Radiobutton(self.frame_controls, text="Task", variable=self.rb_var, value=TASK, command=self.rb_clicked)
+		rb_day = ttk.Radiobutton(self.frame_controls, text="Day", variable=self.rb_var, value=DAY, command=self.rb_clicked)
+		rb_week = ttk.Radiobutton(self.frame_controls, text="Week", variable=self.rb_var, value=WEEK, command=self.rb_clicked)
+		rb_month = ttk.Radiobutton(self.frame_controls, text="Month", variable=self.rb_var, value=MONTH, command=self.rb_clicked)
+		rb_task = ttk.Radiobutton(self.frame_controls, text="Task", variable=self.rb_var, value=TASK, command=self.rb_clicked)
 
 		rb_day.grid(row=0, column=1)
 		rb_week.grid(row=0, column=2)
@@ -52,13 +61,13 @@ class DisplayData(Frame):
 		rb_task.grid(row=0, column=4)
 
 		
-		self.btn_test = ttk.Button(self.frame_controls, text="test", command=self.draw_sessions)
-		self.btn_test.grid(row=1, column=1)
+		self.btn_view = ttk.Button(self.frame_controls, text="View", command=self.draw_sessions)
+		self.btn_view.grid(row=1, column=1)
 
 		# CREATE SCROLLABLE WINDOW
-		self.display_canvas = Canvas(self)
-		self.yscrollbar = ttk.Scrollbar(self, orient="vertical", command=self.display_canvas.yview)
-		self.xscrollbar = ttk.Scrollbar(self, orient="horizontal", command=self.display_canvas.xview)
+		self.display_canvas = Canvas(self.frame_data)
+		self.yscrollbar = ttk.Scrollbar(self.frame_data, orient="vertical", command=self.display_canvas.yview)
+		self.xscrollbar = ttk.Scrollbar(self.frame_data, orient="horizontal", command=self.display_canvas.xview)
 		self.scrollable_frame = ttk.Frame(self.display_canvas)
 
 		self.scrollable_frame.bind(
@@ -103,7 +112,7 @@ class DisplayData(Frame):
 			print("TODO: Month chosen")
 
 		elif mode == TASK:
-			self.draw_task_entry()
+			self.draw_autocomplete()
 
 
 	def draw_calendar(self):
@@ -112,8 +121,8 @@ class DisplayData(Frame):
 		cal.grid(row=1, column=0)
 		self.input_widgets['calendar'] = cal
 
-	def draw_task_entry(self):
-		entry = ttk.Entry(self.frame_controls)
+	def draw_autocomplete(self):
+		entry = autocomplete.AutoComplete(self.frame_controls, options=taskdao.get_all_tasks())
 		entry.grid(row=1, column=0)
 		self.input_widgets['entry'] = entry
 
@@ -135,8 +144,9 @@ class DisplayData(Frame):
 	def draw_sessions(self):
 		self._clear_screen()
 		# check what mode (selected day, last 7, last 30, selected task)
+
 		if self.rb_var.get() == DAY:
-			all_sessions = self.get_selected_day_sessions()
+			sessions_list = self.get_selected_day_sessions()
 		elif self.rb_var.get() == WEEK:
 			pass
 
@@ -145,18 +155,65 @@ class DisplayData(Frame):
 
 		elif self.rb_var.get() == TASK:
 			task = self.input_widgets['entry'].get()
-			all_sessions = sessiondao.get_all_sessions_by_task(task)
+			sessions_list = sessiondao.get_all_sessions_by_task(task)
 
 
-		self.draw_sessions_to_screen(all_sessions)
+		self.draw_sessions_to_screen(sessions_list)
+		self.draw_totals(sessions_list)
+
+	def draw_totals(self, sessions_list):
+		tasks_time_dict = self._create_tasks_time_dict(sessions_list)
+
+
+
+		for task, time in tasks_time_dict.items():
+			self._create_total_label(task, time)
+
+	def _create_total_label(self, task, seconds):
+		"""
+		task: string
+		time: int (seconds)
+		"""
+		formatted_time = self._format_seconds(seconds)
+		lbl = Label(self.frame_totals, text=f"{task}: {formatted_time}", font=MONOSPACED)
+		lbl.grid(row=len(self.total_labels), column=0)
+		self.total_labels.append(lbl)
+
+	def _format_seconds(self, total_seconds):
+		hours, seconds = divmod(total_seconds, 3600)
+		minutes, seconds = divmod(seconds, 60)
+		# return f"{hours}:{minutes}:{seconds}"
+
+		return "{:0>2}h {:0>2}m {:0>2}s".format(hours, minutes, seconds)
+
+
+
+
+	def _create_tasks_time_dict(self, sessions_list):
+		tasks_set = self._get_all_tasks_from_sessions(sessions_list)
+		# Create a dictionary to map tasks to total time spent on task
+		tasks_time_dict = {task:0 for task in tasks_set} # dict of format {task: time(in sec)}
+
+		for session in sessions_list:
+			tasks_time_dict[session.task] += session.time_logged
+
+		return tasks_time_dict
+
+	def _get_all_tasks_from_sessions(self, sessions_list):
+		"""Returns a set of tasks from the Session objects in sessions_list"""
+		tasks_set = set()
+		for session in sessions_list:
+			tasks_set.add(session.task)
+		return tasks_set
+
 
 	
 		
-	def _calc_col_widths(self, all_sessions):
+	def _calc_col_widths(self, sessions_list):
 		"""Calculates how wide each column should be depending
-		on the Session objects' data given in the arg all_sessions"""
+		on the Session objects' data given in the arg sessions_list"""
 		self.col_widths = [0, 0, 0, 0]
-		for s in all_sessions:
+		for s in sessions_list:
 			s_info = s.get_info_for_display()
 			for i in range(len(self.col_widths)):
 				if len(s_info[i]) > self.col_widths[i]:
@@ -212,6 +269,11 @@ class DisplayData(Frame):
 			for lbl in row:
 				lbl.destroy()
 		self.session_rows = []
+
+		# Clear totals labels
+		for label in self.total_labels:
+			label.destroy()
+		self.total_labels = []
 
 	def _clear_input_widgets(self):
 		# Clear input section (calendar/entry)
