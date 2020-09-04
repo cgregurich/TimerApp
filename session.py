@@ -2,11 +2,12 @@ from datetime import datetime
 
 class Session():
 	def __init__(self, task=None, time_logged=None):
-		if task and time_logged:
+		if time_logged:
 			cur_date = self.get_current_date()
 			cur_time = self.get_current_time()
 			self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
 		else:
+			print("task must not be!!!!\n\n")
 			self.info = { 'task': None, 'time_logged': None, 'time_completed': None, 'date_completed': None}
 
 
@@ -75,8 +76,6 @@ class Session():
 		return today.strftime("%m-%d-%y")
 
 	def get_date_obj(self):
-		if not self.date_completed:
-			return
 		date_list = self.date_completed.split('-')
 		month = int(date_list[0])
 		day = int(date_list[1])

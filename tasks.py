@@ -16,7 +16,7 @@ class Tasks(tk.Frame):
 
 		self.controller = controller
 		self.selected_task = tk.StringVar()
-		self.selected_task.set("")
+		self.selected_task.set("--")
 		self.draw_window()
 
 	def draw_window(self):
