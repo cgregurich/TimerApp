@@ -20,7 +20,7 @@ class TimerApp(Tk):
 
 
 		self.current_task = StringVar()
-		self.current_task.set("--")
+		self.current_task.set("")
 		self.debug = BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
 

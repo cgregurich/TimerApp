@@ -31,7 +31,7 @@ class MainMenu(Frame):
 		btn_displaydata = ttk.Button(self.frame_buttons, text="Display Data", command=lambda: self.controller.show_frame("DisplayData"))
 		check_debug = Checkbutton(self.frame_buttons, text="DEBUG", variable=self.controller.debug, command=self.check_clicked)
 		lbl_task = Label(self.frame_buttons, text="What are you working on?")
-		self.om_current_task = ttk.OptionMenu(self.frame_buttons, self.controller.current_task, "--",  *taskdao.get_all_tasks())
+		self.om_current_task = ttk.OptionMenu(self.frame_buttons, self.controller.current_task, "",  *taskdao.get_all_tasks())
 
 
 		PADY = 0
