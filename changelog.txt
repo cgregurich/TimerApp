@@ -83,3 +83,7 @@
 9-2-20:
 - Fixed menu (for functionality, not style)
 - Began implementing task search functionality in DisplayData
+9-3-20:
+- Added total time display in DisplayData
+- Added autocomplete search for task in DisplayData
+- Changed default/non-selected task to empty string instead of "--"
