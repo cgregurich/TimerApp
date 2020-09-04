@@ -254,10 +254,7 @@ class Timer(tk.Frame):
 		task = self.controller.get_current_task()
 
 		time_logged = self.get_time_spent_as_seconds()
-		print(f"time_logged: {time_logged}")
-		print(f"task: {task}")
 		session = Session(task, time_logged)
-		print(f"session: {session}")
 		sessiondao.insert_session(session)
 
 			

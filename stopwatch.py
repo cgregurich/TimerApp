@@ -31,18 +31,9 @@ class Stopwatch(tk.Frame):
 		self.frame_timer_display.grid(row=1, column=1)
 		self.frame_buttons.grid(row=2, column=1)
 
-		# Button for testing
-		# tk.Button(self, text="TEST", command=self.test).grid(row=2, column=2)
-
 		self.timer_id = None
 		self.draw_clock()
 
-
-
-	def test(self):
-		"""Method for testing whatever needs to be tested"""
-		print("unbinding i hope")
-		self.controller.unbind('<Return>')
 
 
 

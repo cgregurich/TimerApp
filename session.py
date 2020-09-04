@@ -7,7 +7,6 @@ class Session():
 			cur_time = self.get_current_time()
 			self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
 		else:
-			print("task must not be!!!!\n\n")
 			self.info = { 'task': None, 'time_logged': None, 'time_completed': None, 'date_completed': None}
 
 

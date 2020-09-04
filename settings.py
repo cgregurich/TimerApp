@@ -81,7 +81,6 @@ class Settings(Frame):
 
 	def autosave_clicked(self):
 		self.change_auto_save_mode()
-		print(f"autosave: {self.save_mode}")
 		self.change_auto_save_button()
 	
 
