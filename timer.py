@@ -158,33 +158,33 @@ class Timer(tk.Frame):
 
 	def check_for_weed(self, h, m, s):
 		if h == 420 or m == 420 or s == 420:
-			pygame.mixer.music.load("resources/sounds/weed.mp3")
+			pygame.mixer.music.load("resources/sounds/weed.wav")
 			pygame.mixer.music.play()
 			self.mode = STOPPED
 			return True
 
 		elif h == 4 and m == 20 or m == 4 and s == 20:
-			pygame.mixer.music.load("resources/sounds/weed.mp3")
+			pygame.mixer.music.load("resources/sounds/weed.wav")
 			pygame.mixer.music.play()
 			return True
 			self.mode = STOPPED
 
-		pygame.mixer.music.load("resources/sounds/dingsoundeffect.mp3")
+		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 		return False
 
 
 	def sixty_nine_test(self, h, m, s):
 		if h == 69 or m == 69 or s == 69:
-			pygame.mixer.music.load("resources/sounds/AWWW_F_YEAH.mp3")
+			pygame.mixer.music.load("resources/sounds/AWWW_F_YEAH.wav")
 			pygame.mixer.music.play()
 			return True
 
 		elif h == 6 and m == 9 or m == 6 and s == 9:
-			pygame.mixer.music.load("resources/sounds/AWWW_F_YEAH.mp3")
+			pygame.mixer.music.load("resources/sounds/AWWW_F_YEAH.wav")
 			pygame.mixer.music.play()
 			return True
 
-		pygame.mixer.music.load("resources/sounds/dingsoundeffect.mp3")
+		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 		return False
 
 

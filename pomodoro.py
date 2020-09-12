@@ -20,7 +20,7 @@ class Pomodoro(tk.Frame):
 		
 		self.controller = controller
 		pygame.mixer.init()
-		pygame.mixer.music.load("resources/sounds/dingsoundeffect.mp3")
+		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 
 
 		self.frame_back_button = tk.Frame(self)
@@ -178,9 +178,9 @@ class Pomodoro(tk.Frame):
 
 	def change_sound_file(self):
 		if self.pomo_mode == BREAK:
-			pygame.mixer.music.load("resources/sounds/break_done.mp3")
+			pygame.mixer.music.load("resources/sounds/break_done.wav")
 		elif self.pomo_mode == WORK:
-			pygame.mixer.music.load("resources/sounds/dingsoundeffect.mp3")
+			pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 
 
 
