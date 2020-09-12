@@ -1,0 +1,21 @@
+Writing this down so I don't forget.
+
+How to create an .exe
+
+Command to run for pyinstaller: 
+pyinstaller -F -w --icon "resources/images/icon.ico" --hidden-import "babel.numbers" timerapp.py
+
+What does this mean?
+pyinstaller: use pyinstaller, the tool for packacking the program
+-F: synonymous with --onefile; makes a single .exe
+-w: Makes it so the CMD doesn't pop up when the program is ran
+--icon "icon.ico": Uses the file icon.ico as the icon for the program
+--hidden-import "babel.numbers": Because I don't know how to create a hook file; pyinstaller has an 
+	issue trying to resolve this import (it's used in tkcalendar), so this is a fix
+timerapp.py: which python file to package up
+
+Then copy the resources folder into the dist folder (because I don't know how to tell pyinstaller to
+include it otherwise)
+Then zip up the whole mamma jamma (the dist folder)
+
+Could even use NSIS
