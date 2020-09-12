@@ -17,7 +17,7 @@ class TimerApp(Tk):
 		Tk.__init__(self, *args, **kwargs)
 
 		self.title("Productivity Time")
-
+		self.iconbitmap("resources/images/icon.ico")
 
 		self.current_task = StringVar()
 		self.current_task.set("")
