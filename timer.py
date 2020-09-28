@@ -1,9 +1,11 @@
-import tkinter as tk
+from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
 import storedsettings
 import pygame
+
+from booterwidgets import *
 
 from session import Session
 from sessiondao import SessionDAO
@@ -14,9 +16,9 @@ sessiondao = SessionDAO()
 
 
 
-class Timer(tk.Frame):
+class Timer(Frame):
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
+		Frame.__init__(self, parent)
 
 		pygame.mixer.init()
 
@@ -26,13 +28,13 @@ class Timer(tk.Frame):
 		
 
 		self.mode = STOPPED
-		self.frame_back_button = tk.Frame(self)
+		self.frame_back_button = Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_back_button.grid(row=0, column=0)
-		self.frame_entries = tk.Frame(self, bd=3)
+		self.frame_entries = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_entries.grid(row=0, column=1)
-		self.frame_buttons = tk.Frame(self, bd=3)
+		self.frame_buttons = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_buttons.grid(row=1, column=1)
-		self.frame_timer_display = tk.Frame(self, bd=3)
+		self.frame_timer_display = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_timer_display.grid(row=2, column=1)
 
 
@@ -45,21 +47,22 @@ class Timer(tk.Frame):
 	def draw_clock(self):
 
 		# Create widgets
-		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back = BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
 		btn_back.grid(row=0, column=0)
 
-		self.entry_hours = tk.Entry(self.frame_entries)
-		self.entry_minutes = tk.Entry(self.frame_entries)
-		self.entry_seconds = tk.Entry(self.frame_entries)
+		self.entry_hours = BooterEntry(self.frame_entries)
+		self.entry_minutes = BooterEntry(self.frame_entries)
+		self.entry_seconds = BooterEntry(self.frame_entries)
 
 		self.entries = (self.entry_hours, self.entry_minutes, self.entry_seconds)
 
 
-		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
+		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
 		self.btn_control.bind('enter')
-		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
-
+		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
+		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
+		# Have to config to override default BooterLabel options
+		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
 
 		# Put widgets on frame
 		self.entry_hours.grid(row=0, column=0)
@@ -91,13 +94,13 @@ class Timer(tk.Frame):
 
 	def change_control(self):
 		if self.mode == RUNNING:
-			self.btn_cancel.config(state=tk.NORMAL)
+			self.btn_cancel.config(state=NORMAL)
 			new_control = 'Pause'
 		elif self.mode == PAUSED:
-			self.btn_cancel.config(state=tk.NORMAL)
+			self.btn_cancel.config(state=NORMAL)
 			new_control = 'Resume'
 		elif self.mode == STOPPED:
-			self.btn_cancel.config(state=tk.DISABLED)
+			self.btn_cancel.config(state=DISABLED)
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
@@ -105,10 +108,10 @@ class Timer(tk.Frame):
 	def change_entries_state(self):
 		if self.mode == STOPPED:
 			for e in self.entries:
-				e.config(state=tk.NORMAL)
+				e.config(state=NORMAL)
 		else: # RUNNING or PAUSED
 			for e in self.entries:
-					e.config(state=tk.DISABLED)
+					e.config(state=DISABLED)
 
 
 	def start_timer(self):
@@ -141,9 +144,9 @@ class Timer(tk.Frame):
 		"""Helper method that returns total number of time in seconds"""
 		if not self._is_entered_time_valid():
 			return -1
-		h = tk.IntVar()
-		m = tk.IntVar()
-		s = tk.IntVar()
+		h = IntVar()
+		m = IntVar()
+		s = IntVar()
 		h.set(self.entry_hours.get() or 0)
 		m.set(self.entry_minutes.get() or 0)
 		s.set(self.entry_seconds.get() or 0)
@@ -245,9 +248,9 @@ class Timer(tk.Frame):
 		
 
 		
-		self.entry_hours.delete(0, tk.END)
-		self.entry_minutes.delete(0, tk.END)
-		self.entry_seconds.delete(0, tk.END)
+		self.entry_hours.delete(0, END)
+		self.entry_minutes.delete(0, END)
+		self.entry_seconds.delete(0, END)
 		self._redraw_clock_label(0, 0, 0)
 
 	def save_session(self):
@@ -278,7 +281,7 @@ class Timer(tk.Frame):
 		self.lbl_time.destroy()
 
 	def change_settings(self):
-		self.lbl_time.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
+		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
 

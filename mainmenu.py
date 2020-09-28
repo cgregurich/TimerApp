@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from taskdao import TaskDAO
+from booterwidgets import *
 
 import storedsettings
 
@@ -16,44 +17,53 @@ class MainMenu(Frame):
 		self.ran = False
 		self.mgr = ConfigManager()
 
-		self.frame_buttons = Frame(self)
+		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_buttons.grid(row=0, column=0)
 
 		self.draw_menu()
 
 	def draw_menu(self):
+		BUTTON_WIDTH = 12
+		lbl_task = BooterLabel(self.frame_buttons, text="What are you working on?")
+		lbl_task.bold()
+		self.om_current_task = BooterOptionMenu(self.frame_buttons, self.controller.current_task,  *taskdao.get_all_tasks())
+		# Create dropdown arrow image and apply it
+		self.om_current_task.apply_image()
+
+		btn_settings = BooterButton(self.frame_buttons, text="SETTINGS".title(), command=lambda: self.controller.show_frame('Settings'), width=BUTTON_WIDTH)
+		btn_tasks = BooterButton(self.frame_buttons, text="TASKS".title(), command=lambda: self.controller.show_frame("Tasks"), width=BUTTON_WIDTH)
+		btn_stopwatch = BooterButton(self.frame_buttons, text="STOPWATCH".title(), command=lambda: self.controller.show_frame('Stopwatch'), width=BUTTON_WIDTH)
+		btn_pomo = BooterButton(self.frame_buttons, text="POMODORO".title(), command=lambda: self.controller.show_frame('Pomodoro'), width=BUTTON_WIDTH)
+		btn_timer = BooterButton(self.frame_buttons, text="TIMER".title(), command=lambda: self.controller.show_frame('Timer'), width=BUTTON_WIDTH)
+		btn_displaydata = BooterButton(self.frame_buttons, text="VIEW LOG".title(), command=lambda: self.controller.show_frame('ViewLog'), width=BUTTON_WIDTH)
+		check_debug = BooterCheckbutton(self.frame_buttons, text="DEBUG", variable=self.controller.debug, command=self.check_clicked)
 		
-		btn_settings = ttk.Button(self.frame_buttons, text="Settings", command=lambda: self.controller.show_frame('Settings'))
-		btn_tasks = ttk.Button(self.frame_buttons, text="Tasks", command=lambda: self.controller.show_frame("Tasks"))
-		btn_stopwatch = ttk.Button(self.frame_buttons, text="Stopwatch", command=lambda: self.controller.show_frame('Stopwatch'))
-		btn_pomo = ttk.Button(self.frame_buttons, text="Pomodoro", command=lambda: self.controller.show_frame('Pomodoro'))
-		btn_timer = ttk.Button(self.frame_buttons, text="Timer", command=lambda: self.controller.show_frame('Timer'))
-		btn_displaydata = ttk.Button(self.frame_buttons, text="Display Data", command=lambda: self.controller.show_frame("DisplayData"))
-		check_debug = Checkbutton(self.frame_buttons, text="DEBUG", variable=self.controller.debug, command=self.check_clicked)
-		lbl_task = Label(self.frame_buttons, text="What are you working on?")
-		self.om_current_task = ttk.OptionMenu(self.frame_buttons, self.controller.current_task, "",  *taskdao.get_all_tasks())
 
 
-		PADY = 0
-		btn_settings.grid(row=0, column=0, pady=PADY)
-		btn_tasks.grid(row=1, column=0, pady=PADY)
-		btn_stopwatch.grid(row=2, column=0, pady=PADY)
-		btn_pomo.grid(row=3, column=0, pady=PADY)
-		btn_timer.grid(row=4, column=0, pady=PADY)
-		btn_displaydata.grid(row=5, column=0, pady=PADY)
-		check_debug.grid(row=6, column=0)
-		lbl_task.grid(row=7, column=0)
-		self.om_current_task.grid(row=8, column=1)
-
-
-
+		PADY = 6
+		lbl_task.grid            (row=0, column=0)
+		self.om_current_task.grid(row=1, column=0, pady=(0, PADY*3))
+		
+		btn_tasks.grid           (row=2, column=0, pady=PADY)
+		btn_stopwatch.grid       (row=3, column=0, pady=PADY)
+		btn_pomo.grid            (row=4, column=0, pady=PADY)
+		btn_timer.grid           (row=5, column=0, pady=PADY)
+		btn_displaydata.grid     (row=6, column=0, pady=PADY)
+		btn_settings.grid        (row=7, column=0, pady=PADY)
+		check_debug.grid         (row=8, column=0)
+	
 		self.grid_columnconfigure(0, weight=1) # centers buttons in the frame
-		
+
 		
 	def refresh_option_menu(self):
-		self.om_current_task.destroy()
-		self.om_current_task = ttk.OptionMenu(self, self.controller.current_task, self.controller.current_task.get(),  *taskdao.get_all_tasks())
-		self.om_current_task.grid(row=1, column=0)
+		# self.om_current_task = BooterOptionMenu(self, self.controller.current_task, self.controller.current_task.get(),  *taskdao.get_all_tasks())
+		# self.om_current_task.grid(row=1, column=0)
+		menu = self.om_current_task['menu']
+		menu.delete(0, END)
+		for task in taskdao.get_all_tasks():
+			# Don't really know how this works, but thanks StackOverflow
+			menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))
+
 
 	def check_clicked(self):
 		debug = self.controller.debug.get()

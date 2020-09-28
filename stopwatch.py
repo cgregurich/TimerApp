@@ -1,8 +1,10 @@
-import tkinter as tk
+from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
 import storedsettings
+
+from booterwidgets import *
 
 
 from session import Session
@@ -12,9 +14,9 @@ import datetime
 sessiondao = SessionDAO()
 
 
-class Stopwatch(tk.Frame):
+class Stopwatch(Frame):
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
+		Frame.__init__(self, parent)
 
 		
 		self.controller = controller
@@ -22,9 +24,9 @@ class Stopwatch(tk.Frame):
 		self.mode = STOPPED
 
 		# Create sub-frames
-		self.frame_back_button = tk.Frame(self)
-		self.frame_timer_display = tk.Frame(self)
-		self.frame_buttons = tk.Frame(self)
+		self.frame_back_button = Frame(self)
+		self.frame_timer_display = Frame(self)
+		self.frame_buttons = Frame(self)
 
 		# Put sub-frames on main frame
 		self.frame_back_button.grid(row=0, column=0)
@@ -40,16 +42,22 @@ class Stopwatch(tk.Frame):
 
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
-		btn_back = tk.Button(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back = BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
 		btn_back.grid(row=0, column=0)
 
-		self.lbl_time = tk.Label(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
-		self.btn_cancel = tk.Button(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.cancel_button_clicked)
-		self.btn_control = tk.Button(self.frame_buttons, text='Start', command=self.control_button_clicked)
+		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
+		# Have to config to override default BooterLabel options
+		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
+
+
+
+		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
+		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
 
 		self.lbl_time.grid(row=0, column=0)
 		self.btn_cancel.grid(row=0, column=0)
 		self.btn_control.grid(row=0, column=1)
+
 
 	def cancel_button_clicked(self):
 		"""Prompts user to confirm stopping timer. Displays message and waits
@@ -93,13 +101,13 @@ class Stopwatch(tk.Frame):
 	def change_control(self):
 		"""Changes text of control button based on what current mode is"""
 		if self.mode == RUNNING:
-			self.btn_cancel.config(state=tk.NORMAL)
+			self.btn_cancel.config(state=NORMAL)
 			new_control = 'Pause'
 		elif self.mode == PAUSED:
-			self.btn_cancel.config(state=tk.NORMAL)
+			self.btn_cancel.config(state=NORMAL)
 			new_control = 'Resume'
 		elif self.mode == STOPPED:
-			self.btn_cancel.config(state=tk.DISABLED)
+			self.btn_cancel.config(state=DISABLED)
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
@@ -131,7 +139,7 @@ class Stopwatch(tk.Frame):
 		self.lbl_time.config(text=new_time)
 
 	def change_settings(self):
-		self.lbl_time.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
+		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
 

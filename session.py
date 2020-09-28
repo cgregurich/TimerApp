@@ -1,10 +1,12 @@
 from datetime import datetime
-
+DEFAULT_TASK = "Select..."
 class Session():
 	def __init__(self, task=None, time_logged=None):
 		if time_logged:
 			cur_date = self.get_current_date()
 			cur_time = self.get_current_time()
+			if task == DEFAULT_TASK:
+				task = "N/A"
 			self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
 		else:
 			self.info = { 'task': None, 'time_logged': None, 'time_completed': None, 'date_completed': None}

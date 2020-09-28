@@ -5,8 +5,9 @@ from stopwatch import Stopwatch
 from pomodoro import Pomodoro
 from settings import Settings
 from tasks import Tasks
-from displaydata import DisplayData
+from viewlog import ViewLog
 from configmanager import ConfigManager
+import storedsettings
 
 
 
@@ -19,11 +20,12 @@ class TimerApp(Tk):
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
 
+
 		self.current_task = StringVar()
-		self.current_task.set("")
+		self.current_task.set("Select...")
 		self.debug = BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
-
+		self.configure(bg="red")
 		
 
 		container = Frame(self)
@@ -38,7 +40,7 @@ class TimerApp(Tk):
 
 
 		for gui_class in (MainMenu, Timer, Stopwatch, Pomodoro, 
-			Settings, Tasks, DisplayData):
+			Settings, Tasks, ViewLog):
 			frame = gui_class(container, self)
 
 			self.frames[gui_class.__name__] = frame
@@ -50,7 +52,9 @@ class TimerApp(Tk):
 
 
 	def show_frame(self, gui_class):
+		
 		frame = self.frames[gui_class]
+		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
 		self.change_bindings(gui_class, frame)
 		frame.reset()
 		frame.tkraise()

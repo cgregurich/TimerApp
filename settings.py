@@ -5,6 +5,17 @@ import storedsettings
 from tkinter import colorchooser
 from configmanager import ConfigManager
 
+from booterwidgets import *
+
+
+
+from tkinter import *
+from tkinter import ttk
+from locals import *
+import storedsettings
+from tkinter import colorchooser
+from configmanager import ConfigManager
+
 class Settings(Frame):
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
@@ -12,11 +23,11 @@ class Settings(Frame):
 		self.mgr = ConfigManager()
 		
 
-		self.frame_settings = Frame(self)
+		self.frame_settings = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
-		self.frame_labels = Frame(self.frame_settings)
-		self.frame_options = Frame(self.frame_settings)
-		self.frame_example = Frame(self)
+		self.frame_labels = Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_options = Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_example = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
 		self.frame_settings.grid(row=1, column=1)
 
@@ -43,33 +54,38 @@ class Settings(Frame):
 	def draw_window(self):
 		PADY = 5
 
-		ttk.Button(self, text="Back", command=self.back_clicked).grid(row=0, column=0)
+		BooterButton(self, text="Back", command=self.back_clicked).grid(row=0, column=0)
 
-		# Labels for what each setting is for
-		Label(self.frame_labels, text="Background").grid(row=0, column=0, pady=PADY)
-		Label(self.frame_labels, text="Foreground").grid(row=1, column=0, pady=PADY)
-		Label(self.frame_labels, text="Pomo Work Time").grid(row=3, column=0, pady=PADY)
-		Label(self.frame_labels, text="Pomo Break Time").grid(row=4, column=0, pady=PADY)
-		Label(self.frame_labels, text="Time Autosave").grid(row=5, column=0, pady=PADY)
+		# BooterLabels for what each setting is for
+		BooterLabel(self.frame_labels, text="Clock Color").grid(row=1, column=0, pady=PADY)
+		BooterLabel(self.frame_labels, text="Pomo Work Time").grid(row=3, column=0, pady=PADY)
+		BooterLabel(self.frame_labels, text="Pomo Break Time").grid(row=4, column=0, pady=PADY)
+		BooterLabel(self.frame_labels, text="Time Autosave").grid(row=5, column=0, pady=PADY)
 
 		# Colored buttons for changing clock colors
 		self.btn_fg = Button(self.frame_options, bg=storedsettings.CLOCK_FG, width=3, command=lambda: self.change_color("fg"))
-		self.btn_bg = Button(self.frame_options, bg=storedsettings.CLOCK_BG, width=3, command=lambda: self.change_color("bg"))
+		
 
-
-		self.btn_save_op = ttk.Button(self.frame_options, width=10, text=self.save_mode.upper(), command=self.autosave_clicked)
-		self.btn_bg.grid(row=0, column=0, pady=PADY)
+		print(f"self.save_mode: {self.save_mode}")
+		print(f"type(self.save_mode): {type(self.save_mode)}")
+		self.btn_save_op = BooterButton(self.frame_options, width=10, text=self.save_mode.upper(), command=self.autosave_clicked)
+		self.btn_save_op.config(height=1)
 		self.btn_fg.grid(row=1, column=0, pady=PADY)
 		self.btn_save_op.grid(row=4, column=0, pady=PADY)
 
 
 		# Example clock to show how chosen colors will look
-		self.lbl_clock = Label(self.frame_example, text="12:34:56", fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG, font=storedsettings.CLOCK_FONT)
+		print(f"clock: {storedsettings.CLOCK_FG}")
+		self.lbl_clock = BooterLabel(self.frame_example, text="12:34:56")
+		# Have to config to override default BooterLabel options
+		self.lbl_clock.config(font=storedsettings.CLOCK_FONT_TUPLE)
 		self.lbl_clock.grid(row=3, column=0, sticky="N")
+		# Need to config after init since BooterLabels have default colors set at initialization
+		self.lbl_clock.config(fg=storedsettings.CLOCK_FG)
 
 		# Create Entries for pomo work and break times
-		self.entry_pomo_work = ttk.Entry(self.frame_options)
-		self.entry_pomo_break = ttk.Entry(self.frame_options)
+		self.entry_pomo_work = BooterEntry(self.frame_options)
+		self.entry_pomo_break = BooterEntry(self.frame_options)
 		# Clears current info and inserts saved settings, displayed as minutes
 		self.entry_pomo_work.delete(0, END)
 		self.entry_pomo_break.delete(0, END)
@@ -124,20 +140,16 @@ class Settings(Frame):
 		if None in color:
 			return
 		
-		if option == "fg":
-			# saves color to usersettings.ini
-			self.mgr.change_setting('CLOCK_FG', color[1])
-			# immediately changes value in storedsettings so clock's change color
-			storedsettings.CLOCK_FG = color[1]
-			self.btn_fg.config(bg=color[1])
-		elif option == "bg":
-			self.mgr.change_setting('CLOCK_BG', color[1])
-			storedsettings.CLOCK_BG = color[1]
-			self.btn_bg.config(bg=color[1])
+
+		# saves color to usersettings.ini
+		self.mgr.change_setting('CLOCK_FG', color[1])
+		# immediately changes value in storedsettings so clock's change color
+		storedsettings.CLOCK_FG = color[1]
+		self.btn_fg.config(bg=color[1])
 		self.redraw_timer()
 
 	def redraw_timer(self):
-		self.lbl_clock.config(fg=storedsettings.CLOCK_FG, bg=storedsettings.CLOCK_BG)
+		self.lbl_clock.config(fg=storedsettings.CLOCK_FG)
 
 		
 

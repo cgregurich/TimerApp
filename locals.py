@@ -9,17 +9,15 @@ AUTOMATIC = "automatic"
 WORK = "work"
 BREAK = "break"
 
-#constants for autosave options
+# Constants for autosave options
 
 OFF = 'off'
 ON = 'on'
 AUTOSAVE = 'AUTOSAVE'
 
-# constants for DisplayData
+# Constants for DisplayData
 DAY = "day"
 WEEK = "week"
 MONTH = "month"
 TASK = "task"
 
-# FONTS
-MONOSPACED = ("Consolas", 10)

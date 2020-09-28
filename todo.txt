@@ -1,5 +1,41 @@
 todo (recent at top):
 
+****Get a border around data in View Log!!!*********
+
+WHERE I LEFT OFF:
+idk i got a lot of stuff done and didn't feel like I ended in the middle of anything. obv need to figure out proper frames 
+and not allowing resizing or something?? make log scrollbar not buggy and gay
+change fonts for entries
+organize entries, eg. in timer
+organize shit in settings menu
+change button sizes (eg. on/off in settings; back buttons)
+make clocks bigger in all sections
+make total section of log not such a cesspool
+DESIGN ISSUE TO PONDER: the autocomplete search box only searches current tasks; delete tasks won't show up even though they still exist
+	within the log
+
+remove all yer fackin print statements ya twat
+
+BUG: Double error message when timer input is invalid
+BUG: when auto save is off, when the timer (and maybe pomo) ends, there is still 1 second on the clock when the prompt shows up
+BUG: Should probably fix how shit the scrollbar is; scrolls when youre not in the log; scrolls when there's not enough data being displayed
+	to warrant a scrollable frame
+
+organize stored settings module; I have both user-editable settings and "under the hood settings"; separate them and comment 
+
+
+THERES SOME GOOD IDEAS HERE BOI I TELL U HWHATs
+finish implementing booter widgets
+change size of timer control buttons and back buttons??
+make buttons correct when hovering, clicking
+figure out dynamic resizing
+maybe change how buttons look when you click them? not too bad right now but something to consider
+make settings a cog instead a huge settings buttons
+in pomo, make button be "skip break" instead of "change pomo mode"???
+format the timers so the timer is kind of in its own space, not scrunched next to buttons
+reference reddit post and make .exe not super slow
+
+
 
 
 HAVENT PUSHED:

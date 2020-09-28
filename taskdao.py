@@ -28,10 +28,10 @@ class TaskDAO():
 			self.c.execute("""DELETE FROM tasks WHERE task=?""", (task,))
 
 	def get_all_tasks(self):
-		"""Returns a list of all tasks as lower case strings"""
+		"""Returns a list of all tasks as strings"""
 		with self.conn:
 			self.c.execute("""SELECT * FROM tasks""")
 			tasks = self.c.fetchall()
 
-		tasks = [i[0].lower() for i in tasks]
+		tasks = [i[0] for i in tasks]
 		return tasks
