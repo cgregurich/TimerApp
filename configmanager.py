@@ -17,7 +17,10 @@ class ConfigManager(configparser.ConfigParser):
 	def create_config_file(self):
 		self['SETTINGS'] = {
 			'CLOCK_FG': '#000000',
-			'CLOCK_BG': '#DDDDDD',
+			'APP_MAIN_COLOR': '#FFFFFF',
+			'APP_WIDGET_COLOR': '#FFFFFF',
+			'APP_FONT_COLOR': '#000000',
+			'HOVER_COLOR': '#FFEAB3',
 			# Pomo times are in seconds
 			'POMO_WORK_TIME': '1500', # aka 25 minutes
 			'POMO_BREAK_TIME': '300', # aka 5 minutes
