@@ -49,8 +49,9 @@ class ViewLog(Frame):
 		self.draw_window()
 
 	def draw_window(self):
-		btn_back = BooterButton(self.frame_controls, text="Back", command=lambda: self.controller.show_frame("MainMenu"))
+		btn_back = BooterButton(self.frame_controls, command=lambda: self.controller.show_frame("MainMenu"))
 		btn_back.grid(row=0, column=0)
+		btn_back.apply_back_image()
 
 
 		# FRAME CONTROLS
@@ -379,3 +380,4 @@ class ViewLog(Frame):
 
 	def reset(self):
 		self.draw_sessions()
+		self.controller.geometry(storedsettings.VIEWLOG_WIN_SIZE)

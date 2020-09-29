@@ -23,19 +23,23 @@ class Timer(Frame):
 		pygame.mixer.init()
 
 		self.controller = controller
-		
 
-		
+		self.frame_back_button = Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_entries = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_buttons = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_timer_display = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 
 		self.mode = STOPPED
-		self.frame_back_button = Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
+
+		self.frame_timer_display.grid(row=0, column=1)
+		
 		self.frame_back_button.grid(row=0, column=0)
-		self.frame_entries = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_entries.grid(row=0, column=1)
-		self.frame_buttons = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_buttons.grid(row=1, column=1)
-		self.frame_timer_display = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_timer_display.grid(row=2, column=1)
+		
+		self.frame_entries.grid(row=1, column=1)
+		
+		self.frame_buttons.grid(row=2, column=1)
+		
+		
 
 
 		self.end_type = None
@@ -49,10 +53,16 @@ class Timer(Frame):
 		# Create widgets
 		btn_back = BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
 		btn_back.grid(row=0, column=0)
+		btn_back.apply_back_image()
 
-		self.entry_hours = BooterEntry(self.frame_entries)
-		self.entry_minutes = BooterEntry(self.frame_entries)
-		self.entry_seconds = BooterEntry(self.frame_entries)
+
+		self.entry_hours = BooterEntry(self.frame_entries, width=4)
+
+		# Create two labels for the colons between the entries
+		colon_lbls = [BooterLabel(self.frame_entries, text=":") for i in range(2)]
+		
+		self.entry_minutes = BooterEntry(self.frame_entries, width=4)
+		self.entry_seconds = BooterEntry(self.frame_entries, width=4)
 
 		self.entries = (self.entry_hours, self.entry_minutes, self.entry_seconds)
 
@@ -65,14 +75,19 @@ class Timer(Frame):
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
 
 		# Put widgets on frame
-		self.entry_hours.grid(row=0, column=0)
-		self.entry_minutes.grid(row=0, column=1)
-		self.entry_seconds.grid(row=0, column=2)
-
-		self.btn_cancel.grid(row=0, column=0, padx=(0, 10))
-		self.btn_control.grid(row=0, column=1)
-
 		self.lbl_time.grid(row=0, column=0)
+		self.entry_hours.grid(row=1, column=1)
+		colon_lbls[0].grid(row=1, column=2)
+		self.entry_minutes.grid(row=1, column=3)
+		colon_lbls[1].grid(row=1, column=4)
+		self.entry_seconds.grid(row=1, column=5)
+
+		
+
+		self.btn_cancel.grid(row=2, column=0, padx=(0, 10))
+		self.btn_control.grid(row=2, column=1)
+
+	
 
 
 
@@ -271,15 +286,6 @@ class Timer(Frame):
 		self.lbl_time.config(text=new_time)
 
 
-	# THIS ISN'T EVEN USED ANYWHERE???????????
-	def destroy_widgets(self):
-		self.entry_hours.destroy()
-		self.entry_minutes.destroy()
-		self.entry_seconds.destroy()
-		self.btn_control.destroy()
-		self.btn_cancel.destroy()
-		self.lbl_time.destroy()
-
 	def change_settings(self):
 		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
@@ -311,6 +317,7 @@ class Timer(Frame):
 
 	def reset(self):
 		self.change_settings()
+		self.controller.geometry(storedsettings.TIMER_WIN_SIZE)
 
 
 

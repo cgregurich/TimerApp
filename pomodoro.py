@@ -45,7 +45,9 @@ class Pomodoro(Frame):
 
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
-		BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu')).grid(row=0, column=0)
+		btn_back = BooterButton(self.frame_back_button, command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back.grid(row=0, column=0)
+		btn_back.apply_back_image()
 
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00', fg=storedsettings.CLOCK_FG)
 		# Have to config to override default BooterLabel options
@@ -163,6 +165,7 @@ class Pomodoro(Frame):
 
 	def reset(self):
 		self.change_settings()
+		self.controller.geometry(storedsettings.POMO_WIN_SIZE)
 
 
 	def reset_timer(self):

@@ -21,8 +21,9 @@ class Tasks(Frame):
 		self.draw_window()
 
 	def draw_window(self):
-		back_button = BooterButton(self, text='Back', command=lambda: self.controller.show_frame('MainMenu'))
-		back_button.grid(row=0, column=0)
+		btn_back = BooterButton(self, command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back.grid(row=0, column=0)
+		btn_back.apply_back_image()
 
 		self.entry_task = BooterEntry(self)
 		self.entry_task.grid(row=1, column=1)
@@ -103,7 +104,7 @@ class Tasks(Frame):
 	def refresh_task_menu(self):
 		menu = self.om_tasks['menu']
 		tasks = taskdao.get_all_tasks()
-		
+		menu.delete(0, END)
 		# No tasks -> create unselectable item indicating no tasks have been added
 		if not tasks:
 			menu.add_command(label="No Tasks")
@@ -112,8 +113,6 @@ class Tasks(Frame):
 
 		# Tasks exist -> clear the list, get all tasks from DB, draw them to the menu
 		else:
-			
-			menu.delete(0, END)
 			for task in tasks:
 				menu.add_command(label=task, command=lambda value=task: self.selected_task.set(value))
 		# Set prompt text
@@ -129,3 +128,4 @@ class Tasks(Frame):
 
 	def reset(self):
 		self.refresh_task_menu()
+		self.controller.geometry(storedsettings.TASKS_WIN_SIZE)

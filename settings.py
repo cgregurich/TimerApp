@@ -31,10 +31,6 @@ class Settings(Frame):
 
 		self.frame_settings.grid(row=1, column=1)
 
-
-
-
-
 		self.frame_labels.grid(row=1, column=1)
 		self.frame_options.grid(row=1, column=2)
 		self.frame_example.grid(row=0, column=1)
@@ -54,7 +50,9 @@ class Settings(Frame):
 	def draw_window(self):
 		PADY = 5
 
-		BooterButton(self, text="Back", command=self.back_clicked).grid(row=0, column=0)
+		btn_back = BooterButton(self, command=self.back_clicked)
+		btn_back.grid(row=0, column=0)
+		btn_back.apply_back_image()
 
 		# BooterLabels for what each setting is for
 		BooterLabel(self.frame_labels, text="Clock Color").grid(row=1, column=0, pady=PADY)
@@ -154,4 +152,4 @@ class Settings(Frame):
 		
 
 	def reset(self):
-		pass
+		self.controller.geometry(storedsettings.SETTINGS_WIN_SIZE)

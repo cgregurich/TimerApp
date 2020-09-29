@@ -52,7 +52,7 @@ class TimerApp(Tk):
 
 
 	def show_frame(self, gui_class):
-		
+		print(f"current winsize: {self.geometry()}")
 		frame = self.frames[gui_class]
 		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
 		self.change_bindings(gui_class, frame)
@@ -67,8 +67,6 @@ class TimerApp(Tk):
 		elif gui_class in self.clocks:
 			self.bind('<Return>', frame.control_button_clicked)
 
-
-# NEED TO IMPLEMENT GRABBING CURRENTLY SELECT TASK!!!!!!!
 
 	def get_current_task(self):
 		return self.current_task.get()

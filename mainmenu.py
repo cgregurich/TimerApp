@@ -33,6 +33,7 @@ class MainMenu(Frame):
 		self.om_current_task['menu'].delete(0, END)
 
 		btn_settings = BooterButton(self.frame_buttons, text="SETTINGS".title(), command=lambda: self.controller.show_frame('Settings'), width=BUTTON_WIDTH)
+		btn_settings.apply_settings_image()
 		btn_tasks = BooterButton(self.frame_buttons, text="TASKS".title(), command=lambda: self.controller.show_frame("Tasks"), width=BUTTON_WIDTH)
 		btn_stopwatch = BooterButton(self.frame_buttons, text="STOPWATCH".title(), command=lambda: self.controller.show_frame('Stopwatch'), width=BUTTON_WIDTH)
 		btn_pomo = BooterButton(self.frame_buttons, text="POMODORO".title(), command=lambda: self.controller.show_frame('Pomodoro'), width=BUTTON_WIDTH)
@@ -60,12 +61,13 @@ class MainMenu(Frame):
 	def refresh_option_menu(self):
 		menu = self.om_current_task['menu']
 		tasks = taskdao.get_all_tasks()
+		menu.delete(0, END)
 		if not tasks:
 			menu.add_command(label="No Tasks")
 
 		else:
 			
-			menu.delete(0, END)
+			
 			for task in tasks:
 				menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))
 
@@ -83,3 +85,4 @@ class MainMenu(Frame):
 
 	def reset(self):
 		self.refresh_option_menu()
+		self.controller.geometry(storedsettings.MAINMENU_WIN_SIZE)

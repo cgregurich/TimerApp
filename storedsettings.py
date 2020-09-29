@@ -13,11 +13,14 @@ CLOCK_FONT = ('Consolas', 24, 'bold')
 MONOSPACED = ("Consolas", 10)
 
 FONT = "Orator STD"
+BACK_FONT_SIZE = 10
 # CLOCK_FONT = "Bahnschrift Light"
 CLOCK_FONT = "Consolas"
 
 CLOCK_FONT_SIZE = 24
 CLOCK_FONT_TUPLE = ("Consolas", CLOCK_FONT_SIZE, "bold")
+
+ENTRY_FONT_TUPLE = (FONT, 14)
 
 DROPDOWN_FONT = ('Orator STD', 14)
 
@@ -51,6 +54,17 @@ APP_FONT_COLOR = mgr.get("SETTINGS", "APP_FONT_COLOR")
 
 HOVER_COLOR = mgr.get("SETTINGS", "HOVER_COLOR")
 DISABLED_FONT_COLOR = "#C1C1C1"
+
+
+
+# Window sizes for all frames
+STOPWATCH_WIN_SIZE =     "300x300"
+TIMER_WIN_SIZE =         "300x300"
+POMO_WIN_SIZE =          "300x300"
+SETTINGS_WIN_SIZE =      "300x300"
+TASKS_WIN_SIZE =         "300x300"
+VIEWLOG_WIN_SIZE =       "300x300"
+MAINMENU_WIN_SIZE =      "300x520"
 
 
 

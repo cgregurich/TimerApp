@@ -42,8 +42,13 @@ class Stopwatch(Frame):
 
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
-		btn_back = BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back = BooterButton(self.frame_back_button, command=lambda: self.controller.show_frame('MainMenu'))
 		btn_back.grid(row=0, column=0)
+		# btn_back.config(font=(storedsettings.FONT, storedsettings.BACK_FONT_SIZE))
+		btn_back.apply_back_image()
+
+
+
 
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
 		# Have to config to override default BooterLabel options
@@ -145,6 +150,7 @@ class Stopwatch(Frame):
 
 	def reset(self):
 		self.change_settings()
+		self.controller.geometry(storedsettings.STOPWATCH_WIN_SIZE)
 
 
 	def get_time_spent_formatted(self):
