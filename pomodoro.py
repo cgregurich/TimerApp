@@ -56,11 +56,11 @@ class Pomodoro(Frame):
 		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
 
 		self.lbl_time.grid(row=0, column=0)
-		self.btn_cancel.grid(row=0, column=0)
+		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
 		self.btn_control.grid(row=0, column=1)
 
 		# button for testing
-		BooterButton(self, text="Change pomo mode", command=self.change_pomo_mode).grid(row=3, column=0)
+		# BooterButton(self, text="Change pomo mode", command=self.change_pomo_mode).grid(row=3, column=0)
 
 
 
@@ -98,19 +98,26 @@ class Pomodoro(Frame):
 
 
 	def change_control(self):
+		# Switch from break to work or vice versa, 
+		# change text of cancel button
 		if self.pomo_mode == BREAK:
 			self.btn_cancel.config(text="Skip")
 		else:
 			self.btn_cancel.config(text="Cancel")
+
+		# Change state of cancel button and
+		# change text of control button
 		if self.mode == RUNNING:
-			
 			self.btn_cancel.config(state=NORMAL)
 			new_control = 'Pause'
 		elif self.mode == PAUSED:
 			self.btn_cancel.config(state=NORMAL)
 			new_control = 'Resume'
 		elif self.mode == STOPPED:
-			self.btn_cancel.config(state=DISABLED)
+			if self.pomo_mode == BREAK:
+				self.btn_cancel.config(state=NORMAL)
+			else:
+				self.btn_cancel.config(state=DISABLED)
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
