@@ -2,6 +2,13 @@ todo (recent at top):
 
 ****Get a border around data in View Log!!!*********
 
+BUG: when you're in the timer entry (or any entry) and go to a different frame and type
+that keyboard input is sent to the last active entry
+
+** -Change pomo break noise back to ding
+
+- Make "skip break" in pomo clickable when timer isn't running??
+
 - Add ALL option to view log
 
 - figure out proper frames -- includes all organization of program, shifting widgets
