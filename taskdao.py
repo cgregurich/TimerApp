@@ -35,3 +35,8 @@ class TaskDAO():
 
 		tasks = [i[0] for i in tasks]
 		return tasks
+
+	def get_all_tasks_lower(self):
+		tasks = self.get_all_tasks()
+		lower_tasks = [task.lower() for task in tasks]
+		return lower_tasks
