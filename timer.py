@@ -24,6 +24,7 @@ class Timer(Frame):
 
 		self.controller = controller
 
+
 		self.frame_back_button = Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_entries = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_buttons = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
@@ -31,13 +32,15 @@ class Timer(Frame):
 
 		self.mode = STOPPED
 
-		self.frame_timer_display.grid(row=0, column=1)
-		
 		self.frame_back_button.grid(row=0, column=0)
+
+		self.frame_timer_display.grid(row=1, column=1)
 		
-		self.frame_entries.grid(row=1, column=1)
 		
-		self.frame_buttons.grid(row=2, column=1)
+		
+		self.frame_entries.grid(row=2, column=1)
+		
+		self.frame_buttons.grid(row=3, column=1)
 		
 		
 
