@@ -33,26 +33,31 @@ class Tasks(Frame):
 
 	
 		tasks = taskdao.get_all_tasks()
-		if not tasks:
-			tasks = ["No tasks"]
-		
 	
-		self.om_tasks = BooterOptionMenu(self, self.selected_task, *tasks)
-		self.om_tasks.apply_image()
-			
+		# Init's OptionMenu; this is never seen because refresh_task_menu is called
+		# when Tasks is clicked on for the first time	
+		self.om_tasks = BooterOptionMenu(self, self.selected_task, None)
+		self.om_tasks['menu'].delete(0)
 
 		self.om_tasks.grid(row=2, column=1)
-		btn_del = BooterButton(self, text="Delete", command=self.del_clicked)
-		btn_del.grid(row=3, column=1)
+		self.btn_del = BooterButton(self, text="Delete", command=self.del_clicked)
+		self.btn_del.grid(row=3, column=1)
+
 
 
 	def del_clicked(self):
 		task = self.selected_task.get()
 		if task == "No tasks":
 			return
+		tasks = taskdao.get_all_tasks_lower()
+		index = tasks.index(task.lower())
+		self.delete_task(index)
 		taskdao.delete_task(task)
 		self.refresh_task_menu()
-		self.selected_task.set("")
+
+	def delete_task(self, index):
+		"""Deletes task from OptionMenu using item's index"""
+		self.om_tasks['menu'].delete(index)
 
 
 
@@ -66,7 +71,8 @@ class Tasks(Frame):
 		self.entry_task.delete(0, 
 			END)
 		self.selected_task.set("")
-
+		# Since an item has been added, enable delete button
+		self.btn_del.config(state=NORMAL)
 		self.refresh_task_menu()
 
 	def is_task_entered_valid(self):
@@ -74,34 +80,52 @@ class Tasks(Frame):
 
 		# Check length of task
 		if len(task) > 15:
-			messagebox.showerror("Error", f"Maximum task name length of 15 characters")
+			messagebox.showerror("Error", "Maximum task name length of 15 characters")
 			return False
 
-		if not self.is_task_unique(task) or not task:
+
+		# Check for duplicates
+		if not self.is_task_unique(task):
 			messagebox.showerror("Error", f"There is already a task called '{task}'")
 			return False
-		else:
-			return True
+
+		# Check for blank entry
+		if not task:
+			messagebox.showerror("Error", "Task name can't be blank")
+			return False
+
+		# Check for reserved string "No Tasks"
+		if task.lower() == "no tasks":
+			messagebox.showerror("Error", "Invalid name")
+			return False
+		return True
 
 	def refresh_task_menu(self):
-		self.om_tasks.destroy()
-		all_tasks = taskdao.get_all_tasks()
-		if not all_tasks:
-			all_tasks = ["No tasks"]
-		self.om_tasks = BooterOptionMenu(self, self.selected_task, *all_tasks)
-		self.om_tasks.grid(row=2, column=1)
+		menu = self.om_tasks['menu']
+		tasks = taskdao.get_all_tasks()
 		
+		# No tasks -> create unselectable item indicating no tasks have been added
+		if not tasks:
+			menu.add_command(label="No Tasks")
+			# Since no items exist, disable delete button
+			self.btn_del.config(state=DISABLED)
+
+		# Tasks exist -> clear the list, get all tasks from DB, draw them to the menu
+		else:
+			
+			menu.delete(0, END)
+			for task in tasks:
+				menu.add_command(label=task, command=lambda value=task: self.selected_task.set(value))
+		# Set prompt text
+		self.selected_task.set("Select...")
+
+		
+
 
 	def is_task_unique(self, task):
-		return task.lower() not in taskdao.get_all_tasks()
-		
-
-
-
+		return task.lower() not in taskdao.get_all_tasks_lower()
 
 
 
 	def reset(self):
-		pass
-
-
+		self.refresh_task_menu()
