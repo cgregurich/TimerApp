@@ -60,7 +60,7 @@ class Stopwatch(Frame):
 		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
 
 		self.lbl_time.grid(row=0, column=0)
-		self.btn_cancel.grid(row=0, column=0)
+		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
 		self.btn_control.grid(row=0, column=1)
 
 
