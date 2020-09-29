@@ -57,6 +57,11 @@ class BooterButton(Button):
 	def change_bg(self, color):
 		self.config(bg=color)
 
+	def disable_hover(self):
+		self.unbind("<Enter>")
+		self.unbind("<Leave>")
+
+
 	def bold(self):
 		self.config(font=(storedsettings.FONT, self.FONT_SIZE, "bold"))
 
@@ -154,6 +159,7 @@ class BooterOptionMenu(OptionMenu):
 		self.config(highlightthickness=0)
 
 		self.config(font=(storedsettings.FONT, 13))
+		self.apply_image()
 
 
 	def change_fg(self, color):
