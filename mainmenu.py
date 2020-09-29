@@ -26,9 +26,11 @@ class MainMenu(Frame):
 		BUTTON_WIDTH = 12
 		lbl_task = BooterLabel(self.frame_buttons, text="What are you working on?")
 		lbl_task.bold()
-		self.om_current_task = BooterOptionMenu(self.frame_buttons, self.controller.current_task,  *taskdao.get_all_tasks())
-		# Create dropdown arrow image and apply it
-		self.om_current_task.apply_image()
+
+		# None is used as a dummy value; this version of the OM is never seen, just used as initialization
+		self.om_current_task = BooterOptionMenu(self.frame_buttons, self.controller.current_task, None)
+		# Clears the blank space created by dummy data None
+		self.om_current_task['menu'].delete(0, END)
 
 		btn_settings = BooterButton(self.frame_buttons, text="SETTINGS".title(), command=lambda: self.controller.show_frame('Settings'), width=BUTTON_WIDTH)
 		btn_tasks = BooterButton(self.frame_buttons, text="TASKS".title(), command=lambda: self.controller.show_frame("Tasks"), width=BUTTON_WIDTH)
@@ -56,13 +58,17 @@ class MainMenu(Frame):
 
 		
 	def refresh_option_menu(self):
-		# self.om_current_task = BooterOptionMenu(self, self.controller.current_task, self.controller.current_task.get(),  *taskdao.get_all_tasks())
-		# self.om_current_task.grid(row=1, column=0)
 		menu = self.om_current_task['menu']
-		menu.delete(0, END)
-		for task in taskdao.get_all_tasks():
-			# Don't really know how this works, but thanks StackOverflow
-			menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))
+		tasks = taskdao.get_all_tasks()
+		if not tasks:
+			menu.add_command(label="No Tasks")
+
+		else:
+			
+			menu.delete(0, END)
+			for task in tasks:
+				menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))
+
 
 
 	def check_clicked(self):
@@ -77,6 +83,3 @@ class MainMenu(Frame):
 
 	def reset(self):
 		self.refresh_option_menu()
-		
-
-
