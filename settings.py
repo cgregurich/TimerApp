@@ -63,11 +63,11 @@ class Settings(Frame):
 		BooterLabel(self.frame_labels, text="Time Autosave").grid(row=5, column=0, pady=PADY)
 
 		# Colored buttons for changing clock colors
-		self.btn_fg = Button(self.frame_options, bg=storedsettings.CLOCK_FG, width=3, command=lambda: self.change_color("fg"))
+		self.btn_fg = BooterButton(self.frame_options, command=lambda: self.change_color("fg"))
+		self.btn_fg.config(bg=storedsettings.CLOCK_FG, width=3, height=1)
+		self.btn_fg.disable_hover()
 		
 
-		print(f"self.save_mode: {self.save_mode}")
-		print(f"type(self.save_mode): {type(self.save_mode)}")
 		self.btn_save_op = BooterButton(self.frame_options, width=10, text=self.save_mode.upper(), command=self.autosave_clicked)
 		self.btn_save_op.config(height=1)
 		self.btn_fg.grid(row=1, column=0, pady=PADY)
