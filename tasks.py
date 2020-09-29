@@ -25,7 +25,7 @@ class Tasks(Frame):
 		btn_back.grid(row=0, column=0)
 		btn_back.apply_back_image()
 
-		self.entry_task = BooterEntry(self)
+		self.entry_task = BooterEntry(self, width=16)
 		self.entry_task.grid(row=1, column=1)
 
 		btn_add = BooterButton(self, text="Add", command=self.add_clicked)
