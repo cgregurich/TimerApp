@@ -1,5 +1,9 @@
 from configmanager import ConfigManager
 
+import pyglet, os
+
+pyglet.font.add_file('OratorSTD.otf')
+
 
 mgr = ConfigManager()
 
