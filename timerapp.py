@@ -55,6 +55,7 @@ class TimerApp(Tk):
 		print(f"current winsize: {self.geometry()}")
 		frame = self.frames[gui_class]
 		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
+		print()
 		self.change_bindings(gui_class, frame)
 		frame.reset()
 		frame.tkraise()

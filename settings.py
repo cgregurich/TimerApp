@@ -73,7 +73,7 @@ class Settings(Frame):
 
 
 		# Example clock to show how chosen colors will look
-		print(f"clock: {storedsettings.CLOCK_FG}")
+		
 		self.lbl_clock = BooterLabel(self.frame_example, text="12:34:56")
 		# Have to config to override default BooterLabel options
 		self.lbl_clock.config(font=storedsettings.CLOCK_FONT_TUPLE)

@@ -24,9 +24,9 @@ class Stopwatch(Frame):
 		self.mode = STOPPED
 
 		# Create sub-frames
-		self.frame_back_button = Frame(self)
-		self.frame_timer_display = Frame(self)
-		self.frame_buttons = Frame(self)
+		self.frame_back_button = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_timer_display = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
 		# Put sub-frames on main frame
 		self.frame_back_button.grid(row=0, column=0)

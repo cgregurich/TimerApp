@@ -15,6 +15,8 @@ class Tasks(Frame):
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
 
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
+
 		self.controller = controller
 		self.selected_task = StringVar()
 		self.selected_task.set("Select...")
@@ -29,7 +31,7 @@ class Tasks(Frame):
 		self.entry_task.grid(row=1, column=1)
 
 		btn_add = BooterButton(self, text="Add", command=self.add_clicked)
-		btn_add.grid(row=1, column=2)
+		btn_add.grid(row=1, column=2, padx=(10, 0))
 
 
 	
@@ -40,9 +42,9 @@ class Tasks(Frame):
 		self.om_tasks = BooterOptionMenu(self, self.selected_task, None)
 		self.om_tasks['menu'].delete(0)
 
-		self.om_tasks.grid(row=2, column=1)
+		self.om_tasks.grid(row=2, column=1, pady=(20, 0))
 		self.btn_del = BooterButton(self, text="Delete", command=self.del_clicked)
-		self.btn_del.grid(row=3, column=1)
+		self.btn_del.grid(row=3, column=1, pady=(10, 0))
 
 
 

@@ -2,7 +2,7 @@ from configmanager import ConfigManager
 
 import pyglet, os
 
-pyglet.font.add_file('OratorSTD.otf')
+pyglet.font.add_file('resources/fonts/OratorSTD.otf')
 
 
 mgr = ConfigManager()
@@ -65,9 +65,9 @@ DISABLED_FONT_COLOR = "#C1C1C1"
 STOPWATCH_WIN_SIZE =     "300x300"
 TIMER_WIN_SIZE =         "300x300"
 POMO_WIN_SIZE =          "300x300"
-SETTINGS_WIN_SIZE =      "300x300"
-TASKS_WIN_SIZE =         "300x300"
-VIEWLOG_WIN_SIZE =       "300x300"
+SETTINGS_WIN_SIZE =      "480x300"
+TASKS_WIN_SIZE =         "320x300"
+VIEWLOG_WIN_SIZE =       "470x300"
 MAINMENU_WIN_SIZE =      "300x520"
 
 
