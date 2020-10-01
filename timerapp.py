@@ -19,6 +19,7 @@ class TimerApp(Tk):
 
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
+		self.resizable(False, False)
 
 
 		self.current_task = StringVar()
@@ -54,7 +55,7 @@ class TimerApp(Tk):
 
 
 	def show_frame(self, gui_class):
-		print(f"current winsize: {self.geometry()}")
+		# print(f"current winsize: {self.geometry()}")
 		frame = self.frames[gui_class]
 		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
 		print()

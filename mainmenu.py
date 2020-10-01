@@ -84,10 +84,10 @@ class MainMenu(Frame):
 			self.controller.resizable(True, True)
 		else:
 			self.controller.resizable(False, False)
+		
 
 		
 
 	def reset(self):
 		self.refresh_option_menu()
 		self.controller.geometry(storedsettings.MAINMENU_WIN_SIZE)
-		self.check_clicked()
