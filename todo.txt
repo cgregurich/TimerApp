@@ -5,6 +5,8 @@ todo (recent at top):
 BUG: when you're in the timer entry (or any entry) and go to a different frame and type
 that keyboard input is sent to the last active entry
 
+- Add hover color to settings???
+
 - Validation in Settings for time entered
 
 ** -Change pomo break noise back to ding

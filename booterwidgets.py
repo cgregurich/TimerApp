@@ -141,7 +141,7 @@ class BooterSelect(Button):
 class BooterLabel(Label):
 	def __init__(self, *args, **kwargs):
 		Label.__init__(self, *args, **kwargs)
-		self.font_size = 12
+		self.font_size = 18
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		self.config(fg=storedsettings.APP_FONT_COLOR)

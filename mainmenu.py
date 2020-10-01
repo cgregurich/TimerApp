@@ -25,7 +25,7 @@ class MainMenu(Frame):
 	def draw_menu(self):
 		BUTTON_WIDTH = 12
 		lbl_task = BooterLabel(self.frame_buttons, text="What are you working on?")
-		lbl_task.bold()
+		lbl_task.config(font=(storedsettings.FONT, 12, "bold"))
 
 		# None is used as a dummy value; this version of the OM is never seen, just used as initialization
 		self.om_current_task = BooterOptionMenu(self.frame_buttons, self.controller.current_task, None)

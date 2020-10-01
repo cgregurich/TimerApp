@@ -16,9 +16,6 @@ import storedsettings
 
 
 
-
-
-
 sessiondao = SessionDAO()
 taskdao = TaskDAO()
 
@@ -381,3 +378,4 @@ class ViewLog(Frame):
 	def reset(self):
 		self.draw_sessions()
 		self.controller.geometry(storedsettings.VIEWLOG_WIN_SIZE)
+		self.controller.resizable(True, True)

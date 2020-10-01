@@ -19,7 +19,8 @@ class TimerApp(Tk):
 
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
-		self.resizable(False, False)
+
+
 
 
 		self.current_task = StringVar()
@@ -27,6 +28,8 @@ class TimerApp(Tk):
 		self.debug = BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
 		self.configure(bg="red")
+
+		
 		
 
 		container = Frame(self)
@@ -51,11 +54,18 @@ class TimerApp(Tk):
 		self.show_frame('MainMenu')
 
 		
+	def check_is_resizable(self):
+		#Check debug state to see if app should be resizable
+		if self.debug.get():
+			self.resizable(True, True)
+		else:
+			self.resizable(False, False)
 
 
 
 	def show_frame(self, gui_class):
 		# print(f"current winsize: {self.geometry()}")
+		self.check_is_resizable()
 		frame = self.frames[gui_class]
 		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
 		print()
