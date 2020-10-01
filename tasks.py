@@ -17,21 +17,33 @@ class Tasks(Frame):
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 
+		
+		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_input = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+
+		
+		self.frame_buttons.grid(row=1, column=2, padx=(20, 0))
+		self.frame_input.grid(row=1, column=1)
+
 		self.controller = controller
 		self.selected_task = StringVar()
 		self.selected_task.set("Select...")
 		self.draw_window()
 
 	def draw_window(self):
+
+		lbl_header = BooterLabel(self, text="Edit Tasks")
+		lbl_header.config(font=(storedsettings.FONT, 20, "bold"))
+
 		btn_back = BooterButton(self, command=lambda: self.controller.show_frame('MainMenu'))
-		btn_back.grid(row=0, column=0)
+		
 		btn_back.apply_back_image()
 
-		self.entry_task = BooterEntry(self, width=16)
-		self.entry_task.grid(row=1, column=1)
+		self.entry_task = BooterEntry(self.frame_input, width=16)
+		
 
-		btn_add = BooterButton(self, text="Add", command=self.add_clicked)
-		btn_add.grid(row=1, column=2, padx=(10, 0))
+		btn_add = BooterButton(self.frame_buttons, text="Add", width=7, command=self.add_clicked)
+		
 
 
 	
@@ -39,18 +51,27 @@ class Tasks(Frame):
 	
 		# Init's OptionMenu; this is never seen because refresh_task_menu is called
 		# when Tasks is clicked on for the first time	
-		self.om_tasks = BooterOptionMenu(self, self.selected_task, None)
+		self.om_tasks = BooterOptionMenu(self.frame_input, self.selected_task, None)
 		self.om_tasks['menu'].delete(0)
 
-		self.om_tasks.grid(row=2, column=1, pady=(20, 0))
-		self.btn_del = BooterButton(self, text="Delete", command=self.del_clicked)
-		self.btn_del.grid(row=3, column=1, pady=(10, 0))
+		
+		self.btn_del = BooterButton(self.frame_buttons, text="Delete", width=7, command=self.del_clicked)
+		
+
+		btn_back.grid(row=0, column=0, padx=(10, 10))
+		lbl_header.grid(row=0, column=1, columnspan=2, pady=(0, 30))
+		self.entry_task.grid(row=1, column=1, pady=(0, 30))
+		btn_add.grid(row=1, column=2, pady=(0, 10))
+		self.om_tasks.grid(row=2, column=1)
+		self.btn_del.grid(row=2, column=2)
+
+
 
 
 
 	def del_clicked(self):
 		task = self.selected_task.get()
-		if task == "No tasks":
+		if task == "Select...":
 			return
 		tasks = taskdao.get_all_tasks_lower()
 		index = tasks.index(task.lower())

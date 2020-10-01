@@ -51,7 +51,7 @@ class Settings(Frame):
 		PADY = 5
 
 		btn_back = BooterButton(self, command=self.back_clicked)
-		btn_back.grid(row=0, column=0)
+		btn_back.grid(row=0, column=0, padx=10)
 		btn_back.apply_back_image()
 
 		# BooterLabels for what each setting is for

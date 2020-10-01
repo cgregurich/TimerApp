@@ -49,6 +49,8 @@ class TimerApp(Tk):
 
 		self.show_frame('MainMenu')
 
+		
+
 
 
 	def show_frame(self, gui_class):

@@ -55,7 +55,7 @@ class Timer(Frame):
 
 		# Create widgets
 		btn_back = BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
-		btn_back.grid(row=0, column=0)
+		btn_back.grid(row=0, column=0, padx=10)
 		btn_back.apply_back_image()
 
 

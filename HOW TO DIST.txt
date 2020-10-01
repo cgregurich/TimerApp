@@ -3,7 +3,7 @@ Writing this down so I don't forget.
 How to create an .exe
 
 Command to run for pyinstaller: 
-pyinstaller --icon "resources/images/icon.ico" --add-data "resources;resources" --hidden-import "babel.numbers" timerapp.py
+pyinstaller --icon "resources/images/icon.ico" -w --add-data "resources;resources" --hidden-import "babel.numbers" timerapp.py
 
 What does this mean?
 pyinstaller: use pyinstaller, the tool for packacking the program

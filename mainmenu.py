@@ -80,9 +80,14 @@ class MainMenu(Frame):
 		new_value = '1' if cur_value == '0' else '0'
 		self.mgr.change_setting('DEBUG', new_value)
 		storedsettings.WAIT = 1000 if new_value == '0' else '10'
+		if debug:
+			self.controller.resizable(True, True)
+		else:
+			self.controller.resizable(False, False)
 
 		
 
 	def reset(self):
 		self.refresh_option_menu()
 		self.controller.geometry(storedsettings.MAINMENU_WIN_SIZE)
+		self.check_clicked()
