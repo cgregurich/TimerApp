@@ -1,5 +1,12 @@
 todo (recent at top):
 
+Change icon size. Seems sort of small??
+
+not sure what makes this type of color good? sat? no idea
+orange ellow: FFF29C
+yellow: FEFF9C
+green: #ACFF9C
+
 ****Get a border around data in View Log!!!*********
 
 BUG: when you're in the timer entry (or any entry) and go to a different frame and type
