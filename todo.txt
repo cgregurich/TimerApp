@@ -1,5 +1,7 @@
 todo (recent at top):
 
+TEXT OF TOTALS SECTION TIME IS WRONG; WRONG FONT/SIZE
+
 Change icon size. Seems sort of small??
 
 not sure what makes this type of color good? sat? no idea
