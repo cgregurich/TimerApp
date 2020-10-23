@@ -112,6 +112,10 @@ class Settings(Frame):
 
 
 	def save_clicked(self):
+		self.save_settings()
+		self.indicate_saved()
+
+	def save_settings(self):
 		"""For when user clicks Save Changes button"""
 		if not self.is_pomo_entries_valid():
 			return False
@@ -131,7 +135,9 @@ class Settings(Frame):
 			self.mgr.change_setting('AUTOSAVE', str(0))
 			storedsettings.AUTOSAVE = '0'
 
-		self.indicate_saved()
+
+
+		
 
 
 	def indicate_saved(self):
@@ -179,7 +185,7 @@ class Settings(Frame):
 	def back_clicked(self):
 		"""Saves settings and goes back to main menu"""
 		
-		self.save_clicked()
+		self.save_settings()
 
 		self.controller.show_frame('MainMenu')
 
