@@ -50,11 +50,18 @@ class Timer(Frame):
 
 		self.draw_clock()
 
+		self.is_visible = True
+
+
+	def back_clicked(self):
+		self.is_visible = True
+		self.controller.show_frame("MainMenu")
+
 
 	def draw_clock(self):
 
 		# Create widgets
-		btn_back = BooterButton(self.frame_back_button, text="Back", command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back = BooterButton(self.frame_back_button, text="Back", command=self.back_clicked)
 		btn_back.grid(row=0, column=0, padx=10)
 		btn_back.apply_back_image()
 
@@ -77,6 +84,9 @@ class Timer(Frame):
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
 
+		# Bind left click to toggle clock visibility
+		self.lbl_time.bind("<Button-1>", self.clock_clicked)
+
 		# Put widgets on frame
 		self.lbl_time.grid(row=0, column=0)
 		self.entry_hours.grid(row=1, column=1)
@@ -91,7 +101,13 @@ class Timer(Frame):
 		self.btn_control.grid(row=2, column=1)
 
 	
-
+	def clock_clicked(self, event):
+		if self.is_visible:
+			self.is_visible = False
+			self.lbl_time.config(fg=storedsettings.APP_MAIN_COLOR)
+		else:
+			self.is_visible = True
+			self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
 	def control_button_clicked(self, event=None):

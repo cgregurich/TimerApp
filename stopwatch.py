@@ -36,15 +36,19 @@ class Stopwatch(Frame):
 		self.timer_id = None
 		self.draw_clock()
 
+		self.is_visible = True
 
 
+	def back_clicked(self):
+		self.is_visible = True
+		self.controller.show_frame("MainMenu")
 
 
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
-		btn_back = BooterButton(self.frame_back_button, command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back = BooterButton(self.frame_back_button, command=self.back_clicked)
 		btn_back.grid(row=0, column=0, padx=10)
-		# btn_back.config(font=(storedsettings.FONT, storedsettings.BACK_FONT_SIZE))
+	
 		btn_back.apply_back_image()
 
 
@@ -54,6 +58,10 @@ class Stopwatch(Frame):
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
 
+		# Bind left click to toggle clock visibility
+		self.lbl_time.bind("<Button-1>", self.clock_clicked)
+
+
 
 
 		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
@@ -62,6 +70,14 @@ class Stopwatch(Frame):
 		self.lbl_time.grid(row=0, column=0)
 		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
 		self.btn_control.grid(row=0, column=1)
+
+	def clock_clicked(self, event):
+		if self.is_visible:
+			self.is_visible = False
+			self.lbl_time.config(fg=storedsettings.APP_MAIN_COLOR)
+		else:
+			self.is_visible = True
+			self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
 	def cancel_button_clicked(self):
