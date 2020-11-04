@@ -14,8 +14,7 @@ pyinstaller: use pyinstaller, the tool for packacking the program
 	issue trying to resolve this import (it's used in tkcalendar), so this is a fix
 timerapp.py: which python file to package up
 
-Then copy the resources folder into the dist folder (because I don't know how to tell pyinstaller to
-include it otherwise)
+
 Then zip up the whole mamma jamma (the dist folder)
 
 Could even use NSIS
