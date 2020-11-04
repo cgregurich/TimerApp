@@ -59,6 +59,7 @@ class Settings(Frame):
 		lbl_pomo_work = BooterLabel(self.frame_settings, text="Pomo Work Time")
 		lbl_pomo_break = BooterLabel(self.frame_settings, text="Pomo Break Time")
 		lbl_autosave = BooterLabel(self.frame_settings, text="Time Autosave")
+		
 
 		# Colored button for changing clock color
 		self.btn_color = BooterButton(self.frame_settings, command=lambda: self.change_color("fg"))
@@ -70,6 +71,8 @@ class Settings(Frame):
 
 		self.btn_autosave_option = BooterButton(self.frame_settings, width=5, text=self.save_mode.upper(), command=self.autosave_clicked)
 		self.btn_autosave_option.config(font=(storedsettings.FONT, 14),height=1)
+
+		
 		
 
 
@@ -85,6 +88,7 @@ class Settings(Frame):
 		ENTRY_WIDTH = 4
 		self.entry_pomo_work = BooterEntry(self.frame_settings, width=ENTRY_WIDTH)
 		self.entry_pomo_break = BooterEntry(self.frame_settings, width=ENTRY_WIDTH)
+
 		# Clears current info and inserts saved settings, displayed as minutes
 		self.entry_pomo_work.delete(0, END)
 		self.entry_pomo_break.delete(0, END)
