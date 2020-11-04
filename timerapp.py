@@ -64,11 +64,9 @@ class TimerApp(Tk):
 
 
 	def show_frame(self, gui_class):
-		# print(f"current winsize: {self.geometry()}")
 		self.check_is_resizable()
 		frame = self.frames[gui_class]
 		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
-		print()
 		self.change_bindings(gui_class, frame)
 		frame.reset()
 		frame.tkraise()
