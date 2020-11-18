@@ -210,10 +210,7 @@ class ViewLog(Frame):
 		self._clear_screen()
 		if self.mode_var.get() == DAY:
 			sessions_list = self.get_selected_day_sessions()
-		elif self.mode_var.get() == WEEK:
-			sessions_list = self.get_selected_timeframe_sessions()
-
-		elif self.mode_var.get() == MONTH:
+		elif self.mode_var.get() == WEEK or self.mode_var.get() == MONTH:
 			sessions_list = self.get_selected_timeframe_sessions()
 
 		elif self.mode_var.get() == TASK:
@@ -234,6 +231,7 @@ class ViewLog(Frame):
 		Grabs date from both and retrieves all Sessions from between those dates, inclusive"""
 		start = self.grab_date_from_cal('calendar_start')
 		end = self.grab_date_from_cal('calendar_end')
+
 		sessions = sessiondao.get_all_sessions_between_dates(start, end)
 		return sessions
 
@@ -242,9 +240,6 @@ class ViewLog(Frame):
 
 	def draw_totals(self, sessions_list):
 		tasks_time_dict = self._create_tasks_time_dict(sessions_list)
-
-
-
 		for task, time in tasks_time_dict.items():
 			self._create_total_label(task, time)
 
@@ -267,7 +262,6 @@ class ViewLog(Frame):
 	def _format_seconds(self, total_seconds):
 		hours, seconds = divmod(total_seconds, 3600)
 		minutes, seconds = divmod(seconds, 60)
-		# return f"{hours}:{minutes}:{seconds}"
 
 		return "{:0>2}h {:0>2}m {:0>2}s".format(hours, minutes, seconds)
 
@@ -279,9 +273,12 @@ class ViewLog(Frame):
 		# Create a dictionary to map tasks to total time spent on task
 		tasks_time_dict = {task:0 for task in tasks_set} # dict of format {task: time(in sec)}
 
+
 		for session in sessions_list:
+			
 			tasks_time_dict[session.task] += session.time_logged
 
+		
 		return tasks_time_dict
 
 	def _get_all_tasks_from_sessions(self, sessions_list):
