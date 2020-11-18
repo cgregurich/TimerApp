@@ -76,7 +76,7 @@ class SessionDAO():
 
 	def _generate_dates_between(self, start, end):
 		"""Returns a list of date objects starting at start and ended on end"""
-		dates = [start]
+		dates = []
 		temp = start
 		while temp <= end:
 			dates.append(temp)
