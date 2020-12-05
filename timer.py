@@ -15,7 +15,6 @@ import datetime
 sessiondao = SessionDAO()
 
 
-
 class Timer(Frame):
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
