@@ -53,6 +53,12 @@ class Stopwatch(Frame):
 
 
 
+		self.lbl_task = BooterLabel(self)
+		self.lbl_task.grid(row=0, column=1)
+		self.display_task()
+
+
+
 
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
 		# Have to config to override default BooterLabel options
@@ -67,9 +73,14 @@ class Stopwatch(Frame):
 		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
 
-		self.lbl_time.grid(row=0, column=0)
+		self.lbl_time.grid(row=1, column=0)
 		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
 		self.btn_control.grid(row=0, column=1)
+		
+	def display_task(self):
+		task = self.controller.get_current_task()
+		if task != "Select...":
+			self.lbl_task.config(text=task)
 
 	def clock_clicked(self, event):
 		if self.is_visible:
@@ -167,6 +178,7 @@ class Stopwatch(Frame):
 	def reset(self):
 		self.change_settings()
 		self.controller.geometry(storedsettings.STOPWATCH_WIN_SIZE)
+		self.display_task()
 
 
 	def get_time_spent_formatted(self):

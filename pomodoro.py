@@ -55,6 +55,10 @@ class Pomodoro(Frame):
 		btn_back.grid(row=0, column=0, padx=10)
 		btn_back.apply_back_image()
 
+		self.lbl_task = BooterLabel(self)
+		self.lbl_task.grid(row=0, column=1)
+		self.display_task()
+
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00', fg=storedsettings.CLOCK_FG)
 
 		# Bind left click to toggle clock visibility
@@ -68,6 +72,12 @@ class Pomodoro(Frame):
 		self.lbl_time.grid(row=0, column=0)
 		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
 		self.btn_control.grid(row=0, column=1)
+
+	def display_task(self):
+		task = self.controller.get_current_task()
+		if task != "Select...":
+			self.lbl_task.config(text=task)
+
 
 
 
@@ -185,9 +195,7 @@ class Pomodoro(Frame):
 	def change_settings(self):
 		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
-	def reset(self):
-		self.change_settings()
-		self.controller.geometry(storedsettings.POMO_WIN_SIZE)
+
 
 
 	def reset_timer(self):
@@ -201,12 +209,6 @@ class Pomodoro(Frame):
 			else:
 				self.save_session()
 		self._redraw_clock_label(0,0)
-
-
-
-
-
-
 
 
 	def save_session(self):
@@ -239,6 +241,11 @@ class Pomodoro(Frame):
 		elif self.end_type == AUTOMATIC:
 			self.time_spent = self.original_time
 		return self.time_spent
+
+	def reset(self):
+		self.change_settings()
+		self.controller.geometry(storedsettings.POMO_WIN_SIZE)
+		self.display_task()
 
 
 def main():

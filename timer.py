@@ -64,6 +64,10 @@ class Timer(Frame):
 		btn_back.grid(row=0, column=0, padx=10)
 		btn_back.apply_back_image()
 
+		self.lbl_task = BooterLabel(self)
+		self.lbl_task.grid(row=0, column=1)
+		self.display_task()
+
 
 		self.entry_hours = BooterEntry(self.frame_entries, width=4)
 
@@ -98,6 +102,12 @@ class Timer(Frame):
 
 		self.btn_cancel.grid(row=2, column=0, padx=(0, 10))
 		self.btn_control.grid(row=2, column=1)
+
+	def display_task(self):
+		task = self.controller.get_current_task()
+		if task != "Select...":
+			self.lbl_task.config(text=task)
+
 
 	
 	def clock_clicked(self, event):
@@ -286,6 +296,7 @@ class Timer(Frame):
 		self.entry_seconds.delete(0, END)
 		self._redraw_clock_label(0, 0, 0)
 
+
 	def save_session(self):
 		task = self.controller.get_current_task()
 
@@ -336,6 +347,7 @@ class Timer(Frame):
 	def reset(self):
 		self.change_settings()
 		self.controller.geometry(storedsettings.TIMER_WIN_SIZE)
+		self.display_task()
 
 
 
