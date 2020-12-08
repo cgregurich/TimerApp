@@ -29,18 +29,18 @@ class ViewLog(Frame):
 		
 
 		# OVERHAUL FRAMES
-		self.frame_upper = Frame(self)
-		self.frame_lower = Frame(self)
-		self.frame_left = Frame(self.frame_upper)
-		self.frame_right = Frame(self.frame_upper)
-		self.frame_cal = Frame(self.frame_left)
-		self.frame_mode = Frame(self.frame_right)
-		self.frame_controls = Frame(self.frame_right)
+		self.frame_upper = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_lower = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_left = Frame(self.frame_upper, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_right = Frame(self.frame_upper, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_cal = Frame(self.frame_left, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_mode = Frame(self.frame_right, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_controls = Frame(self.frame_right, bg=storedsettings.APP_MAIN_COLOR)
 
 
 		self.frame_upper.grid(row=0, column=0)
 		self.frame_lower.grid(row=1, column=0)
-		self.frame_left.grid(row=0, column=0)
+		self.frame_left.grid(row=0, column=0, sticky="nw")
 		self.frame_right.grid(row=0, column=1)
 		self.frame_cal.grid(row=1, column=0)
 		self.frame_mode.grid(row=0, column=0)
@@ -63,7 +63,7 @@ class ViewLog(Frame):
 		PADX = 5
 
 		btn_back = BooterButton(self.frame_left, command=lambda: self.controller.show_frame("MainMenu"))
-		btn_back.grid(row=0, column=0, sticky="n")
+		btn_back.grid(row=0, column=0, sticky="n", pady=PADY)
 		btn_back.apply_back_image()
 
 
@@ -129,6 +129,7 @@ class ViewLog(Frame):
 
 	def add_clicked(self):
 		win = Toplevel()
+		win.config(bg=storedsettings.APP_MAIN_COLOR)
 		a = AddSession(win, self.controller)
 		a.pack()
 
@@ -160,11 +161,16 @@ class ViewLog(Frame):
 		elif mode == TASK:
 			self.draw_autocomplete()
 
-
+	def draw_calendar(self):
+		PADY = 5
+		today = dt.datetime.now()
+		cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
+		cal.grid(row=0, column=0, pady=PADY)
+		self.input_widgets['calendar_end'] = cal
 
 	def draw_month_widgets(self):
 		"""Draws two calendar pickers; one set to today, one set to a week ago"""
-
+		PADY = 5
 		today = dt.datetime.now()
 		# Quick and dirty fix for if it's January; 1 - 1 != 12
 		if today.month == 1:
@@ -174,36 +180,29 @@ class ViewLog(Frame):
 		month_ago = today - dt.timedelta(days=days_in_month)
 
 		start = DateEntry(self.frame_cal, selectmode="day", year=month_ago.year, month=month_ago.month, day=month_ago.day)
-		start.grid(row=0, column=0)
+		start.grid(row=0, column=0, pady=PADY)
 
 		end = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		end.grid(row=1, column=0)
+		end.grid(row=1, column=0, pady=PADY)
 
 		self.input_widgets['calendar_end'] = end
 		self.input_widgets['calendar_start'] = start
 
 	def draw_week_widgets(self):
 		"""Draws two calendar pickers; one set to today, one set to a week ago"""
-
+		PADY = 5
 		today = dt.datetime.now()
 		week_ago = today - dt.timedelta(days=7)
 
 		start = DateEntry(self.frame_cal, selectmode="day", year=week_ago.year, month=week_ago.month, day=week_ago.day)
-		start.grid(row=0, column=0)
+		start.grid(row=0, column=0, pady=PADY)
 
 		end = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		end.grid(row=1, column=0)	
+		end.grid(row=1, column=0, pady=PADY)	
 
 		self.input_widgets['calendar_end'] = end
 		self.input_widgets['calendar_start'] = start
 
-
-
-	def draw_calendar(self):
-		today = dt.datetime.now()
-		cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		cal.grid(row=0, column=0)
-		self.input_widgets['calendar_end'] = cal
 
 	def draw_autocomplete(self):
 		entry = autocomplete.AutoComplete(self.frame_cal, options=taskdao.get_all_tasks(), width=16)
