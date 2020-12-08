@@ -64,10 +64,7 @@ class MainMenu(Frame):
 		menu.delete(0, END)
 		if not tasks:
 			menu.add_command(label="No Tasks")
-
 		else:
-			
-			
 			for task in tasks:
 				menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))
 

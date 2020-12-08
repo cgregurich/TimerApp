@@ -8,6 +8,7 @@ import datetime as dt
 from datetime import date
 from tkcalendar import *
 from booterwidgets import *
+from addsession import AddSession
 
 import autocomplete
 import calendar
@@ -25,17 +26,29 @@ class ViewLog(Frame):
 		Frame.__init__(self, parent)
 		self.controller = controller
 
-		self.frame_controls = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_totals = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_data = Frame(self)
+		
 
-		self.frame_controls.grid(row=0, column=0)
-		self.frame_totals.grid(row=1, column=0)
-		self.frame_data.grid(row=2, column=0)
+		# OVERHAUL FRAMES
+		self.frame_upper = Frame(self)
+		self.frame_lower = Frame(self)
+		self.frame_left = Frame(self.frame_upper)
+		self.frame_right = Frame(self.frame_upper)
+		self.frame_cal = Frame(self.frame_left)
+		self.frame_mode = Frame(self.frame_right)
+		self.frame_controls = Frame(self.frame_right)
 
-		self.frame_totals.grid_columnconfigure(0, weight=1)
-		self.frame_totals.grid_rowconfigure(0, weight=1)
 
+		self.frame_upper.grid(row=0, column=0)
+		self.frame_lower.grid(row=1, column=0)
+		self.frame_left.grid(row=0, column=0)
+		self.frame_right.grid(row=0, column=1)
+		self.frame_cal.grid(row=1, column=0)
+		self.frame_mode.grid(row=0, column=0)
+		self.frame_controls.grid(row=1, column=0)
+
+
+		self.frame_left.grid_rowconfigure(0, weight=1)
+		self.frame_left.grid_columnconfigure(0, weight=1)
 
 		self.session_rows = [] # list of lists of labels
 
@@ -46,8 +59,11 @@ class ViewLog(Frame):
 		self.draw_window()
 
 	def draw_window(self):
-		btn_back = BooterButton(self.frame_controls, command=lambda: self.controller.show_frame("MainMenu"))
-		btn_back.grid(row=0, column=0)
+		PADY = 5
+		PADX = 5
+
+		btn_back = BooterButton(self.frame_left, command=lambda: self.controller.show_frame("MainMenu"))
+		btn_back.grid(row=0, column=0, sticky="n")
 		btn_back.apply_back_image()
 
 
@@ -55,29 +71,34 @@ class ViewLog(Frame):
 		self.mode_var = StringVar()
 		self.mode_var.set(DAY)
 
-		self.btn_day = BooterSelect(self.frame_controls, text="Day", command=lambda: self.mode_btn_clicked(self.btn_day, DAY))
-		self.btn_week = BooterSelect(self.frame_controls, text="Week", command=lambda: self.mode_btn_clicked(self.btn_week, WEEK))
-		self.btn_month = BooterSelect(self.frame_controls, text="Month", command=lambda: self.mode_btn_clicked(self.btn_month, MONTH))
-		self.btn_task = BooterSelect(self.frame_controls, text="Task", command=lambda: self.mode_btn_clicked(self.btn_task, TASK))
+		self.btn_day = BooterSelect(self.frame_mode, text="Day", command=lambda: self.mode_btn_clicked(self.btn_day, DAY))
+		self.btn_week = BooterSelect(self.frame_mode, text="Week", command=lambda: self.mode_btn_clicked(self.btn_week, WEEK))
+		self.btn_month = BooterSelect(self.frame_mode, text="Month", command=lambda: self.mode_btn_clicked(self.btn_month, MONTH))
+		self.btn_task = BooterSelect(self.frame_mode, text="Task", command=lambda: self.mode_btn_clicked(self.btn_task, TASK))
 		self.select_btns = [self.btn_day, self.btn_week, self.btn_month, self.btn_task]
 		self.btn_day.selected()
 
 
 
-		self.btn_day.grid(row=0, column=1)
-		self.btn_week.grid(row=0, column=2)
-		self.btn_month.grid(row=0, column=3)
-		self.btn_task.grid(row=0, column=4)
+		self.btn_day.grid(row=0, column=1, padx=PADX, pady=PADY)
+		self.btn_week.grid(row=0, column=2, padx=PADX, pady=PADY)
+		self.btn_month.grid(row=0, column=3, padx=PADX, pady=PADY)
+		self.btn_task.grid(row=0, column=4, padx=PADX, pady=PADY)
 
 
 		self.btn_view = BooterButton(self.frame_controls, text="View", command=self.draw_sessions)
-		self.btn_view.grid(row=1, column=1)
+		
+
+		self.btn_add = BooterButton(self.frame_controls, text="Add", command=self.add_clicked)
+
+		self.btn_view.grid(row=0, column=0, padx=PADX)
+		self.btn_add.grid(row=0, column=1, padx=PADX)
 		
 
 		# CREATE SCROLLABLE WINDOW
 		#                     this is how we get no grey line between totals and sessions      DON'T REMOVE HIGHLIGHT BACKGROUND
-		self.display_canvas = Canvas(self.frame_data, bg=storedsettings.APP_MAIN_COLOR, width=440, highlightbackground=storedsettings.APP_MAIN_COLOR) 
-		self.yscrollbar = Scrollbar(self.frame_data, orient="vertical", command=self.display_canvas.yview)
+		self.display_canvas = Canvas(self.frame_lower, bg=storedsettings.APP_MAIN_COLOR, width=440, highlightbackground=storedsettings.APP_MAIN_COLOR) 
+		self.yscrollbar = Scrollbar(self.frame_lower, orient="vertical", command=self.display_canvas.yview)
 		# self.xscrollbar = Scrollbar(self.frame_data, orient="horizontal", command=self.display_canvas.xview)
 		self.scrollable_frame = Frame(self.display_canvas)
 
@@ -104,6 +125,13 @@ class ViewLog(Frame):
 
 		self.change_input_widgets()
 		self.draw_sessions()
+
+
+	def add_clicked(self):
+		win = Toplevel()
+		a = AddSession(win, self.controller)
+		a.pack()
+
 
 
 	def mode_btn_clicked(self, button, mode):
@@ -145,14 +173,11 @@ class ViewLog(Frame):
 			days_in_month = calendar.monthrange(today.year, today.month-1)[1]
 		month_ago = today - dt.timedelta(days=days_in_month)
 
-		start = DateEntry(self.frame_controls, selectmode="day", year=month_ago.year, month=month_ago.month, day=month_ago.day)
-		start.grid(row=1, column=0)
+		start = DateEntry(self.frame_cal, selectmode="day", year=month_ago.year, month=month_ago.month, day=month_ago.day)
+		start.grid(row=0, column=0)
 
-		
-		end = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
-		end.grid(row=1, column=1)
-
-		self.btn_view.grid(row=1, column=2)
+		end = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
+		end.grid(row=1, column=0)
 
 		self.input_widgets['calendar_end'] = end
 		self.input_widgets['calendar_start'] = start
@@ -163,16 +188,11 @@ class ViewLog(Frame):
 		today = dt.datetime.now()
 		week_ago = today - dt.timedelta(days=7)
 
-		start = DateEntry(self.frame_controls, selectmode="day", year=week_ago.year, month=week_ago.month, day=week_ago.day)
-		start.grid(row=1, column=0)
+		start = DateEntry(self.frame_cal, selectmode="day", year=week_ago.year, month=week_ago.month, day=week_ago.day)
+		start.grid(row=0, column=0)
 
-		
-		end = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
-		end.grid(row=1, column=1)
-
-		self.btn_view.grid(row=1, column=2)
-
-		
+		end = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
+		end.grid(row=1, column=0)	
 
 		self.input_widgets['calendar_end'] = end
 		self.input_widgets['calendar_start'] = start
@@ -181,12 +201,12 @@ class ViewLog(Frame):
 
 	def draw_calendar(self):
 		today = dt.datetime.now()
-		cal = DateEntry(self.frame_controls, selectmode="day", year=today.year, month=today.month, day=today.day)
-		cal.grid(row=1, column=0)
+		cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
+		cal.grid(row=0, column=0)
 		self.input_widgets['calendar_end'] = cal
 
 	def draw_autocomplete(self):
-		entry = autocomplete.AutoComplete(self.frame_controls, options=taskdao.get_all_tasks())
+		entry = autocomplete.AutoComplete(self.frame_cal, options=taskdao.get_all_tasks(), width=16)
 		entry.config(relief=SOLID, bd=1)
 		entry.grid(row=1, column=0)
 		self.input_widgets['entry'] = entry
@@ -223,7 +243,7 @@ class ViewLog(Frame):
 
 		# Why -23? Because that's what number works; if it's higher or lower, 
 		# the frame will shrink/grow each time the page is redrawn
-		self.display_canvas.config(width=self.frame_data.winfo_width()-21)
+		self.display_canvas.config(width=self.frame_lower.winfo_width()-21)
 
 
 	def get_selected_timeframe_sessions(self):
