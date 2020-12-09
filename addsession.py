@@ -1,6 +1,9 @@
 from tkinter import *
 from booterwidgets import *
 from taskdao import TaskDAO
+import datetime as dt
+from datetime import date
+from tkcalendar import *
 
 taskdao = TaskDAO()
 
@@ -14,10 +17,12 @@ taskdao = TaskDAO()
 # database. 
 
 # TODO:
-# - add labels for each line
-# - add calendar widget for date 
+# - working on input validation
+# - Don't focus main window when messagebox error pops up???
 # - make add window not resizable
-# - do input validation
+# - decide on whether to validate for time travellers (I'd say not)
+# - actually save the session that is entered
+# - functionality to delete sessions (to fix errors and stuff)
 
 
 class AddSession(Frame):
@@ -25,22 +30,24 @@ class AddSession(Frame):
 		Frame.__init__(self, parent)
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		self.controller = controller
-		self.frame_input = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+
+		self.init_back_btn()
+
+		self.frame_main = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_input = Frame(self.frame_main, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_main.grid(row=0, column=1)
 		self.frame_input.grid(row=0, column=1)
 
 		self.frame_task_time = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_task_time.grid(row=1, column=0)
+		self.frame_task_time.grid(row=1, column=1)
 
 		self.frame_time_completed = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_time_completed.grid(row=2, column=0)
+		self.frame_time_completed.grid(row=2, column=1)
 
 		self.widgets = {"optionmenu": None,
 					    "task_time": None,
 					    "time_completed": None,
 					    "date_completed": None}
-
-
-
 
 		self.e_hour = None
 		self.e_min = None
@@ -49,42 +56,41 @@ class AddSession(Frame):
 		self.draw_window()
 
 
-	
-
 	def draw_window(self):
-		btn_back = BooterButton(self, command=lambda: print("TODO: back clicked"))
-		btn_back.apply_back_image()
-		
 		self.init_task_optionmenu()
 
 		self.init_task_time_row()
 		self.init_time_completed_row()
-		e4 = BooterEntry(self.frame_input)
+		self.init_date_completed()
 
 		btn_check = BooterButton(self, text="Check", command=self.check_input)
 
-		btn_back.grid(row=0, column=0, sticky="n")
-		
-
-		e4.grid(row=3, column=0)
 		btn_check.grid(row=2, column=1)
 
+		self.refresh_option_menu()	
 
-		self.refresh_option_menu()		
+
+	def init_back_btn(self):
+		btn_back = BooterButton(self, command=lambda: print("TODO: back clicked"))
+		btn_back.apply_back_image()
+		btn_back.grid(row=0, column=0, sticky="n")
+
 
 	def init_task_optionmenu(self):
+		lbl = BooterLabel(self.frame_input, text="Task")
 		om_var = StringVar()
 		om_var.set("Select...")
 		om = BooterOptionMenu(self.frame_input, om_var, None)
 		widgets = {"om_var": om_var,
 				   "om": om}
 		self.widgets["optionmenu"] = widgets
-		om.grid(row=0, column=0)
+		lbl.grid(row=0, column=0)
+		om.grid(row=0, column=1)
 
 
 	def init_task_time_row(self):
 		WIDTH = 4
-
+		lbl = BooterLabel(self.frame_input, text="Task Time")
 		e_hour = BooterEntry(self.frame_task_time, width=WIDTH)
 		e_min = BooterEntry(self.frame_task_time, width=WIDTH)
 		e_sec = BooterEntry(self.frame_task_time, width=WIDTH)
@@ -94,6 +100,7 @@ class AddSession(Frame):
 				   "e_sec": e_sec}
 		self.widgets["task_time"] = widgets
 
+		lbl.grid(row=1, column=0)
 		e_hour.grid(row=0, column=0)
 		BooterLabel(self.frame_task_time, text=":").grid(row=0, column=1)
 		e_min.grid(row=0, column=2)
@@ -102,29 +109,119 @@ class AddSession(Frame):
 
 	def init_time_completed_row(self):
 		WIDTH = 4
+		lbl = BooterLabel(self.frame_input, text="Time Completed")
 		e_hour = BooterEntry(self.frame_time_completed, width=WIDTH)
 		e_min = BooterEntry(self.frame_time_completed, width=WIDTH)
 		widgets = {"e_hour": e_hour,
 		           "e_min": e_min}
 		self.widgets["time_completed"] = widgets
+
+		lbl.grid(row=2, column=0)
 		e_hour.grid(row=0, column=0)
 		BooterLabel(self.frame_time_completed, text=":").grid(row=0, column=1)
 		e_min.grid(row=0, column=2)
 
 
+	# def draw_calendar(self):
+	# 	PADY = 5
+	# 	today = dt.datetime.now()
+	# 	cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
+	# 	cal.grid(row=0, column=0, pady=PADY)
+	# 	self.input_widgets['calendar_end'] = cal
+
+
+	def init_date_completed(self):
+		lbl = BooterLabel(self.frame_input, text="Date Completed")
+		today = dt.datetime.now()
+		cal = DateEntry(self.frame_input, selectmode="day", year=today.year, month=today.month, day=today.day)
+		self.widgets["cal"] = cal
+		lbl.grid(row=3, column=0)
+		cal.grid(row=3, column=1)
+
+
+
 	def check_input(self):
+		if not self.validate_task():
+			return False
+		if not self.validate_task_time():
+			return False
+		if not self.validate_time_completed():
+			return False
+		if not self.validate_date_completed():
+			return False
+
+	def validate_task(self):
+		if self.widgets["optionmenu"]["om_var"].get() == "Select...":
+			messagebox.showerror("Error", "Please select a task")
+			return False
+		return True
+
+	def validate_task_time(self):
+		h = self.widgets["task_time"]["e_hour"].get() or 0
+		m = self.widgets["task_time"]["e_min"].get() or 0
+		s = self.widgets["task_time"]["e_sec"].get() or 0
+
+		if not h and not m and not s:
+			messagebox.showerror("Error", "Task time is blank")
+			return False
+
+		try:
+			int(h)
+			int(m)
+			int(s)
+		except ValueError:
+			messagebox.showerror("Error", "Task time is invalid")
+			return False
+
+		if int(h) != float(h) or int(m) != float(m) or int(s) != float(s):
+			messagebox.showerror("Error", "Task time is invalid")
+			return False
+
+
+		return True
+
+	def validate_time_completed(self):
+		h = self.widgets["time_completed"]["e_hour"].get()
+		m = self.widgets["time_completed"]["e_min"].get()
+		if not h or not m:
+			messagebox.showerror("Error", "Time completed is blank")
+			return False
+		try:
+			int(h)
+			int(m)
+		except ValueError:
+			messagebox.showerror("Error", "Time completed is invalid")
+			return False
+
+		if int(h) != float(h) or int(m) != float(m):
+			messagebox.showerror("Error", "Time completed is invalid")
+			return False
+
+		h = int(h)
+		m = int(m)
+		if h < 0 or h > 23 or m < 0 or m > 59:
+			messagebox.showerror("Error", "Time completed is invalid")
+			return False
+		return True
+
+	def validate_date_completed(self):
+		# Is this function needed? does date widget self validate?
+		# Do we need to validate for time travel?
 		pass
+
+
 
 	def refresh_option_menu(self):
 		menu = self.widgets["optionmenu"]["om"]['menu']
 		tasks = taskdao.get_all_tasks()
 		print(f"tasks: {tasks}")
 		menu.delete(0, END)
+		om_var = self.widgets["optionmenu"]["om_var"]
 		if not tasks:
 			menu.add_command(label="No Tasks")
 		else:
 			for task in tasks:
-				menu.add_command(label=task, command=lambda value=task: self.om_var.set(value))
+				menu.add_command(label=task, command=lambda value=task: om_var.set(value))
 
 
 
