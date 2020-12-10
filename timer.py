@@ -179,10 +179,6 @@ class Timer(Frame):
 		self.change_entries_state()
 
 	
-
-
-
-
 	def _get_time_entered_in_seconds(self):
 		"""Helper method that returns total number of time in seconds"""
 		if not self._is_entered_time_valid():
@@ -257,12 +253,8 @@ class Timer(Frame):
 		"""seconds is the grand total number of seconds left in the timer"""
 		hours_left, seconds_left = divmod(seconds, 3600) # divmod(a, b) -> (a//b, a%b) 
 		minutes_left, seconds_left = divmod(seconds_left, 60)
-
-		
 		# Continue looping if timer is not done
-		x = 0
-			
-
+		x = 0	
 		if seconds != 0:
 			self.time_left = seconds
 			if self.mode == RUNNING:
@@ -283,14 +275,11 @@ class Timer(Frame):
 		self.change_entries_state()
 		self.after_cancel(self.timer_id)
 		if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
-			ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
+			ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
 			if ans:
 				self.save_session()
 		else:
 			self.save_session()
-		
-
-		
 		self.entry_hours.delete(0, END)
 		self.entry_minutes.delete(0, END)
 		self.entry_seconds.delete(0, END)
@@ -299,12 +288,10 @@ class Timer(Frame):
 
 	def save_session(self):
 		task = self.controller.get_current_task()
-
-		time_logged = self.get_time_spent_as_seconds()
-		session = Session(task, time_logged)
+		task_time = self.get_task_time_as_seconds()
+		session = Session(task, task_time)
 		sessiondao.insert_session(session)
 
-			
 
 	def _play_timer_end_sound(self):
 		pygame.mixer.music.play()
@@ -321,27 +308,27 @@ class Timer(Frame):
 
 
 
-	def get_time_spent_formatted(self):
+	def get_task_time_formatted(self):
 		"""Returns time spent formatted as HH:MM:SS"""
-		time_obj = self.get_time_spent()
+		time_obj = self.get_task_time()
 		return time_obj.strftime("%H:%M:%S")
 
-	def get_time_spent(self):
+	def get_task_time(self):
 		"""Returns a datetime.time object"""
-		total_seconds = self.get_time_spent_as_seconds()
+		total_seconds = self.get_task_time_as_seconds()
 		hours, seconds = divmod(total_seconds, 3600)
 		minutes, seconds = divmod(seconds, 60)
 
 		time_obj = datetime.time(hours, minutes, seconds)
 		return time_obj
 
-	def get_time_spent_as_seconds(self):
+	def get_task_time_as_seconds(self):
 		if self.end_type == MANUAL:
 			# - 1 because of how the timer loop logic works, the recorded time is off by 1
-			self.time_spent = self.original_time - self.time_left - 1
+			self.task_time = self.original_time - self.time_left - 1
 		elif self.end_type == AUTOMATIC:
-			self.time_spent = self.original_time
-		return self.time_spent
+			self.task_time = self.original_time
+		return self.task_time
 
 
 	def reset(self):

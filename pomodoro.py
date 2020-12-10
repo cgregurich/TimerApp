@@ -170,7 +170,7 @@ class Pomodoro(Frame):
 			self.timer_id = self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			if self.pomo_mode != BREAK:
-				self.get_time_spent()
+				self.get_task_time()
 			self._play_timer_end_sound()
 			self.reset_timer()
 			self.change_pomo_mode()
@@ -203,7 +203,7 @@ class Pomodoro(Frame):
 		self.after_cancel(self.timer_id)
 		if self.pomo_mode == WORK:
 			if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
-				ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted()}")
+				ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
 				if ans:
 					self.save_session()
 			else:
@@ -215,32 +215,32 @@ class Pomodoro(Frame):
 		"""Creates a Session object with the clock's time 
 		and saves it to the database."""
 		task = self.controller.get_current_task()
-		time_logged = self.get_time_spent_as_seconds()
-		session = Session(task, time_logged)
+		task_time = self.get_task_time_as_seconds()
+		session = Session(task, task_time)
 		sessiondao.insert_session(session)
 
 		
 
-	def get_time_spent_formatted(self):
+	def get_task_time_formatted(self):
 		"""Returns time spent formatted as MM:SS"""
-		time_obj = self.get_time_spent()
+		time_obj = self.get_task_time()
 		return time_obj.strftime("%M:%S")
 
 
-	def get_time_spent(self):
+	def get_task_time(self):
 		"""Returns a datetime.time object"""
-		total_seconds = self.get_time_spent_as_seconds()
+		total_seconds = self.get_task_time_as_seconds()
 		minutes, seconds = divmod(total_seconds, 60)
 		time_obj = datetime.time(0, minutes, seconds)
 		return time_obj
 
-	def get_time_spent_as_seconds(self):
+	def get_task_time_as_seconds(self):
 		if self.end_type == MANUAL:
 			# - 1 because of how the timer loop logic works, the recorded time is off by 1
-			self.time_spent = self.original_time - self.time_left - 1
+			self.task_time = self.original_time - self.time_left - 1
 		elif self.end_type == AUTOMATIC:
-			self.time_spent = self.original_time
-		return self.time_spent
+			self.task_time = self.original_time
+		return self.task_time
 
 	def reset(self):
 		self.change_settings()

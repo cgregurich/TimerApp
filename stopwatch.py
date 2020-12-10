@@ -51,14 +51,9 @@ class Stopwatch(Frame):
 	
 		btn_back.apply_back_image()
 
-
-
 		self.lbl_task = BooterLabel(self)
 		self.lbl_task.grid(row=0, column=1)
 		self.display_task()
-
-
-
 
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
 		# Have to config to override default BooterLabel options
@@ -67,9 +62,6 @@ class Stopwatch(Frame):
 		# Bind left click to toggle clock visibility
 		self.lbl_time.bind("<Button-1>", self.clock_clicked)
 
-
-
-
 		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
 		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
 
@@ -77,10 +69,12 @@ class Stopwatch(Frame):
 		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
 		self.btn_control.grid(row=0, column=1)
 		
+
 	def display_task(self):
 		task = self.controller.get_current_task()
 		if task != "Select...":
 			self.lbl_task.config(text=task)
+
 
 	def clock_clicked(self, event):
 		if self.is_visible:
@@ -98,20 +92,17 @@ class Stopwatch(Frame):
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
 			self.reset_clock()
-			
 		else:
 			self.mode = RUNNING
 		self.change_control()
 
 	def reset_clock(self):
 		self.mode = STOPPED
-		ans = messagebox.askyesno("Save session?", f"{self.get_time_spent_formatted() }")
+		ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted() }")
 		if ans:
 			self.save_session()
 		self.after_cancel(self.timer_id)
 		self._redraw_clock_label(0, 0, 0)
-
-
 
 
 	def control_button_clicked(self, event=None):
@@ -129,7 +120,6 @@ class Stopwatch(Frame):
 		self.change_control()
 
 
-
 	def change_control(self):
 		"""Changes text of control button based on what current mode is"""
 		if self.mode == RUNNING:
@@ -143,6 +133,7 @@ class Stopwatch(Frame):
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
+
 	def start_stopwatch(self):
 		self.stopwatch_loop(0)
 
@@ -150,11 +141,9 @@ class Stopwatch(Frame):
 	def stopwatch_loop(self, s):
 		"""Runs the stopwatch. Only stops when user stops or pauses it"""
 		hours, seconds = divmod(s, 3600)
-
 		minutes, seconds = divmod(seconds, 60)
-
 		x = 0
-		self.time_spent = s
+		self.task_time = s
 		if self.mode == RUNNING:
 			self._redraw_clock_label(hours, minutes, seconds)
 			x = 1
@@ -163,16 +152,15 @@ class Stopwatch(Frame):
 			return
 		self.timer_id = self.after(storedsettings.WAIT, self.stopwatch_loop, s+x)
 
-			
 
 	def _redraw_clock_label(self, hours, minutes, seconds):
 		"""Redraws timer label in format HH:MM:SS"""
 		new_time = "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 		self.lbl_time.config(text=new_time)
 
+
 	def change_settings(self):
 		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
-
 
 
 	def reset(self):
@@ -181,27 +169,27 @@ class Stopwatch(Frame):
 		self.display_task()
 
 
-	def get_time_spent_formatted(self):
+	def get_task_time_formatted(self):
 		"""Returns time spent formatted as HH:MM:SS"""
-		time_obj = self.get_time_spent()
+		time_obj = self.get_task_time()
 		return time_obj.strftime("%H:%M:%S")
 
-	def get_time_spent(self):
+	def get_task_time(self):
 		"""Returns a datetime.time object"""
-		total_seconds = self.get_time_spent_as_seconds()
+		total_seconds = self.get_task_time_as_seconds()
 		hours, seconds = divmod(total_seconds, 3600)
 		minutes, seconds = divmod(seconds, 60)
 		time_obj = datetime.time(hours, minutes, seconds)
 		return time_obj
 
-	def get_time_spent_as_seconds(self):
+	def get_task_time_as_seconds(self):
 		# - 1 because of how the timer loop logic works, the recorded time is off by 1
-		return self.time_spent - 1
+		return self.task_time - 1
 		
 	def save_session(self):
 		task = self.controller.get_current_task()
-		time_logged = self.get_time_spent_as_seconds()
-		session = Session(task, time_logged)
+		task_time = self.get_task_time_as_seconds()
+		session = Session(task, task_time)
 		sessiondao.insert_session(session)
 
 		
