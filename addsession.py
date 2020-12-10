@@ -8,19 +8,11 @@ from tkcalendar import *
 taskdao = TaskDAO()
 
 
-# WHERE I LEFT OFF:
-# getting the window created for adding sessions
-# need to implement a calendar widget for date picking
-# and some sort of input for the time the task was completed
-# as well as validation for the user input and
-# then of course figuring out how to actually add the data to the
-# database. 
-
 # TODO:
-# - working on input validation
+# - Where i left off: finish creating a Session object when check is clicked
+# - working on input validation; preliminary checks are gucci
 # - Don't focus main window when messagebox error pops up???
 # - make add window not resizable
-# - decide on whether to validate for time travellers (I'd say not)
 # - actually save the session that is entered
 # - functionality to delete sessions (to fix errors and stuff)
 
@@ -34,14 +26,13 @@ class AddSession(Frame):
 		self.init_back_btn()
 
 		self.frame_main = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_input = Frame(self.frame_main, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_input = Frame(self.frame_main, bg=storedsettings.APP_MAIN_COLOR)		
+		self.frame_task_time = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)		
+		self.frame_time_completed = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
+
 		self.frame_main.grid(row=0, column=1)
 		self.frame_input.grid(row=0, column=1)
-
-		self.frame_task_time = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_task_time.grid(row=1, column=1)
-
-		self.frame_time_completed = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_time_completed.grid(row=2, column=1)
 
 		self.widgets = {"optionmenu": None,
@@ -63,7 +54,7 @@ class AddSession(Frame):
 		self.init_time_completed_row()
 		self.init_date_completed()
 
-		btn_check = BooterButton(self, text="Check", command=self.check_input)
+		btn_check = BooterButton(self, text="Check", command=self.check_clicked)
 
 		btn_check.grid(row=2, column=1)
 
@@ -122,22 +113,19 @@ class AddSession(Frame):
 		e_min.grid(row=0, column=2)
 
 
-	# def draw_calendar(self):
-	# 	PADY = 5
-	# 	today = dt.datetime.now()
-	# 	cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-	# 	cal.grid(row=0, column=0, pady=PADY)
-	# 	self.input_widgets['calendar_end'] = cal
-
-
 	def init_date_completed(self):
 		lbl = BooterLabel(self.frame_input, text="Date Completed")
 		today = dt.datetime.now()
 		cal = DateEntry(self.frame_input, selectmode="day", year=today.year, month=today.month, day=today.day)
-		self.widgets["cal"] = cal
+		widgets = {"cal": cal}
+		self.widgets["date_completed"] = widgets
 		lbl.grid(row=3, column=0)
 		cal.grid(row=3, column=1)
 
+
+	def check_clicked(self):
+		if self.check_input():
+			pass
 
 
 	def check_input(self):
@@ -149,6 +137,54 @@ class AddSession(Frame):
 			return False
 		if not self.validate_date_completed():
 			return False
+		return True
+
+
+	def create_session(self):
+		"""Create and return a Session based off the info
+		currently in the input window"""
+		# things we need:
+		# task name
+		# task time -> convert to seconds
+		# time completed -> convert to whatever it's supposed to be
+		# date completed
+		# create session object
+		# add it to the db
+		task = self.widgets["optionmenu"]["om_var"].get()
+		task_time = self.get_task_time()
+		time_completed = self.get_time_completed()
+		date_completed = self.get_date_completed()
+		s = Session()
+
+
+	def get_task_time(self):
+		"""Gets the h, m, and s from input window and returns the time
+		in seconds"""
+		h = self.widgets["task_time"]["e_hour"].get()
+		m = self.widgets["task_time"]["e_min"].get()
+		s = self.widgets["task_time"]["e_sec"].get()
+
+		return h*3600 + m*60 + s
+
+
+	def get_time_completed(self):
+		"""Returns a string of format HH:MM based off current
+		values in input (this is only called after validation)"""
+		h = self.widgets["time_completed"]["e_hour"].get()
+		m = self.widgets["time_completed"]["e_min"].get()
+		return "{}:{:0>2}".format(h, m)
+
+
+	def get_date_completed(self):
+		"""Returns a string of format MM-DD-YY based off
+		selected date in date entry widget"""
+		date_str = self.widgets["date_completed"]["cal"].get()
+		date_info = [int(i) for i in date_str.split("/")]
+		month, day, year = tuple(date_info)
+		year += 2000
+		date_obj = dt.datetime(year, month, day).date()
+		return date_obj.strftime("%m-%d-%y")
+
 
 	def validate_task(self):
 		if self.widgets["optionmenu"]["om_var"].get() == "Select...":
@@ -176,8 +212,6 @@ class AddSession(Frame):
 		if int(h) != float(h) or int(m) != float(m) or int(s) != float(s):
 			messagebox.showerror("Error", "Task time is invalid")
 			return False
-
-
 		return True
 
 	def validate_time_completed(self):
@@ -207,9 +241,7 @@ class AddSession(Frame):
 	def validate_date_completed(self):
 		# Is this function needed? does date widget self validate?
 		# Do we need to validate for time travel?
-		pass
-
-
+		return True
 
 	def refresh_option_menu(self):
 		menu = self.widgets["optionmenu"]["om"]['menu']

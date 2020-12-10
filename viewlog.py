@@ -36,6 +36,7 @@ class ViewLog(Frame):
 		self.frame_cal = Frame(self.frame_left, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_mode = Frame(self.frame_right, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_controls = Frame(self.frame_right, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_totals = Frame(self.frame_lower, bg=storedsettings.APP_MAIN_COLOR)
 
 
 		self.frame_upper.grid(row=0, column=0)
@@ -45,6 +46,7 @@ class ViewLog(Frame):
 		self.frame_cal.grid(row=1, column=0)
 		self.frame_mode.grid(row=0, column=0)
 		self.frame_controls.grid(row=1, column=0)
+		self.frame_totals.grid(row=0, column=0)
 
 
 		self.frame_left.grid_rowconfigure(0, weight=1)
@@ -130,6 +132,7 @@ class ViewLog(Frame):
 	def add_clicked(self):
 		win = Toplevel()
 		win.config(bg=storedsettings.APP_MAIN_COLOR)
+		win.geometry("500x225")
 		a = AddSession(win, self.controller)
 		a.pack()
 
