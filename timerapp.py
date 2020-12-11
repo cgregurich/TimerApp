@@ -20,17 +20,11 @@ class TimerApp(Tk):
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
 
-
-
-
 		self.current_task = StringVar()
 		self.current_task.set("Select...")
 		self.debug = BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
 		self.configure(bg="red")
-
-		
-		
 
 		container = Frame(self)
 		container.pack(side="top", fill="both", expand=True)
@@ -77,7 +71,7 @@ class TimerApp(Tk):
 		if gui_class == 'MainMenu':
 			self.unbind('<Return>')
 		elif gui_class in self.clocks:
-			self.bind('<Return>', frame.control_button_clicked)
+			self.bind('<Return>', frame.right_button_clicked)
 
 
 	def get_current_task(self):

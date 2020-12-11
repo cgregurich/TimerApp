@@ -5,12 +5,9 @@ from locals import *
 import storedsettings
 import pygame
 from tkinter import messagebox
-
 from booterwidgets import *
-
 from session import Session
 from sessiondao import SessionDAO
-
 import datetime
 
 sessiondao = SessionDAO()
@@ -49,6 +46,7 @@ class Pomodoro(Frame):
 		self.is_visible = True
 		self.controller.show_frame("MainMenu")
 
+
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
 		btn_back = BooterButton(self.frame_back_button, command=self.back_clicked)
@@ -66,19 +64,18 @@ class Pomodoro(Frame):
 
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
-		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
-		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
+		self.btn_left = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.left_button_clicked)
+		self.btn_right = BooterButton(self.frame_buttons, text='Start', command=self.right_button_clicked, width=6)
 
 		self.lbl_time.grid(row=0, column=0)
-		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
-		self.btn_control.grid(row=0, column=1)
+		self.btn_left.grid(row=0, column=0, padx=(0,10))
+		self.btn_right.grid(row=0, column=1)
+
 
 	def display_task(self):
 		task = self.controller.get_current_task()
 		if task != "Select...":
 			self.lbl_task.config(text=task)
-
-
 
 
 	def clock_clicked(self, event):
@@ -90,66 +87,103 @@ class Pomodoro(Frame):
 			self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
-
-	def control_button_clicked(self, event=None):
-		if self.mode == STOPPED:
-			
-			self.mode = RUNNING
+	def right_button_clicked(self, event=None):
+		# Right button is for starting/pausing/resuming
+		# start timer
+		prev_mode = self.change_mode_right()
+		if prev_mode == STOPPED:
 			self.start_timer()
 
-		elif self.mode == RUNNING:
-			self.mode = PAUSED
-
-		elif self.mode == PAUSED:
-			self.mode = RUNNING
-
+		# make button text match the state of the timer
 		self.change_control()
 
 
-	def cancel_button_clicked(self):
+	def change_mode_right(self):
+		"""For when the right button is clicked and 
+		the timer's mode needs to be altered accordingly
+		Returns the mode when this function was called"""
+		prev_mode = self.mode
+		# Start timer
+		if self.mode == STOPPED:
+			self.mode = RUNNING
+
+		# Pause timer
+		elif self.mode == RUNNING:
+			self.mode = PAUSED
+		
+		# Resume timer
+		elif self.mode == PAUSED:
+			self.mode = RUNNING
+		return prev_mode
+
+
+	def left_button_clicked(self):
+		"""Left button is for cancelling/skipping
+		Asks user """
+
+		prev_mode = self.mode
 		self.mode = PAUSED
+
+		# Prompt user with different prompt depending on pomo mode
 		if self.pomo_mode == WORK:
 			msg = 'Are you sure you want to cancel this pomo?'
-		else:
+		else: # in break mode
 			msg = 'Are you sure you want to skip this break?'
 		ans = messagebox.askyesno('', msg)
+
+		# If yes, reset timer, go to next pomo mode
 		if ans == True:
 			self.end_type = MANUAL
 			self.reset_timer()
 			if self.pomo_mode == BREAK:
 				self.change_pomo_mode()
 		else:
-			self.mode = RUNNING
+			self.mode = prev_mode
 		self.change_control()
+
+	def change_mode_left(self):
+		pass
+
+
+	def change_pomo_mode(self):
+		if self.pomo_mode == WORK:
+			self.pomo_mode = BREAK
+		else:
+			self.pomo_mode = WORK
+
 
 
 	def change_control(self):
-		# Switch from break to work or vice versa, 
-		# change text of cancel button
-		if self.pomo_mode == BREAK:
-			self.btn_cancel.config(text="Skip")
-		else:
-			self.btn_cancel.config(text="Cancel")
+		self.change_left_button_text()
 
 		# Change state of cancel button and
 		# change text of control button
 		if self.mode == RUNNING:
-			self.btn_cancel.config(state=NORMAL)
+			self.btn_left.config(state=NORMAL)
 			new_control = 'Pause'
+
 		elif self.mode == PAUSED:
-			self.btn_cancel.config(state=NORMAL)
+			self.btn_left.config(state=NORMAL)
 			new_control = 'Resume'
+
 		elif self.mode == STOPPED:
 			if self.pomo_mode == BREAK:
-				self.btn_cancel.config(state=NORMAL)
+				self.btn_left.config(state=NORMAL)
 			else:
-				self.btn_cancel.config(state=DISABLED)
+				self.btn_left.config(state=DISABLED)
 			new_control = 'Start'
-		self.btn_control.config(text=new_control)
+		self.btn_right.config(text=new_control)
+	
+
+	def change_left_button_text(self):
+		# Make left button's text match the state of the timer
+		if self.pomo_mode == BREAK:
+			self.btn_left.config(text="Skip")
+		else:
+			self.btn_left.config(text="Cancel")
 
 
 	def start_timer(self):
-
 		seconds = storedsettings.POMO_WORK_TIME if self.pomo_mode == WORK else storedsettings.POMO_BREAK_TIME
 		self.original_time = seconds
 		self.end_type = AUTOMATIC
@@ -177,13 +211,6 @@ class Pomodoro(Frame):
 			self.change_control()
 	
 
-	def change_pomo_mode(self):
-		if self.pomo_mode == WORK:
-			self.pomo_mode = BREAK
-		else:
-			self.pomo_mode = WORK
-
-
 	def _play_timer_end_sound(self):
 		pygame.mixer.music.play()
 
@@ -192,13 +219,14 @@ class Pomodoro(Frame):
 		new_time = "{:02}:{:02}".format(m, s)
 		self.lbl_time.config(text=new_time)
 
+
 	def change_settings(self):
 		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
-
-
 	def reset_timer(self):
+		"""Ask user if they want to save the session; save if yes, nothing if no
+		Visually reset the timer"""
 		self.mode = STOPPED
 		self.after_cancel(self.timer_id)
 		if self.pomo_mode == WORK:
@@ -220,7 +248,6 @@ class Pomodoro(Frame):
 		sessiondao.insert_session(session)
 
 		
-
 	def get_task_time_formatted(self):
 		"""Returns time spent formatted as MM:SS"""
 		time_obj = self.get_task_time()
@@ -234,6 +261,7 @@ class Pomodoro(Frame):
 		time_obj = datetime.time(0, minutes, seconds)
 		return time_obj
 
+
 	def get_task_time_as_seconds(self):
 		if self.end_type == MANUAL:
 			# - 1 because of how the timer loop logic works, the recorded time is off by 1
@@ -241,6 +269,7 @@ class Pomodoro(Frame):
 		elif self.end_type == AUTOMATIC:
 			self.task_time = self.original_time
 		return self.task_time
+
 
 	def reset(self):
 		self.change_settings()
