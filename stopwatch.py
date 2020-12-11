@@ -62,8 +62,8 @@ class Stopwatch(Frame):
 		# Bind left click to toggle clock visibility
 		self.lbl_time.bind("<Button-1>", self.clock_clicked)
 
-		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
-		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
+		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.left_button_clicked)
+		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.right_button_clicked, width=6)
 
 		self.lbl_time.grid(row=1, column=0)
 		self.btn_cancel.grid(row=0, column=0, padx=(0,10))
@@ -85,7 +85,7 @@ class Stopwatch(Frame):
 			self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
-	def cancel_button_clicked(self):
+	def left_button_clicked(self):
 		"""Prompts user to confirm stopping timer. Displays message and waits
 		for user's answer"""
 		self.mode = PAUSED
@@ -105,7 +105,7 @@ class Stopwatch(Frame):
 		self._redraw_clock_label(0, 0, 0)
 
 
-	def control_button_clicked(self, event=None):
+	def right_button_clicked(self, event=None):
 		"""Changes mode and control button text when the control button is clicked"""
 		if self.mode == STOPPED:
 			self.mode = RUNNING

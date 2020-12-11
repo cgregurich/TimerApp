@@ -80,9 +80,9 @@ class Timer(Frame):
 		self.entries = (self.entry_hours, self.entry_minutes, self.entry_seconds)
 
 
-		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.control_button_clicked, width=6)
+		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.right_button_clicked, width=6)
 		self.btn_control.bind('enter')
-		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.cancel_button_clicked)
+		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.left_button_clicked)
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
@@ -119,7 +119,7 @@ class Timer(Frame):
 			self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
-	def control_button_clicked(self, event=None):
+	def right_button_clicked(self, event=None):
 		if self.mode == STOPPED:
 			
 			self.mode = RUNNING
@@ -167,7 +167,7 @@ class Timer(Frame):
 			self.mode = STOPPED
 
 
-	def cancel_button_clicked(self):
+	def left_button_clicked(self):
 		self.mode = PAUSED
 		ans = messagebox.askyesno('', 'Are you sure you want to cancel?')
 		if ans == True:

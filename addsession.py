@@ -1,11 +1,14 @@
 from tkinter import *
 from booterwidgets import *
 from taskdao import TaskDAO
+from sessiondao import SessionDAO
 import datetime as dt
 from datetime import date
 from tkcalendar import *
+from session import Session
 
 taskdao = TaskDAO()
+sessiondao = SessionDAO()
 
 
 # TODO:
@@ -39,7 +42,6 @@ class AddSession(Frame):
 					    "task_time": None,
 					    "time_completed": None,
 					    "date_completed": None}
-
 		self.e_hour = None
 		self.e_min = None
 		self.e_sec = None
@@ -125,7 +127,8 @@ class AddSession(Frame):
 
 	def check_clicked(self):
 		if self.check_input():
-			pass
+			self.create_session()
+			
 
 
 	def check_input(self):
@@ -154,15 +157,21 @@ class AddSession(Frame):
 		task_time = self.get_task_time()
 		time_completed = self.get_time_completed()
 		date_completed = self.get_date_completed()
-		s = Session()
+		info = {"task": task, "task_time": task_time, "time_completed": time_completed, 
+			"date_completed": date_completed}
+
+		print(f"checking data: task: {task}  task_time: {task_time}  time_completed: {time_completed}"
+				f"  date_completed: {date_completed}")
+		s = Session(task, task_time, time_completed, date_completed)
+		sessiondao.insert_session(s)
 
 
 	def get_task_time(self):
 		"""Gets the h, m, and s from input window and returns the time
-		in seconds"""
-		h = self.widgets["task_time"]["e_hour"].get()
-		m = self.widgets["task_time"]["e_min"].get()
-		s = self.widgets["task_time"]["e_sec"].get()
+		in seconds as an integer"""
+		h = int(self.widgets["task_time"]["e_hour"].get() or 0)
+		m = int(self.widgets["task_time"]["e_min"].get() or 0)
+		s = int(self.widgets["task_time"]["e_sec"].get() or 0)
 
 		return h*3600 + m*60 + s
 
@@ -200,7 +209,6 @@ class AddSession(Frame):
 		if not h and not m and not s:
 			messagebox.showerror("Error", "Task time is blank")
 			return False
-
 		try:
 			int(h)
 			int(m)
@@ -246,7 +254,6 @@ class AddSession(Frame):
 	def refresh_option_menu(self):
 		menu = self.widgets["optionmenu"]["om"]['menu']
 		tasks = taskdao.get_all_tasks()
-		print(f"tasks: {tasks}")
 		menu.delete(0, END)
 		om_var = self.widgets["optionmenu"]["om_var"]
 		if not tasks:

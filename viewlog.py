@@ -238,14 +238,14 @@ class ViewLog(Frame):
 		elif self.mode_var.get() == TASK:
 			task = self.input_widgets['entry'].get()
 			sessions_list = sessiondao.get_all_sessions_by_task(task)
-
-
 		self.draw_sessions_to_screen(sessions_list)
 		self.draw_totals(sessions_list)
 
-		# Why -23? Because that's what number works; if it's higher or lower, 
+		# Why -21? Because that's what number works; if it's higher or lower, 
 		# the frame will shrink/grow each time the page is redrawn
 		self.display_canvas.config(width=self.frame_lower.winfo_width()-21)
+
+
 
 
 	def get_selected_timeframe_sessions(self):
@@ -258,12 +258,11 @@ class ViewLog(Frame):
 		return sessions
 
 
-
-
 	def draw_totals(self, sessions_list):
 		tasks_time_dict = self._create_tasks_time_dict(sessions_list)
 		for task, time in tasks_time_dict.items():
 			self._create_total_label(task, time)
+
 
 	def _create_total_label(self, task, seconds):
 		"""
@@ -281,13 +280,12 @@ class ViewLog(Frame):
 		self.total_labels.append(lbl_task)
 		self.total_labels.append(lbl_time)
 
+
 	def _format_seconds(self, total_seconds):
 		hours, seconds = divmod(total_seconds, 3600)
 		minutes, seconds = divmod(seconds, 60)
 
 		return "{:0>2}h {:0>2}m {:0>2}s".format(hours, minutes, seconds)
-
-
 
 
 	def _create_tasks_time_dict(self, sessions_list):
@@ -298,10 +296,11 @@ class ViewLog(Frame):
 
 		for session in sessions_list:
 			
-			tasks_time_dict[session.task] += session.time_logged
+			tasks_time_dict[session.task] += session.task_time
 
 		
 		return tasks_time_dict
+
 
 	def _get_all_tasks_from_sessions(self, sessions_list):
 		"""Returns a set of tasks from the Session objects in sessions_list"""
@@ -310,8 +309,6 @@ class ViewLog(Frame):
 			tasks_set.add(session.task)
 		return tasks_set
 
-
-	
 		
 	def _calc_col_widths(self, sessions_list):
 		"""Calculates how wide each column should be depending

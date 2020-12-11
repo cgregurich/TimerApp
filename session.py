@@ -3,20 +3,35 @@ DEFAULT_TASK = "Select..."
 class Session():
 	"""
 	task -> str
-	time_logged -> int representing seconds
+	task_time -> int representing seconds
 	time_completed -> time in format HH:MM (military time)
 	date_completed -> date in format MM-DD-YY
 	"""
-	def __init__(self, task=None, time_logged=None, time_completed=None, date_completed=None):
-		# if time_logged:
-		if not time_completed and not date_completed:
-			cur_date = self.get_current_date()
-			cur_time = self.get_current_time()
-			if task == DEFAULT_TASK:
-				task = "N/A"
-			self.info = { 'task': task, 'time_logged': time_logged, 'time_completed': cur_time, 'date_completed': cur_date}
-		else:
-			self.info = { 'task': None, 'time_logged': None, 'time_completed': None, 'date_completed': None}
+	def __init__(self, task=None, task_time=None, time_completed=None, date_completed=None):
+
+		self.info = {"task": task, "task_time": task_time, "time_completed": time_completed, 
+								"date_completed": date_completed}
+
+		# Get current date/time if missing
+		if not self.time_completed:
+			self.info["time_completed"] = self.get_current_time()
+		if not self.date_completed:
+			self.info["date_completed"] = self.get_current_date()
+		if self.task == DEFAULT_TASK:
+			self.info["task"] = "N/A"
+
+
+		# # if task_time:
+		# if task and task_time and time_completed and date_completed:
+		# 	self.info = {"task": task, "task_time": task_time, "time_completed": cur_time, "date_completed": cur_date}
+		# if not time_completed and not date_completed:
+		# 	cur_date = self.get_current_date()
+		# 	cur_time = self.get_current_time()
+		# 	if task == DEFAULT_TASK:
+		# 		task = "N/A"
+		# 	self.info = {"task": task, "task_time": task_time, "time_completed": cur_time, "date_completed": cur_date}
+		# else:
+		# 	self.info = {"task": None, "task_time": None, "time_completed": None, "date_completed": None}
 
 
 	def __str__(self):
@@ -37,9 +52,9 @@ class Session():
 
 	def get_info_for_display(self):
 		"""Returns a list of the Session's info in format
-		[task, time_logged -> HH:MM:SS, time_completed, date_completed]"""
+		[task, task_time -> HH:MM:SS, time_completed, date_completed]"""
 		info = list(self.info.values())
-		info[1] = self._format_seconds_to_time(self.time_logged)
+		info[1] = self._format_seconds_to_time(self.task_time)
 		return info
 
 
@@ -63,17 +78,13 @@ class Session():
 		return self.info
 
 
-	def set_info(self, info):
-		self.info = info
-
-
-	def set_time_logged(self, time_logged):
-		"""Arg time_logged is in seconds"""
-		self.info['time_logged'] = time_logged
+	def set_task_time(self, task_time):
+		"""Arg task_time is in seconds"""
+		self.info["task_time"] = task_time
 
 
 	def set_task(self, task):
-		self.info['task'] = task
+		self.info["task"] = task
 
 
 	def get_current_time(self):
@@ -98,20 +109,20 @@ class Session():
 
 
 	@property
-	def time_logged(self):
-		return self.info['time_logged']
+	def task_time(self):
+		return self.info["task_time"]
 
 
 	@property
 	def time_completed(self):
-		return self.info['time_completed']
+		return self.info["time_completed"]
 
 
 	@property
 	def date_completed(self):
-		return self.info['date_completed']
+		return self.info["date_completed"]
 
 
 	@property
 	def task(self):
-		return self.info['task']
+		return self.info["task"]
