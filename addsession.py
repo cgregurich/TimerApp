@@ -42,9 +42,15 @@ class AddSession(Frame):
 					    "task_time": None,
 					    "time_completed": None,
 					    "date_completed": None}
+		self.labels = {"task": None,
+					   "task_time": None,
+					   "time_completed": None,
+					   "date_completed": None}
 		self.e_hour = None
 		self.e_min = None
 		self.e_sec = None
+
+		self.after_job = None
 
 		self.draw_window()
 
@@ -56,9 +62,13 @@ class AddSession(Frame):
 		self.init_time_completed_row()
 		self.init_date_completed()
 
-		btn_check = BooterButton(self, text="Check", command=self.check_clicked)
+		self.lbl_status = BooterLabel(self, text="")
+		self.lbl_status.config(font=(storedsettings.FONT, 15, "bold"), fg="green")
+		btn_log = BooterButton(self, text="Log", command=self.check_clicked)
 
-		btn_check.grid(row=2, column=1)
+		
+		self.lbl_status.grid(row=2, column=1)
+		btn_log.grid(row=3, column=1)
 
 		self.refresh_option_menu()	
 
@@ -76,6 +86,7 @@ class AddSession(Frame):
 		om = BooterOptionMenu(self.frame_input, om_var, None)
 		widgets = {"om_var": om_var,
 				   "om": om}
+		self.labels["task"] = lbl
 		self.widgets["optionmenu"] = widgets
 		lbl.grid(row=0, column=0)
 		om.grid(row=0, column=1)
@@ -91,6 +102,7 @@ class AddSession(Frame):
 		widgets = {"e_hour": e_hour,
 				   "e_min": e_min,
 				   "e_sec": e_sec}
+		self.labels["task_time"] = lbl
 		self.widgets["task_time"] = widgets
 
 		lbl.grid(row=1, column=0)
@@ -107,6 +119,7 @@ class AddSession(Frame):
 		e_min = BooterEntry(self.frame_time_completed, width=WIDTH)
 		widgets = {"e_hour": e_hour,
 		           "e_min": e_min}
+		self.labels["time_completed"] = lbl
 		self.widgets["time_completed"] = widgets
 
 		lbl.grid(row=2, column=0)
@@ -120,6 +133,7 @@ class AddSession(Frame):
 		today = dt.datetime.now()
 		cal = DateEntry(self.frame_input, selectmode="day", year=today.year, month=today.month, day=today.day)
 		widgets = {"cal": cal}
+		self.labels["date_completed"] = lbl
 		self.widgets["date_completed"] = widgets
 		lbl.grid(row=3, column=0)
 		cal.grid(row=3, column=1)
@@ -127,20 +141,37 @@ class AddSession(Frame):
 
 	def check_clicked(self):
 		if self.check_input():
+			self.change_status(True)
 			self.create_session()
+		else:
+			self.change_status(False)
+
+
+	def change_status(self, is_valid):
+		
+		if is_valid:
+			self.lbl_status.config(fg="green", text="Session logged!")
+		else:
+			self.lbl_status.config(fg="red", text="Please fix errors")
+		if self.after_job:
+			self.lbl_status.after_cancel(self.after_job)
+		self.after_job = self.lbl_status.after(2000, lambda: self.lbl_status.config(text=""))
+
+
 			
-
-
 	def check_input(self):
+		is_valid = True
 		if not self.validate_task():
-			return False
+			is_valid = False
 		if not self.validate_task_time():
-			return False
+			is_valid = False
 		if not self.validate_time_completed():
-			return False
+			is_valid = False
 		if not self.validate_date_completed():
-			return False
-		return True
+			is_valid = False
+
+		return is_valid
+
 
 
 	def create_session(self):
@@ -160,8 +191,7 @@ class AddSession(Frame):
 		info = {"task": task, "task_time": task_time, "time_completed": time_completed, 
 			"date_completed": date_completed}
 
-		print(f"checking data: task: {task}  task_time: {task_time}  time_completed: {time_completed}"
-				f"  date_completed: {date_completed}")
+
 		s = Session(task, task_time, time_completed, date_completed)
 		sessiondao.insert_session(s)
 
@@ -197,9 +227,12 @@ class AddSession(Frame):
 
 	def validate_task(self):
 		if self.widgets["optionmenu"]["om_var"].get() == "Select...":
-			messagebox.showerror("Error", "Please select a task")
+			self.widgets
+			self.labels["task"].config(fg="red")
 			return False
+		self.labels["task"].config(fg="black")
 		return True
+
 
 	def validate_task_time(self):
 		h = self.widgets["task_time"]["e_hour"].get() or 0
@@ -207,49 +240,57 @@ class AddSession(Frame):
 		s = self.widgets["task_time"]["e_sec"].get() or 0
 
 		if not h and not m and not s:
-			messagebox.showerror("Error", "Task time is blank")
+			self.labels["task_time"].config(fg="red")
 			return False
 		try:
 			int(h)
 			int(m)
 			int(s)
 		except ValueError:
-			messagebox.showerror("Error", "Task time is invalid")
+			self.labels["task_time"].config(fg="red")
 			return False
 
 		if int(h) != float(h) or int(m) != float(m) or int(s) != float(s):
-			messagebox.showerror("Error", "Task time is invalid")
+			self.labels["task_time"].config(fg="red")
 			return False
+		self.labels["task_time"].config(fg="black")
 		return True
+
 
 	def validate_time_completed(self):
 		h = self.widgets["time_completed"]["e_hour"].get()
 		m = self.widgets["time_completed"]["e_min"].get()
 		if not h or not m:
-			messagebox.showerror("Error", "Time completed is blank")
+			self.labels["time_completed"].config(fg="red")
 			return False
 		try:
 			int(h)
 			int(m)
 		except ValueError:
-			messagebox.showerror("Error", "Time completed is invalid")
+			self.labels["time_completed"].config(fg="red")
 			return False
 
 		if int(h) != float(h) or int(m) != float(m):
-			messagebox.showerror("Error", "Time completed is invalid")
+			self.labels["time_completed"].config(fg="red")
 			return False
 
 		h = int(h)
 		m = int(m)
 		if h < 0 or h > 23 or m < 0 or m > 59:
-			messagebox.showerror("Error", "Time completed is invalid")
+			self.labels["time_completed"].config(fg="red")
 			return False
+		self.labels["time_completed"].config(fg="black")
 		return True
+
 
 	def validate_date_completed(self):
 		# Is this function needed? does date widget self validate?
 		# Do we need to validate for time travel?
-		return True
+		try:
+			self.get_date_completed()
+			return True
+		except ValueError:
+			return False
 
 	def refresh_option_menu(self):
 		menu = self.widgets["optionmenu"]["om"]['menu']

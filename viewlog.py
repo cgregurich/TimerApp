@@ -1,3 +1,4 @@
+
 from tkinter import *
 from tkinter import ttk
 from locals import *
@@ -132,7 +133,7 @@ class ViewLog(Frame):
 	def add_clicked(self):
 		win = Toplevel()
 		win.config(bg=storedsettings.APP_MAIN_COLOR)
-		win.geometry("500x225")
+		win.geometry("500x250")
 		a = AddSession(win, self.controller)
 		a.pack()
 
