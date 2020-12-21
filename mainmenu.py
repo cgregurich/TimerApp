@@ -59,14 +59,16 @@ class MainMenu(Frame):
 
 		
 	def refresh_option_menu(self):
+		prev_task = self.controller.get_current_task()
 		menu = self.om_current_task['menu']
 		tasks = taskdao.get_all_tasks()
 		menu.delete(0, END)
-		if not tasks:
-			menu.add_command(label="No Tasks")
-		else:
+		menu.add_command(label=self.controller.DEFAULT_TASK)
+		if tasks:
 			for task in tasks:
-				menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))
+				menu.add_command(label=task, command=lambda value=task: self.controller.current_task.set(value))			
+		if prev_task not in tasks:
+			self.controller.current_task.set(self.controller.DEFAULT_TASK)
 
 
 

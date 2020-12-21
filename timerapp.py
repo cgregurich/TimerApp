@@ -21,7 +21,8 @@ class TimerApp(Tk):
 		self.iconbitmap("resources/images/icon.ico")
 
 		self.current_task = StringVar()
-		self.current_task.set("Select...")
+		self.DEFAULT_TASK = "untracked"
+		self.current_task.set(self.DEFAULT_TASK)
 		self.debug = BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
 		self.configure(bg="red")

@@ -288,6 +288,8 @@ class Timer(Frame):
 
 	def save_session(self):
 		task = self.controller.get_current_task()
+		if task == self.controller.DEFAULT_TASK:
+			return
 		task_time = self.get_task_time_as_seconds()
 		session = Session(task, task_time)
 		sessiondao.insert_session(session)

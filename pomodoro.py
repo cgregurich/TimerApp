@@ -243,6 +243,8 @@ class Pomodoro(Frame):
 		"""Creates a Session object with the clock's time 
 		and saves it to the database."""
 		task = self.controller.get_current_task()
+		if task == self.controller.DEFAULT_TASK:
+			return
 		task_time = self.get_task_time_as_seconds()
 		session = Session(task, task_time)
 		sessiondao.insert_session(session)
