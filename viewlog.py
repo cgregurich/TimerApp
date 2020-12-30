@@ -400,3 +400,4 @@ class ViewLog(Frame):
 	def reset(self):
 		self.draw_sessions()
 		self.parent.resizable(True, True)
+		self.parent.geometry("500x500")

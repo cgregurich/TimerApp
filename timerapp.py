@@ -46,12 +46,12 @@ class TimerApp(Tk):
 
 
 	def show_frame(self, gui_class):
-		self.resizable(False, False)
 		if self.current_frame: self.current_frame.grid_forget()
 		self.current_frame = self.frames[gui_class]
 		self.change_bindings(gui_class, self.current_frame)
 		self.current_frame.reset()
 		self.current_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+		self.geometry("")
 
 
 	def change_bindings(self, gui_class, frame):
