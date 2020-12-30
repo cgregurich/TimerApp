@@ -7,7 +7,9 @@ import datetime as dt
 from addgoal import AddGoal
 
 # TODO:
-# WHERE I LEFT OFF: just got the goals to display properly
+# WHERE I LEFT OFF: 
+# Concurrent list modification in remove_rows_at_indices!!!!
+# ALso remove the goal from the DB
 # Disable entries
 # change entry widths
 # obviously tweak lbl_header so it looks decent
@@ -41,7 +43,11 @@ class Goals(Frame):
 							"goal_time": "goal time",
 							"time_completed": "time completed",
 							"time_remaining": "time remaining"}
+		self.header_frame_row = None
 		self.row_frames = [] # to keep track of rows for gridding correctly
+		self.check_btns = []
+		self.check_vars = [None]
+
 		self.init_main_frame()
 
 
@@ -84,14 +90,50 @@ class Goals(Frame):
 
 
 	def del_clicked(self):
-		# used currently for printing debug info
-		print()
-		print(self.parent.winfo_height())
-		print(self.parent.winfo_width())
-		print(self.frame_goals.winfo_height())
-		print(self.frame_goals.winfo_width())
+		del_indices = self.get_checked_indices()
+		del_goals = self.get_task_names_at_indices(del_indices)
+		self.remove_rows_at_indices(del_indices)
+		self.remove_goals_from_database(del_goals)
 
 
+	def remove_goals_from_database(self, task_names):
+		for task_name in task_names:
+			goaldao.delete_goal(task_name)
+
+
+	def get_task_names_at_indices(self, indices):
+		goals = goaldao.get_all_goals()
+		tasks = [goals[i]["task"] for i in indices]
+		return tasks
+
+
+
+	def remove_rows_at_indices(self, indices):
+		"""Expects a list of integers representing
+		the indices of the frames to be deleted.
+		Destroys frame at specified indices as well as removes
+		checkbutton at specified indices, and removes both from their
+		respective lists."""
+		for i in indices:
+			self.row_frames[i].destroy()
+			self.check_btns[i].destroy()
+
+		# Removes the correct frames, checkbuttons, and variables from respective lists
+		# Done this way to avoid modifying a concurrent list
+		self.row_frames = [self.row_frames[i] for i in range(len(self.row_frames)) if i not in indices]
+		self.check_btns = [self.check_btns[i] for i in range(len(self.check_btns)) if i not in indices]
+		self.check_vars = [self.check_vars[i] for i in range(len(self.check_vars)) if i not in indices]
+
+
+
+
+	def get_checked_indices(self):
+		indices = []
+		for i, cv in enumerate(self.check_vars):
+			if cv.get() == 1:
+				indices.append(i)
+		return indices
+		
 
 	def init_main_frame(self):
 		self.set_col_widths()
@@ -111,23 +153,22 @@ class Goals(Frame):
 		for key in keys:
 			for row in display_data:
 				self.col_widths[key] = max(self.col_widths[key], len(row[key]))
-		# for key in self.col_widths.keys():
-		# 	self.col_widths[key] += 1
 
 
 	def draw_col_headers(self):
 		header_frame = self.create_goal_frame(self.COL_HEADERS, header=True)
 		self.draw_goal_row_frame(header_frame)
-		self.row_frames.append(header_frame)
+		self.header_frame_row = header_frame
 
 
 	def draw_goals(self):
 		display_data = self.get_display_data()
 		for data_dict in display_data:
 			row_frame = self.create_goal_frame(data_dict)
-			self.draw_goal_row_frame(row_frame)
 			self.row_frames.append(row_frame)
-
+			self.draw_check_button()
+			self.draw_goal_row_frame(row_frame)
+			
 
 	def create_goal_frame(self, data, header=False):
 		"""Expects a dict:
@@ -137,6 +178,7 @@ class Goals(Frame):
 		# A row should be a frame that contains disabled entries 
 		# that display: task | goal_time | time_completed | time_remaining
 		frame = Frame(self.frame_goals)
+		
 		e_task = BooterEntry(frame, width=self.col_widths["task"], justify="center")
 		e_goal_time = BooterEntry(frame, width=self.col_widths["goal_time"], justify="center")
 		e_time_completed = BooterEntry(frame, width=self.col_widths["time_completed"], justify="center")
@@ -157,6 +199,7 @@ class Goals(Frame):
 		
 
 		# Put data into widgets
+
 		e_task.insert(0, task)
 		e_goal_time.insert(0, goal_time)
 		e_time_completed.insert(0, time_completed)
@@ -174,12 +217,27 @@ class Goals(Frame):
 		e_time_completed.config(state=DISABLED)
 		e_time_remaining.config(state=DISABLED)
 
-		e_task.grid(row=0, column=0)
-		e_goal_time.grid(row=0, column=1)
-		e_time_completed.grid(row=0, column=2)
-		e_time_remaining.grid(row=0, column=3)
+		
+		e_task.grid(row=0, column=1)
+		e_goal_time.grid(row=0, column=2)
+		e_time_completed.grid(row=0, column=3)
+		e_time_remaining.grid(row=0, column=4)
+
 
 		return frame
+
+
+	def draw_goal_row_frame(self, row_frame):
+		row_frame.grid(row=len(self.row_frames), column=1)
+		
+
+
+	def draw_check_button(self):
+		check_var = IntVar()
+		check_del = BooterCheckbutton(self.frame_goals, variable=check_var)
+		check_del.grid(row=len(self.row_frames), column=0)
+		self.check_vars.append(check_var)
+		self.check_btns.append(check_del)
 
 
 	def get_display_data(self):
@@ -192,11 +250,6 @@ class Goals(Frame):
 		for goal in goals:
 			raw_data = self._make_raw_goal_data(goal)
 			formatted_data = self.format_goal_data(raw_data)
-			# row = {}
-			# row["task"] = formatted_data["task"]
-			# row["goal_time"] = formatted_data["goal_time"]
-			# row["time_completed"] = formatted_data["time_completed"]
-			# row["time_remaining"] = formatted_data["time_remaining"]
 			all_data.append(formatted_data)
 		return all_data
 
@@ -266,16 +319,20 @@ class Goals(Frame):
 		total_seconds = 0
 		for s in sessions:
 			total_seconds += s.task_time
-		return total_seconds		
+		return total_seconds
 
-
-	def draw_goal_row_frame(self, row_frame):
-		row_frame.grid(row=len(self.row_frames), column=0)
 
 
 	def clear_screen(self):
+		"""Destroys widgets and removes them from class lists"""
 		for frame in self.row_frames:
 			frame.destroy()
+		for check_btn in self.check_btns:
+			check_btn.destroy()
+		self.header_frame_row.destroy()
+		self.row_frames = []
+		self.check_vars = []
+		self.check_btns = []
 
 
 
@@ -285,4 +342,3 @@ class Goals(Frame):
 		time completed and time remaining"""
 		self.clear_screen()
 		self.init_main_frame()
-		# self.parent.geometry(storedsettings.GOALS_WIN_SIZE)
