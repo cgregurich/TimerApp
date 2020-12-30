@@ -54,3 +54,10 @@ class GoalDAO():
 				SET goal_time = :goal_time
 				WHERE task = :task""", goal_dict)
 		return self.c.rowcount
+
+
+	def delete_goal(self, task_name):
+		"""Removes a row from the database based on the arg task_name"""
+		with self.conn:
+			self.c.execute("""DELETE FROM goals WHERE task = ?""", (task_name,))
+		return self.c.rowcount
