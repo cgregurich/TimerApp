@@ -14,14 +14,14 @@ sessiondao = SessionDAO()
 
 
 class Pomodoro(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
-		
-		self.controller = controller
+		self.parent = parent
 		pygame.mixer.init()
 		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 
-
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
+		
 		self.frame_back_button = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_timer_display = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
@@ -44,7 +44,7 @@ class Pomodoro(Frame):
 
 	def back_clicked(self):
 		self.is_visible = True
-		self.controller.show_frame("MainMenu")
+		self.parent.show_frame("MainMenu")
 
 
 	def draw_clock(self):
@@ -73,7 +73,7 @@ class Pomodoro(Frame):
 
 
 	def display_task(self):
-		task = self.controller.get_current_task()
+		task = self.parent.get_current_task()
 		if task != "Select...":
 			self.lbl_task.config(text=task)
 
@@ -242,8 +242,8 @@ class Pomodoro(Frame):
 	def save_session(self):
 		"""Creates a Session object with the clock's time 
 		and saves it to the database."""
-		task = self.controller.get_current_task()
-		if task == self.controller.DEFAULT_TASK:
+		task = self.parent.get_current_task()
+		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
 		session = Session(task, task_time)
@@ -275,7 +275,7 @@ class Pomodoro(Frame):
 
 	def reset(self):
 		self.change_settings()
-		self.controller.geometry(storedsettings.POMO_WIN_SIZE)
+		# self.parent.geometry(storedsettings.POMO_WIN_SIZE)
 		self.display_task()
 
 

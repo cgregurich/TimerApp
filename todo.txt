@@ -1,5 +1,28 @@
 todo (recent at top):
 
+WHERE I LEFT OFF:
+just got add goals to properly work, got goals page to be the right size
+Need to maybe do some more testing with goals and add goals?? maybe add some padding to most if not all frames?
+I feel like I'm forgetting something
+clear print statements
+check todos written at top of files
+release and start using???
+
+FOR THE GOALS:
+- create the goals page
+- add goals button to main menu
+- add goals to TimerApp's frames
+- do some testing
+- Release
+
+
+ADD GOALS TO THE TIMER APP:
+- Set a daily goal? x hours every day
+- Add/delete/edit goals?
+- View current progress of goals (time completed, time to go, etc.)
+- View streaks? How many days have I hit my goal?
+- Calculate how many hours or w/e will be done if I stick to this goal for x days
+
 Not sure how this works but here's a reply from a redditor about how to 
 implement multiple accounts and data syncing and whatnot: 
 *********************************

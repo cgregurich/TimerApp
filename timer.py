@@ -16,14 +16,15 @@ sessiondao = SessionDAO()
 
 
 class Timer(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
 
 		pygame.mixer.init()
 
-		self.controller = controller
-
-
+		self.parent = parent
+		
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
+		
 		self.frame_back_button = Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_entries = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_buttons = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
@@ -54,7 +55,7 @@ class Timer(Frame):
 
 	def back_clicked(self):
 		self.is_visible = True
-		self.controller.show_frame("MainMenu")
+		self.parent.show_frame("MainMenu")
 
 
 	def draw_clock(self):
@@ -104,7 +105,7 @@ class Timer(Frame):
 		self.btn_control.grid(row=2, column=1)
 
 	def display_task(self):
-		task = self.controller.get_current_task()
+		task = self.parent.get_current_task()
 		if task != "Select...":
 			self.lbl_task.config(text=task)
 
@@ -287,8 +288,8 @@ class Timer(Frame):
 
 
 	def save_session(self):
-		task = self.controller.get_current_task()
-		if task == self.controller.DEFAULT_TASK:
+		task = self.parent.get_current_task()
+		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
 		session = Session(task, task_time)
@@ -335,7 +336,7 @@ class Timer(Frame):
 
 	def reset(self):
 		self.change_settings()
-		self.controller.geometry(storedsettings.TIMER_WIN_SIZE)
+		# self.parent.geometry(storedsettings.TIMER_WIN_SIZE)
 		self.display_task()
 
 

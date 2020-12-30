@@ -21,19 +21,18 @@ sessiondao = SessionDAO()
 
 
 class AddSession(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
-		self.controller = controller
+		self.parent = parent
+		self.parent = parent
 
 		self.init_back_btn()
 
-		self.frame_main = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_input = Frame(self.frame_main, bg=storedsettings.APP_MAIN_COLOR)		
+		self.frame_input = Frame(self, bg=storedsettings.APP_MAIN_COLOR)		
 		self.frame_task_time = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)		
 		self.frame_time_completed = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
 
-		self.frame_main.grid(row=0, column=1)
 		self.frame_input.grid(row=0, column=1)
 		self.frame_task_time.grid(row=1, column=1)
 		self.frame_time_completed.grid(row=2, column=1)
@@ -64,7 +63,7 @@ class AddSession(Frame):
 
 		self.lbl_status = BooterLabel(self, text="")
 		self.lbl_status.config(font=(storedsettings.FONT, 15, "bold"), fg="green")
-		btn_log = BooterButton(self, text="Log", command=self.check_clicked)
+		btn_log = BooterButton(self, text="Log", command=self.log_clicked)
 
 		
 		self.lbl_status.grid(row=2, column=1)
@@ -74,7 +73,7 @@ class AddSession(Frame):
 
 
 	def init_back_btn(self):
-		btn_back = BooterButton(self, command=lambda: print("TODO: back clicked"))
+		btn_back = BooterButton(self, command=self.parent.destroy)
 		btn_back.apply_back_image()
 		btn_back.grid(row=0, column=0, sticky="n")
 
@@ -139,8 +138,8 @@ class AddSession(Frame):
 		cal.grid(row=3, column=1)
 
 
-	def check_clicked(self):
-		if self.check_input():
+	def log_clicked(self):
+		if self.is_valid():
 			self.change_status(True)
 			self.create_session()
 		else:
@@ -148,7 +147,6 @@ class AddSession(Frame):
 
 
 	def change_status(self, is_valid):
-		
 		if is_valid:
 			self.lbl_status.config(fg="green", text="Session logged!")
 		else:
@@ -159,7 +157,7 @@ class AddSession(Frame):
 
 
 			
-	def check_input(self):
+	def is_valid(self):
 		is_valid = True
 		if not self.validate_task():
 			is_valid = False
@@ -173,60 +171,9 @@ class AddSession(Frame):
 		return is_valid
 
 
-
-	def create_session(self):
-		"""Create and return a Session based off the info
-		currently in the input window"""
-		# things we need:
-		# task name
-		# task time -> convert to seconds
-		# time completed -> convert to whatever it's supposed to be
-		# date completed
-		# create session object
-		# add it to the db
-		task = self.widgets["optionmenu"]["om_var"].get()
-		task_time = self.get_task_time()
-		time_completed = self.get_time_completed()
-		date_completed = self.get_date_completed()
-		info = {"task": task, "task_time": task_time, "time_completed": time_completed, 
-			"date_completed": date_completed}
-
-
-		s = Session(task, task_time, time_completed, date_completed)
-		sessiondao.insert_session(s)
-
-
-	def get_task_time(self):
-		"""Gets the h, m, and s from input window and returns the time
-		in seconds as an integer"""
-		h = int(self.widgets["task_time"]["e_hour"].get() or 0)
-		m = int(self.widgets["task_time"]["e_min"].get() or 0)
-		s = int(self.widgets["task_time"]["e_sec"].get() or 0)
-
-		return h*3600 + m*60 + s
-
-
-	def get_time_completed(self):
-		"""Returns a string of format HH:MM based off current
-		values in input (this is only called after validation)"""
-		h = self.widgets["time_completed"]["e_hour"].get()
-		m = self.widgets["time_completed"]["e_min"].get()
-		return "{}:{:0>2}".format(h, m)
-
-
-	def get_date_completed(self):
-		"""Returns a string of format MM-DD-YY based off
-		selected date in date entry widget"""
-		date_str = self.widgets["date_completed"]["cal"].get()
-		date_info = [int(i) for i in date_str.split("/")]
-		month, day, year = tuple(date_info)
-		year += 2000
-		date_obj = dt.datetime(year, month, day).date()
-		return date_obj.strftime("%m-%d-%y")
-
-
 	def validate_task(self):
-		if self.widgets["optionmenu"]["om_var"].get() == "Select...":
+		task = self.widgets["optionmenu"]["om_var"].get()
+		if task == "Select...":
 			self.widgets
 			self.labels["task"].config(fg="red")
 			return False
@@ -291,6 +238,61 @@ class AddSession(Frame):
 			return True
 		except ValueError:
 			return False
+
+
+
+	def create_session(self):
+		"""Create and return a Session based off the info
+		currently in the input window"""
+		# things we need:
+		# task name
+		# task time -> convert to seconds
+		# time completed -> convert to whatever it's supposed to be
+		# date completed
+		# create session object
+		# add it to the db
+		task = self.widgets["optionmenu"]["om_var"].get()
+		task_time = self.get_task_time()
+		time_completed = self.get_time_completed()
+		date_completed = self.get_date_completed()
+		info = {"task": task, "task_time": task_time, "time_completed": time_completed, 
+			"date_completed": date_completed}
+
+
+		s = Session(task, task_time, time_completed, date_completed)
+		sessiondao.insert_session(s)
+
+
+	def get_task_time(self):
+		"""Gets the h, m, and s from input window and returns the time
+		in seconds as an integer"""
+		h = int(self.widgets["task_time"]["e_hour"].get() or 0)
+		m = int(self.widgets["task_time"]["e_min"].get() or 0)
+		s = int(self.widgets["task_time"]["e_sec"].get() or 0)
+
+		return h*3600 + m*60 + s
+
+
+	def get_time_completed(self):
+		"""Returns a string of format HH:MM based off current
+		values in input (this is only called after validation)"""
+		h = self.widgets["time_completed"]["e_hour"].get()
+		m = self.widgets["time_completed"]["e_min"].get()
+		return "{}:{:0>2}".format(h, m)
+
+
+	def get_date_completed(self):
+		"""Returns a string of format MM-DD-YY based off
+		selected date in date entry widget"""
+		date_str = self.widgets["date_completed"]["cal"].get()
+		date_info = [int(i) for i in date_str.split("/")]
+		month, day, year = tuple(date_info)
+		year += 2000
+		date_obj = dt.datetime(year, month, day).date()
+		return date_obj.strftime("%m-%d-%y")
+
+
+	
 
 	def refresh_option_menu(self):
 		menu = self.widgets["optionmenu"]["om"]['menu']

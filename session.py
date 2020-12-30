@@ -21,19 +21,6 @@ class Session():
 			self.info["task"] = "N/A"
 
 
-		# # if task_time:
-		# if task and task_time and time_completed and date_completed:
-		# 	self.info = {"task": task, "task_time": task_time, "time_completed": cur_time, "date_completed": cur_date}
-		# if not time_completed and not date_completed:
-		# 	cur_date = self.get_current_date()
-		# 	cur_time = self.get_current_time()
-		# 	if task == DEFAULT_TASK:
-		# 		task = "N/A"
-		# 	self.info = {"task": task, "task_time": task_time, "time_completed": cur_time, "date_completed": cur_date}
-		# else:
-		# 	self.info = {"task": None, "task_time": None, "time_completed": None, "date_completed": None}
-
-
 	def __str__(self):
 		return_str = ""
 		for key, value in self.info.items():

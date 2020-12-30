@@ -1,5 +1,4 @@
 import sqlite3
-
 from session import Session
 import datetime as dt
 
@@ -13,12 +12,12 @@ class SessionDAO():
 		self.conn.commit()
 
 
-
 	def insert_session(self, session):
 		with self.conn:
 			self.c.execute("""INSERT INTO sessions VALUES(
 				:task, :task_time,  :time_completed, :date_completed
 				)""", session.info)
+
 
 	# TODO: lol didn't know I even wrote this
 	def delete_session(self, session_to_del):
@@ -52,6 +51,7 @@ class SessionDAO():
 
 		return session_list
 
+
 	def get_all_sessions_from_date(self, date):
 		"""Arg date must be datetime.date object"""
 		all_sessions = self.get_all_sessions()
@@ -63,6 +63,7 @@ class SessionDAO():
 
 		return sessions_list
 
+
 	def get_all_sessions_between_dates(self, start, end):
 		"""Returns list of Session objects that have a date_completed on and between
 		start and end"""
@@ -72,7 +73,6 @@ class SessionDAO():
 		for date in dates:
 			sessions += self.get_all_sessions_from_date(date)
 		return sessions
-
 
 
 	def _generate_dates_between(self, start, end):
@@ -86,18 +86,12 @@ class SessionDAO():
 
 
 	def get_all_sessions_by_task(self, task):
-		"""ARG task : str"""
+		"""ARG task : str
+		Returns a list of Session objects that are of the task
+		provided by the arg task"""
 		with self.conn:
 			self.c.execute("""SELECT * FROM sessions WHERE task = ?
 				ORDER BY date_completed, time_completed""", (task,))
 			tup_list = self.c.fetchall()
 
 		return self._convert_tup_list_to_session_list(tup_list)
-
-
-
-
-
-
-
-

@@ -14,7 +14,6 @@ from addsession import AddSession
 import autocomplete
 import calendar
 
-import storedsettings
 
 
 
@@ -23,11 +22,12 @@ taskdao = TaskDAO()
 
 
 class ViewLog(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
-		self.controller = controller
+		self.parent = parent
 
 		
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
 
 		# OVERHAUL FRAMES
 		self.frame_upper = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
@@ -65,7 +65,7 @@ class ViewLog(Frame):
 		PADY = 5
 		PADX = 5
 
-		btn_back = BooterButton(self.frame_left, command=lambda: self.controller.show_frame("MainMenu"))
+		btn_back = BooterButton(self.frame_left, command=lambda: self.parent.show_frame("MainMenu"))
 		btn_back.grid(row=0, column=0, sticky="n", pady=PADY)
 		btn_back.apply_back_image()
 
@@ -122,7 +122,7 @@ class ViewLog(Frame):
 		self.yscrollbar.grid(row=1, column=2, sticky='nsew')
 		# self.xscrollbar.grid(row=3, column=0, sticky='nsew')
 
-		self.controller.bind_all("<MouseWheel>", self._on_mousewheel)
+		self.parent.bind_all("<MouseWheel>", self._on_mousewheel)
 
 
 
@@ -134,7 +134,7 @@ class ViewLog(Frame):
 		win = Toplevel()
 		win.config(bg=storedsettings.APP_MAIN_COLOR)
 		win.geometry("500x250")
-		a = AddSession(win, self.controller)
+		a = AddSession(win)
 		a.pack()
 
 
@@ -394,5 +394,5 @@ class ViewLog(Frame):
 
 	def reset(self):
 		self.draw_sessions()
-		self.controller.geometry(storedsettings.VIEWLOG_WIN_SIZE)
-		self.controller.resizable(True, True)
+		# self.parent.geometry(storedsettings.VIEWLOG_WIN_SIZE)
+		self.parent.resizable(True, True)

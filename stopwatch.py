@@ -15,11 +15,13 @@ sessiondao = SessionDAO()
 
 
 class Stopwatch(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
 
 		
-		self.controller = controller
+		self.parent = parent
+
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
 
 		self.mode = STOPPED
 
@@ -41,7 +43,7 @@ class Stopwatch(Frame):
 
 	def back_clicked(self):
 		self.is_visible = True
-		self.controller.show_frame("MainMenu")
+		self.parent.show_frame("MainMenu")
 
 
 	def draw_clock(self):
@@ -71,7 +73,7 @@ class Stopwatch(Frame):
 		
 
 	def display_task(self):
-		task = self.controller.get_current_task()
+		task = self.parent.get_current_task()
 		if task != "Select...":
 			self.lbl_task.config(text=task)
 
@@ -163,12 +165,6 @@ class Stopwatch(Frame):
 		self.lbl_time.config(fg=storedsettings.CLOCK_FG)
 
 
-	def reset(self):
-		self.change_settings()
-		self.controller.geometry(storedsettings.STOPWATCH_WIN_SIZE)
-		self.display_task()
-
-
 	def get_task_time_formatted(self):
 		"""Returns time spent formatted as HH:MM:SS"""
 		time_obj = self.get_task_time()
@@ -187,15 +183,18 @@ class Stopwatch(Frame):
 		return self.task_time - 1
 		
 	def save_session(self):
-		task = self.controller.get_current_task()
-		if task == self.controller.DEFAULT_TASK:
+		task = self.parent.get_current_task()
+		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
 		session = Session(task, task_time)
 		sessiondao.insert_session(session)
 
 		
-		
+	def reset(self):
+		self.change_settings()
+		# self.parent.geometry(storedsettings.STOPWATCH_WIN_SIZE)
+		self.display_task()
 
 
 

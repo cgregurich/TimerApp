@@ -6,6 +6,7 @@ from pomodoro import Pomodoro
 from settings import Settings
 from tasks import Tasks
 from viewlog import ViewLog
+from goals import Goals
 from configmanager import ConfigManager
 import storedsettings
 
@@ -19,52 +20,37 @@ class TimerApp(Tk):
 
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
 
 		self.current_task = StringVar()
 		self.DEFAULT_TASK = "untracked"
 		self.current_task.set(self.DEFAULT_TASK)
 		self.debug = BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
-		self.configure(bg="red")
 
-		container = Frame(self)
-		container.pack(side="top", fill="both", expand=True)
-		container.grid_rowconfigure(0, weight=1)
-		container.grid_columnconfigure(0, weight=1)
 
 		self.frames = {}
 
 
 		self.clocks = ("Timer", "Stopwatch", "Pomodoro")
 
+		self.current_frame = None
+
 
 		for gui_class in (MainMenu, Timer, Stopwatch, Pomodoro, 
-			Settings, Tasks, ViewLog):
-			frame = gui_class(container, self)
-
+			Settings, Tasks, ViewLog, Goals):
+			frame = gui_class(self)
 			self.frames[gui_class.__name__] = frame
-
-			frame.grid(row=0, column=0, sticky="nsew")
 
 		self.show_frame('MainMenu')
 
-		
-	def check_is_resizable(self):
-		#Check debug state to see if app should be resizable
-		if self.debug.get():
-			self.resizable(True, True)
-		else:
-			self.resizable(False, False)
-
-
 
 	def show_frame(self, gui_class):
-		self.check_is_resizable()
-		frame = self.frames[gui_class]
-		frame.configure(bg=storedsettings.APP_MAIN_COLOR)
-		self.change_bindings(gui_class, frame)
-		frame.reset()
-		frame.tkraise()
+		if self.current_frame: self.current_frame.grid_forget()
+		self.current_frame = self.frames[gui_class]
+		self.change_bindings(gui_class, self.current_frame)
+		self.current_frame.reset()
+		self.current_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
 
 
@@ -79,13 +65,9 @@ class TimerApp(Tk):
 		return self.current_task.get()
 
 
-
 def main():
 	app = TimerApp()
 	app.mainloop()
 
 if __name__ == '__main__':
 	main()
-
-
-

@@ -12,7 +12,7 @@ save when back button is pressed???? idk
 taskdao = TaskDAO()
 
 class Tasks(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
@@ -25,7 +25,7 @@ class Tasks(Frame):
 		self.frame_buttons.grid(row=1, column=2, padx=(20, 0))
 		self.frame_input.grid(row=1, column=1)
 
-		self.controller = controller
+		self.parent = parent
 		self.selected_task = StringVar()
 		self.selected_task.set("Select...")
 		self.draw_window()
@@ -35,7 +35,7 @@ class Tasks(Frame):
 		lbl_header = BooterLabel(self, text="Edit Tasks")
 		lbl_header.config(font=(storedsettings.FONT, 20, "bold"))
 
-		btn_back = BooterButton(self, command=lambda: self.controller.show_frame('MainMenu'))
+		btn_back = BooterButton(self, command=lambda: self.parent.show_frame('MainMenu'))
 		
 		btn_back.apply_back_image()
 
@@ -45,8 +45,6 @@ class Tasks(Frame):
 		btn_add = BooterButton(self.frame_buttons, text="Add", width=7, command=self.add_clicked)
 		
 
-
-	
 		tasks = taskdao.get_all_tasks()
 	
 		# Init's OptionMenu; this is never seen because refresh_task_menu is called
@@ -151,4 +149,4 @@ class Tasks(Frame):
 
 	def reset(self):
 		self.refresh_task_menu()
-		self.controller.geometry(storedsettings.TASKS_WIN_SIZE)
+		# self.parent.geometry(storedsettings.TASKS_WIN_SIZE)

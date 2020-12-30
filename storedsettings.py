@@ -28,6 +28,8 @@ ENTRY_FONT_TUPLE = (FONT, 14)
 
 DROPDOWN_FONT = ('Orator STD', 14)
 
+GOAL_FONT = ("Orator STD", 17)
+
 
 
 LOG_FONT = "Bahnschrift Light"
@@ -68,7 +70,8 @@ POMO_WIN_SIZE =          "336x205"
 SETTINGS_WIN_SIZE =      "452x402"
 TASKS_WIN_SIZE =         "419x300"
 VIEWLOG_WIN_SIZE =       "470x300"
-MAINMENU_WIN_SIZE =      "300x520"
+MAINMENU_WIN_SIZE =      "300x575"
+GOALS_WIN_SIZE =         ""
 
 
 

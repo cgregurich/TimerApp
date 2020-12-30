@@ -17,12 +17,13 @@ from tkinter import colorchooser
 from configmanager import ConfigManager
 
 class Settings(Frame):
-	def __init__(self, parent, controller):
+	def __init__(self, parent):
 		Frame.__init__(self, parent)
 
 		self.mgr = ConfigManager()
 		
-
+		self.config(bg=storedsettings.APP_MAIN_COLOR)
+		
 		self.frame_settings = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
 		self.frame_labels = Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
@@ -37,7 +38,7 @@ class Settings(Frame):
 		
 
 
-		self.controller = controller
+		self.parent = parent
 
 		if storedsettings.AUTOSAVE == '1':
 			self.save_mode = ON
@@ -191,7 +192,7 @@ class Settings(Frame):
 		
 		self.save_settings()
 
-		self.controller.show_frame('MainMenu')
+		self.parent.show_frame('MainMenu')
 
 
 		
@@ -215,4 +216,5 @@ class Settings(Frame):
 		
 
 	def reset(self):
-		self.controller.geometry(storedsettings.SETTINGS_WIN_SIZE)
+		# self.parent.geometry(storedsettings.SETTINGS_WIN_SIZE)
+		pass
