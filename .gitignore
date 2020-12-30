@@ -1,8 +1,7 @@
 testing.py
 usersettings.ini
 __pycache__/
-task.db
-session.db
+*.db
 testingpomo.py
 testingsession.py
 autocompleteentry.py
