@@ -6,16 +6,6 @@ import datetime as dt
 
 from addgoal import AddGoal
 
-# TODO:
-# WHERE I LEFT OFF: 
-# Concurrent list modification in remove_rows_at_indices!!!!
-# ALso remove the goal from the DB
-# Disable entries
-# change entry widths
-# obviously tweak lbl_header so it looks decent
-# resize window
-# display goals -> task | goal_time | time_completed | time_remaining
-# refresh this data in self.reset()
 
 goaldao = GoalDAO()
 sessiondao = SessionDAO()
@@ -342,3 +332,4 @@ class Goals(Frame):
 		time completed and time remaining"""
 		self.clear_screen()
 		self.init_main_frame()
+	

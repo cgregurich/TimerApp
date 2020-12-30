@@ -1,5 +1,15 @@
 todo (recent at top):
 
+
+# TODO:
+# WHERE I LEFT OFF: 
+# I released it and have the goals on my local version
+# but I need to figure out how to make resizing not be such
+# a bitch. If I manually resize at any time, then the program
+# seems to lose its ability to figure out the appropriate size
+# This is okay for most of the program, as most windows shouldn't
+# be resizable, but I need ViewLog to be resizable!!
+
 WHERE I LEFT OFF:
 just got add goals to properly work, got goals page to be the right size
 Need to maybe do some more testing with goals and add goals?? maybe add some padding to most if not all frames?

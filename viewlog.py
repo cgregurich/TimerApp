@@ -65,7 +65,7 @@ class ViewLog(Frame):
 		PADY = 5
 		PADX = 5
 
-		btn_back = BooterButton(self.frame_left, command=lambda: self.parent.show_frame("MainMenu"))
+		btn_back = BooterButton(self.frame_left, command=self.back_clicked)
 		btn_back.grid(row=0, column=0, sticky="n", pady=PADY)
 		btn_back.apply_back_image()
 
@@ -136,6 +136,11 @@ class ViewLog(Frame):
 		win.geometry("500x250")
 		a = AddSession(win)
 		a.pack()
+
+
+	def back_clicked(self):
+		self.parent.show_frame("MainMenu")
+		self.parent.resizable(False, False)
 
 
 
@@ -394,5 +399,4 @@ class ViewLog(Frame):
 
 	def reset(self):
 		self.draw_sessions()
-		# self.parent.geometry(storedsettings.VIEWLOG_WIN_SIZE)
 		self.parent.resizable(True, True)
