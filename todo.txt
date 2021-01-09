@@ -1,5 +1,13 @@
 todo (recent at top):
 
+# TODO FOR THE NEXT TIME I WORK ON THIS:
+resizing works except the un-resizable is only triggered when you hit the back button on the ViewLog window.
+- if working on an untracked, don't ask to log it??
+- ^^ not sure, the notification is nice. Maybe add an option in settings to have a popup notification when a timer/pomo goes off? This is useful for when using two virtual desktops; the timer becomes highlighted orange on the task bar
+- Add setting for "time completed" to be set at start of clock or at end??
+- Clear this mess of a todo.txt!
+- Maybe make a stopwatch + pomo/timer combo? So I can know when I've done X amount of time, but if I want to finish something I'm working on, I don't have to stop what I'm doing, focus the timer, log the session, then set a stopwatch. What a hassle!
+
 
 # TODO:
 # WHERE I LEFT OFF: 
