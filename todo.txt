@@ -9,6 +9,7 @@ resizing works except the un-resizable is only triggered when you hit the back b
 - Clear this mess of a todo.txt!
 - Maybe make a stopwatch + pomo/timer combo? So I can know when I've done X amount of time, but if I want to finish something I'm working on, I don't have to stop what I'm doing, focus the timer, log the session, then set a stopwatch. What a hassle!
 - Add a start and end date selection in ViewLog when searching by task
+** - Add setting/change functionality -> log sessions based on when timer started??
 
 
 # TODO:
