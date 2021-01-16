@@ -81,7 +81,7 @@ class Session():
 
 
 	def get_current_date(self):
-		"""Returns string of current time in format MM-DD-YY"""
+		"""Returns string of current date in format MM-DD-YY"""
 		today = datetime.now()
 		return today.strftime("%m-%d-%y")
 
