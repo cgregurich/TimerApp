@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from mainmenu import MainMenu
 from timer import Timer
 from stopwatch import Stopwatch
@@ -14,18 +14,19 @@ import storedsettings
 
 
 # Controller class -> Controls which frame is on top
-class TimerApp(Tk):
+class TimerApp(tk.Tk):
 	def __init__(self, *args, **kwargs):
-		Tk.__init__(self, *args, **kwargs)
+		tk.Tk.__init__(self, *args, **kwargs)
 
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
+		self.resizable(False, False)
 
-		self.current_task = StringVar()
+		self.current_task = tk.StringVar()
 		self.DEFAULT_TASK = "untracked"
 		self.current_task.set(self.DEFAULT_TASK)
-		self.debug = BooleanVar()
+		self.debug = tk.BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
 		# self.resizable = (False, False)
 

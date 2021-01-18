@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from booterwidgets import *
 from goaldao import GoalDAO
 from sessiondao import SessionDAO
@@ -10,9 +10,9 @@ from addgoal import AddGoal
 goaldao = GoalDAO()
 sessiondao = SessionDAO()
 
-class Goals(Frame):
+class Goals(tk.Frame):
 	def __init__(self, parent):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 		self.parent = parent
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
@@ -20,7 +20,7 @@ class Goals(Frame):
 		self.frame_buttons = None
 		self.init_top()
 		
-		self.frame_goals = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_goals = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_goals.grid(row=2, column=1)
 
 
@@ -61,7 +61,7 @@ class Goals(Frame):
 
 
 	def init_buttons(self):
-		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_buttons = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_buttons.grid(row=1, column=1)
 		btn_add = BooterButton(self.frame_buttons, text="Add", command=self.add_clicked)
 		btn_del = BooterButton(self.frame_buttons, text="Delete", command=self.del_clicked)
@@ -70,7 +70,7 @@ class Goals(Frame):
 
 
 	def add_clicked(self):
-		win = Toplevel()
+		win = tk.Toplevel()
 		win.config(bg=storedsettings.APP_MAIN_COLOR)
 		a = AddGoal(win, self)
 		a.pack()
@@ -167,7 +167,7 @@ class Goals(Frame):
 		Returns the frame that holds the widgets that contain the data"""
 		# A row should be a frame that contains disabled entries 
 		# that display: task | goal_time | time_completed | time_remaining
-		frame = Frame(self.frame_goals)
+		frame = tk.Frame(self.frame_goals)
 		
 		e_task = BooterEntry(frame, width=self.col_widths["task"], justify="center")
 		e_goal_time = BooterEntry(frame, width=self.col_widths["goal_time"], justify="center")
@@ -202,10 +202,10 @@ class Goals(Frame):
 		e_time_remaining.config(disabledforeground="black")
 
 		# Disable all entries
-		e_task.config(state=DISABLED)
-		e_goal_time.config(state=DISABLED)
-		e_time_completed.config(state=DISABLED)
-		e_time_remaining.config(state=DISABLED)
+		e_task.config(state=tk.DISABLED)
+		e_goal_time.config(state=tk.DISABLED)
+		e_time_completed.config(state=tk.DISABLED)
+		e_time_remaining.config(state=tk.DISABLED)
 
 		
 		e_task.grid(row=0, column=1)
@@ -223,7 +223,7 @@ class Goals(Frame):
 
 
 	def draw_check_button(self):
-		check_var = IntVar()
+		check_var = tk.IntVar()
 		check_del = BooterCheckbutton(self.frame_goals, variable=check_var)
 		check_del.grid(row=len(self.row_frames), column=0)
 		self.check_vars.append(check_var)

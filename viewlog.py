@@ -158,66 +158,84 @@ class ViewLog(Frame):
 	def change_input_widgets(self):
 		mode = self.mode_var.get()
 		if mode == DAY:
-			self.draw_calendar()
+			self.draw_day_widgets()
 
 		elif mode == WEEK:
 			self.draw_week_widgets()
-			
 
 		elif mode == MONTH:
 			self.draw_month_widgets()
 
 		elif mode == TASK:
-			self.draw_autocomplete()
+			self.draw_task_widgets()
 
-	def draw_calendar(self):
+
+	def draw_day_widgets(self):
+		self.draw_autocomplete()
 		PADY = 5
 		today = dt.datetime.now()
 		cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		cal.grid(row=0, column=0, pady=PADY)
+		cal.grid(row=1, column=0, pady=PADY)
 		self.input_widgets['calendar_end'] = cal
+
 
 	def draw_month_widgets(self):
 		"""Draws two calendar pickers; one set to today, one set to a week ago"""
-		PADY = 5
+
 		today = dt.datetime.now()
-		# Quick and dirty fix for if it's January; 1 - 1 != 12
+		# Quick and dirty fix for if it's January; a month ago is Dec(12) not 0. 1 - 1 != 12
 		if today.month == 1:
 			days_in_month = calendar.monthrange(today.year, 12)[1]
 		else:
 			days_in_month = calendar.monthrange(today.year, today.month-1)[1]
 		month_ago = today - dt.timedelta(days=days_in_month)
+		self.draw_autocomplete()
+		self._draw_cal_widgets(month_ago, today, start_row=1, end_row=2)
+		
 
-		start = DateEntry(self.frame_cal, selectmode="day", year=month_ago.year, month=month_ago.month, day=month_ago.day)
-		start.grid(row=0, column=0, pady=PADY)
-
-		end = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		end.grid(row=1, column=0, pady=PADY)
-
-		self.input_widgets['calendar_end'] = end
-		self.input_widgets['calendar_start'] = start
 
 	def draw_week_widgets(self):
 		"""Draws two calendar pickers; one set to today, one set to a week ago"""
-		PADY = 5
 		today = dt.datetime.now()
 		week_ago = today - dt.timedelta(days=7)
+		self.draw_autocomplete()
+		self._draw_cal_widgets(week_ago, today, start_row=1, end_row=2)
 
-		start = DateEntry(self.frame_cal, selectmode="day", year=week_ago.year, month=week_ago.month, day=week_ago.day)
-		start.grid(row=0, column=0, pady=PADY)
 
-		end = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		end.grid(row=1, column=0, pady=PADY)	
+	def _draw_cal_widgets(self, start_date, end_date, start_row=0, end_row=1):
+		"""
+		Expects datetime.datetime object for args start_date and end_date 
+		"""
+		start = DateEntry(self.frame_cal, selectmode="day", year=start_date.year, month=start_date.month, day=start_date.day)
+		end = DateEntry(self.frame_cal, selectmode="day", year=end_date.year, month=end_date.month, day=end_date.day)
 
-		self.input_widgets['calendar_end'] = end
-		self.input_widgets['calendar_start'] = start
+		PADY = 5
+		start.grid(row=start_row, column=0, pady=PADY)
+		end.grid(row=end_row, column=0, pady=PADY)
+
+		self.input_widgets["calendar_start"] = start
+		self.input_widgets["calendar_end"] = end
+
+
+
+
+	def draw_task_widgets(self):
+		self.draw_autocomplete()
+		# self._draw_cal_widgets(dt.datetime.now(), dt.datetime.now(), 1, 2)
+
 
 
 	def draw_autocomplete(self):
 		entry = autocomplete.AutoComplete(self.frame_cal, options=taskdao.get_all_tasks(), width=16)
 		entry.config(relief=SOLID, bd=1)
-		entry.grid(row=1, column=0)
-		self.input_widgets['entry'] = entry
+		entry.grid(row=0, column=0)
+		self.input_widgets["entry"] = entry
+		entry.bind("<Return>", self._bind_func)
+
+	def _bind_func(self, e):
+		self.focus_set()
+		self.draw_sessions()
+		self.input_widgets["entry"]._close_popup()
 
 
 	def _on_mousewheel(self, event):
@@ -236,14 +254,26 @@ class ViewLog(Frame):
 
 	def draw_sessions(self):
 		self._clear_screen()
-		if self.mode_var.get() == DAY:
-			sessions_list = self.get_selected_day_sessions()
-		elif self.mode_var.get() == WEEK or self.mode_var.get() == MONTH:
-			sessions_list = self.get_selected_timeframe_sessions()
 
+		# If user wants to view tasks of today
+		if self.mode_var.get() == DAY:
+			if self._is_task_entered():
+				sessions_list = self.get_selected_day_sessions_by_task()
+			else:
+				sessions_list = self.get_selected_day_sessions()
+
+		# If user wants to view tasks of the past 7 days or the past 30 days
+		elif self.mode_var.get() == WEEK or self.mode_var.get() == MONTH:
+			if self._is_task_entered():
+				sessions_list = self.get_selected_timeframe_sessions_by_task()
+			else:
+				sessions_list = self.get_selected_timeframe_sessions()
+
+		# If user is searching for all sessions of a specific task
 		elif self.mode_var.get() == TASK:
-			task = self.input_widgets['entry'].get()
+			task = self.input_widgets["entry"].get()
 			sessions_list = sessiondao.get_all_sessions_by_task(task)
+
 		self.draw_sessions_to_screen(sessions_list)
 		self.draw_totals(sessions_list)
 
@@ -251,6 +281,37 @@ class ViewLog(Frame):
 		# the frame will shrink/grow each time the page is redrawn
 		self.display_canvas.config(width=self.frame_lower.winfo_width()-21)
 
+
+	def _is_task_entered(self):
+		return self.input_widgets["entry"].get() != ""
+
+
+	def get_selected_day_sessions_by_task(self):
+		sessions = self.get_selected_day_sessions()
+		task = self._get_entered_task()
+		task_sessions = []
+		for s in sessions:
+			if s.task == task:
+				task_sessions.append(s)
+		return task_sessions
+
+
+	def get_selected_timeframe_sessions_by_task(self):
+
+		sessions = self.get_selected_timeframe_sessions()
+		task = self._get_entered_task()
+		task_sessions = []
+		for s in sessions:
+			if s.task == task:
+				task_sessions.append(s)
+		return task_sessions
+
+
+	def _get_entered_task(self):
+		"""
+		Assumes validation has already been done. does it matter tho?
+		"""
+		return self.input_widgets["entry"].get()
 
 
 

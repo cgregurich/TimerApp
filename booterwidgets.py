@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 import storedsettings
 
 import PIL
@@ -19,24 +19,26 @@ the same name (minus 'Booter')"""
 
 
 
-class BooterButton(Button):
+class BooterButton(tk.Button):
 	def __init__(self, *args, **kwargs):
-		Button.__init__(self, *args, **kwargs)
+		tk.Button.__init__(self, *args, **kwargs)
 
 		# Default settings for the widget
 		self.config(bg=storedsettings.APP_WIDGET_COLOR)
 		self.config(fg=storedsettings.APP_FONT_COLOR)
-		self.config(relief=SOLID)
+		self.config(relief=tk.SOLID)
 
 		self.config(disabledforeground=storedsettings.DISABLED_FONT_COLOR)
 
 
-		self.config(height=0)
+		
+		# Set default font unless font is given
+		if "font" not in kwargs.keys():
+			self.FONT_SIZE = 17
+			self.config(font=(storedsettings.FONT, self.FONT_SIZE))
 
-
-		self.FONT_SIZE = 17
-
-		self.config(font=(storedsettings.FONT, self.FONT_SIZE))
+		if "height" not in kwargs.keys():
+			self.config(height=0)
 
 
 		self.bind("<Enter>", self.hover)
@@ -44,7 +46,7 @@ class BooterButton(Button):
 
 	def hover(self, event):
 		# Only indicate hover if button is not disabled
-		if self['state'] == NORMAL:
+		if self['state'] == tk.NORMAL:
 			self.change_bg(storedsettings.HOVER_COLOR)
 
 
@@ -101,12 +103,12 @@ class BooterButton(Button):
 
 	
 
-class BooterSelect(Button):
+class BooterSelect(tk.Button):
 	def __init__(self, *args, **kwargs):
-		Button.__init__(self, *args, **kwargs)
+		tk.Button.__init__(self, *args, **kwargs)
 		self.config(bg=storedsettings.APP_WIDGET_COLOR)
 		self.config(fg=storedsettings.APP_FONT_COLOR)
-		self.config(relief=SOLID, highlightthickness=2)
+		self.config(relief=tk.SOLID, highlightthickness=2)
 
 		self.FONT_SIZE = 14
 		width = 6
@@ -138,9 +140,9 @@ class BooterSelect(Button):
 
 
 
-class BooterLabel(Label):
+class BooterLabel(tk.Label):
 	def __init__(self, *args, **kwargs):
-		Label.__init__(self, *args, **kwargs)
+		tk.Label.__init__(self, *args, **kwargs)
 		self.font_size = 18
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
@@ -159,9 +161,9 @@ class BooterLabel(Label):
 		self.config(font=(storedsettings.FONT, self.font_size, "bold"))
 
 
-class BooterCheckbutton(Checkbutton):
+class BooterCheckbutton(tk.Checkbutton):
 	def __init__(self, *args, **kwargs):
-		Checkbutton.__init__(self, *args, **kwargs)
+		tk.Checkbutton.__init__(self, *args, **kwargs)
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		self.config(fg=storedsettings.APP_FONT_COLOR)
@@ -173,9 +175,9 @@ class BooterCheckbutton(Checkbutton):
 			self.config(bg=color)
 
 
-class BooterOptionMenu(OptionMenu):
+class BooterOptionMenu(tk.OptionMenu):
 	def __init__(self, *args, **kwargs):
-		OptionMenu.__init__(self, *args, **kwargs)
+		tk.OptionMenu.__init__(self, *args, **kwargs)
 
 		self.config(bg=storedsettings.APP_WIDGET_COLOR)
 		self.config(fg=storedsettings.APP_FONT_COLOR)
@@ -186,7 +188,7 @@ class BooterOptionMenu(OptionMenu):
 		self['menu'].config(activebackground=storedsettings.HOVER_COLOR)
 		self['menu'].config(activeforeground=storedsettings.APP_FONT_COLOR)
 		self['menu'].config(font=storedsettings.DROPDOWN_FONT)
-		self.config(relief=SOLID)
+		self.config(relief=tk.SOLID)
 
 		# # Removes grey border around Option Menu
 		self.config(highlightthickness=0)
@@ -216,13 +218,13 @@ class BooterOptionMenu(OptionMenu):
 
 
 
-class BooterEntry(Entry):
+class BooterEntry(tk.Entry):
 	def __init__(self, *args, **kwargs):
-		Entry.__init__(self, *args, **kwargs)
+		tk.Entry.__init__(self, *args, **kwargs)
 
 		self.config(bg=storedsettings.APP_WIDGET_COLOR)
 		self.config(fg=storedsettings.APP_FONT_COLOR)
-		self.config(relief=SOLID)
+		self.config(relief=tk.SOLID)
 		self.config(font=storedsettings.ENTRY_FONT_TUPLE)
 		self.config(highlightthickness=1, highlightbackground=storedsettings.APP_MAIN_COLOR)
 		self.config(highlightcolor="#000000")
@@ -230,9 +232,9 @@ class BooterEntry(Entry):
 
 
 
-class BooterRadiobutton(Radiobutton):
+class BooterRadiobutton(tk.Radiobutton):
 	def __init__(self, *args, **kwargs):
-		ttk.Radiobutton.__init__(self, *args, **kwargs)
+		ttk.tk.Radiobutton.__init__(self, *args, **kwargs)
 
 		self.config(bg="white")
 

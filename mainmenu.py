@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from taskdao import TaskDAO
 from booterwidgets import *
@@ -10,9 +10,9 @@ from configmanager import ConfigManager
 taskdao = TaskDAO()
 
 
-class MainMenu(Frame):
+class MainMenu(tk.Frame):
 	def __init__(self, parent):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 		self.parent = parent
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
@@ -20,7 +20,7 @@ class MainMenu(Frame):
 		self.ran = False
 		self.mgr = ConfigManager()
 
-		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_buttons = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_buttons.grid(row=0, column=0)
 
 		self.draw_menu()
@@ -33,7 +33,7 @@ class MainMenu(Frame):
 		# None is used as a dummy value; this version of the OM is never seen, just used as initialization
 		self.om_current_task = BooterOptionMenu(self.frame_buttons, self.parent.current_task, None)
 		# Clears the blank space created by dummy data None
-		self.om_current_task['menu'].delete(0, END)
+		self.om_current_task['menu'].delete(0, tk.END)
 
 		btn_goals = BooterButton(self.frame_buttons, text="GOALS".title(), command=lambda: self.parent.show_frame("Goals"), width=BUTTON_WIDTH)
 		btn_settings = BooterButton(self.frame_buttons, text="SETTINGS".title(), command=lambda: self.parent.show_frame("Settings"), width=BUTTON_WIDTH)
@@ -67,14 +67,17 @@ class MainMenu(Frame):
 		prev_task = self.parent.get_current_task()
 		menu = self.om_current_task['menu']
 		tasks = taskdao.get_all_tasks()
-		menu.delete(0, END)
-		menu.add_command(label=self.parent.DEFAULT_TASK)
+		menu.delete(0, tk.END)
+		# Add command for the default task (i.e. "untracked") so it can be selected
+		menu.add_command(label=self.parent.DEFAULT_TASK, command=lambda arg=self.parent.DEFAULT_TASK: self.parent.current_task.set(arg))
+
+		# Fills option menu with tasks
 		if tasks:
 			for task in tasks:
-				menu.add_command(label=task, command=lambda value=task: self.parent.current_task.set(value))			
+				menu.add_command(label=task, command=lambda arg=task: self.parent.current_task.set(arg))		
+		# Takes care of when the selected task is deleted; selected task will go back to default task (i.e. "untracked")
 		if prev_task not in tasks:
 			self.parent.current_task.set(self.parent.DEFAULT_TASK)
-
 
 
 	def check_clicked(self):
@@ -94,4 +97,3 @@ class MainMenu(Frame):
 
 	def reset(self):
 		self.refresh_option_menu()
-		# self.parent.geometry(storedsettings.MAINMENU_WIN_SIZE)

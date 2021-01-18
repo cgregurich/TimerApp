@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
@@ -15,9 +15,9 @@ import datetime
 sessiondao = SessionDAO()
 
 
-class Timer(Frame):
+class Timer(tk.Frame):
 	def __init__(self, parent):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 
 		pygame.mixer.init()
 
@@ -25,10 +25,10 @@ class Timer(Frame):
 		
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		
-		self.frame_back_button = Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_entries = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_buttons = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_timer_display = Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_back_button = tk.Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_entries = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_buttons = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_timer_display = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 
 		self.mode = STOPPED
 
@@ -51,6 +51,13 @@ class Timer(Frame):
 		self.draw_clock()
 
 		self.is_visible = True
+
+		# For keeping track of current time of day at start of session
+		self.start_time = None
+
+		# For keeping track of current date at start of session (in case session 
+		# begins at around 00:00 so the date won't be counted as the "next" day)
+		self.start_date = None
 
 
 	def back_clicked(self):
@@ -83,7 +90,7 @@ class Timer(Frame):
 
 		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.right_button_clicked, width=6)
 		self.btn_control.bind('enter')
-		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.left_button_clicked)
+		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.left_button_clicked)
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
@@ -138,13 +145,13 @@ class Timer(Frame):
 
 	def change_control(self):
 		if self.mode == RUNNING:
-			self.btn_cancel.config(state=NORMAL)
+			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Pause'
 		elif self.mode == PAUSED:
-			self.btn_cancel.config(state=NORMAL)
+			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Resume'
 		elif self.mode == STOPPED:
-			self.btn_cancel.config(state=DISABLED)
+			self.btn_cancel.config(state=tk.DISABLED)
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
@@ -152,20 +159,23 @@ class Timer(Frame):
 	def change_entries_state(self):
 		if self.mode == STOPPED:
 			for e in self.entries:
-				e.config(state=NORMAL)
+				e.config(state=tk.NORMAL)
 		else: # RUNNING or PAUSED
 			for e in self.entries:
-					e.config(state=DISABLED)
+					e.config(state=tk.DISABLED)
 
 
 	def start_timer(self):
+		# Used to remember time to log when the timer ends
 		self.original_time = self._get_time_entered_in_seconds()
-		seconds = self._get_time_entered_in_seconds()
+		seconds = self.original_time
 		if seconds > 0:
 			self.end_type = AUTOMATIC
 			self.timer_loop(seconds)
 		else:
 			self.mode = STOPPED
+		self.start_time = self.get_current_time()
+		self.start_date = self.get_current_date()
 
 
 	def left_button_clicked(self):
@@ -184,51 +194,13 @@ class Timer(Frame):
 		"""Helper method that returns total number of time in seconds"""
 		if not self._is_entered_time_valid():
 			return -1
-		h = IntVar()
-		m = IntVar()
-		s = IntVar()
+		h = tk.IntVar()
+		m = tk.IntVar()
+		s = tk.IntVar()
 		h.set(self.entry_hours.get() or 0)
 		m.set(self.entry_minutes.get() or 0)
 		s.set(self.entry_seconds.get() or 0)
-
-		if self.check_for_weed(h.get(), m.get(), s.get()):
-			return 0
-		
-		elif self.sixty_nine_test(h.get(), m.get(), s.get()):
-			return 0
-
 		return (h.get() * 3600 + m.get() * 60 + s.get())
-
-	def check_for_weed(self, h, m, s):
-		if h == 420 or m == 420 or s == 420:
-			pygame.mixer.music.load("resources/sounds/weed.wav")
-			pygame.mixer.music.play()
-			self.mode = STOPPED
-			return True
-
-		elif h == 4 and m == 20 or m == 4 and s == 20:
-			pygame.mixer.music.load("resources/sounds/weed.wav")
-			pygame.mixer.music.play()
-			return True
-			self.mode = STOPPED
-
-		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
-		return False
-
-
-	def sixty_nine_test(self, h, m, s):
-		if h == 69 or m == 69 or s == 69:
-			pygame.mixer.music.load("resources/sounds/AWWW_F_YEAH.wav")
-			pygame.mixer.music.play()
-			return True
-
-		elif h == 6 and m == 9 or m == 6 and s == 9:
-			pygame.mixer.music.load("resources/sounds/AWWW_F_YEAH.wav")
-			pygame.mixer.music.play()
-			return True
-
-		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
-		return False
 
 
 	def _is_entered_time_valid(self):
@@ -275,16 +247,62 @@ class Timer(Frame):
 		self.mode = STOPPED
 		self.change_entries_state()
 		self.after_cancel(self.timer_id)
-		if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
+
+		self.session_done()
+
+		self.entry_hours.delete(0, tk.END)
+		self.entry_minutes.delete(0, tk.END)
+		self.entry_seconds.delete(0, tk.END)
+		self._redraw_clock_label(0, 0, 0)
+
+
+	def session_done(self):
+		"""
+		Deals with taking care of things when the timer is done.
+		Depending on user settings, different things will need to happen.
+		"""
+		if self.parent.get_current_task() == self.parent.DEFAULT_TASK:
+			self.untracked_session_done()
+		else:
+			self.tracked_session_done()
+
+	def untracked_session_done(self):
+		"""
+		Takes care of when the timer is done and no task is selected.
+		Why? Depends on if the user wants there to be a popup notification when
+		an untracked session is done
+		"""
+		if storedsettings.UNTRACKED_POPUP == ON:
+			messagebox.showinfo("", "Timer is done")
+
+	def tracked_session_done(self):
+		"""
+		Takes care of when the timer is done and a task is selected.
+		Why? Depends on if the user manually ended or if time ran out 
+		& if autosave is on
+		"""
+		# When timer is manually ended or autosave is disabled, 
+		# user needs to decide whether or not to log the session
+		if self.end_type == MANUAL or storedsettings.AUTOSAVE == OFF:
+			# Prompt the user to save session
 			ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
 			if ans:
 				self.save_session()
-		else:
+		else: # automatic and autosave is on, so save it automatically
 			self.save_session()
-		self.entry_hours.delete(0, END)
-		self.entry_minutes.delete(0, END)
-		self.entry_seconds.delete(0, END)
-		self._redraw_clock_label(0, 0, 0)
+
+
+	def get_current_time(self):
+		"""Returns string of current time in format HH:MM"""
+		now = datetime.datetime.now()
+		return now.strftime("%H:%M")
+
+
+	def get_current_date(self):
+		"""Returns string of current date in format MM-DD-YY"""
+		today = datetime.datetime.now()
+		return today.strftime("%m-%d-%y")
+
 
 
 	def save_session(self):
@@ -292,7 +310,7 @@ class Timer(Frame):
 		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
-		session = Session(task, task_time)
+		session = Session(task, task_time, self.start_time, self.start_date)
 		sessiondao.insert_session(session)
 
 

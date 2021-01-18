@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 import storedsettings
 from booterwidgets import *
 from taskdao import TaskDAO
@@ -16,9 +16,9 @@ goaldao = GoalDAO()
 # Check if the current goal to be added's task is already part
 # of another goal
 
-class AddGoal(Frame):
+class AddGoal(tk.Frame):
 	def __init__(self, parent, main_win):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		self.parent = parent
 		self.main_win = main_win
@@ -48,9 +48,9 @@ class AddGoal(Frame):
 		btn_back.grid(row=0, column=0, sticky="n")
 
 	def init_frames(self):
-		self.frame_input = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_goal_task = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_goal_time = Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_input = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_goal_task = tk.Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_goal_time = tk.Frame(self.frame_input, bg=storedsettings.APP_MAIN_COLOR)
 
 		self.frame_input.grid(row=0, column=1, padx=40)
 		self.frame_goal_task.grid(row=0, column=1, pady=(0, 60))
@@ -148,9 +148,9 @@ class AddGoal(Frame):
 		e_sec = self.widgets["goal_time"]["e_sec"]
 
 		# Clear text in entries
-		e_hour.delete(0, END)
-		e_min.delete(0, END)
-		e_sec.delete(0, END)
+		e_hour.delete(0, tk.END)
+		e_min.delete(0, tk.END)
+		e_sec.delete(0, tk.END)
 
 		# Zero pad minutes and seconds
 		m = "{:0>2}".format(m)
@@ -311,7 +311,7 @@ class AddGoal(Frame):
 
 	def init_task_optionmenu(self):
 		lbl = BooterLabel(self.frame_input, text="Goal Task")
-		om_var = StringVar()
+		om_var = tk.StringVar()
 		om_var.set("Select...")
 		om = BooterOptionMenu(self.frame_input, om_var, None)
 		widgets = {"om_var": om_var,
@@ -349,7 +349,7 @@ class AddGoal(Frame):
 		menu = self.widgets["optionmenu"]["om"]["menu"]
 		om_var = self.widgets["optionmenu"]["om_var"]
 		tasks = taskdao.get_all_tasks()
-		menu.delete(0, END)
+		menu.delete(0, tk.END)
 		if not tasks:
 			menu.add_command(label="No Tasks")
 		else:

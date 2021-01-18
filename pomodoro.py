@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from stopwatch import Stopwatch
 from locals import *
@@ -13,18 +13,18 @@ import datetime
 sessiondao = SessionDAO()
 
 
-class Pomodoro(Frame):
+class Pomodoro(tk.Frame):
 	def __init__(self, parent):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 		self.parent = parent
 		pygame.mixer.init()
 		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		
-		self.frame_back_button = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_timer_display = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_back_button = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_timer_display = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_buttons = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
 		self.frame_back_button.grid(row=0, column=0)
 		self.frame_timer_display.grid(row=1, column=1)
@@ -40,6 +40,13 @@ class Pomodoro(Frame):
 		self.draw_clock()
 
 		self.is_visible = True
+
+		# For keeping track of current time of day at start of session
+		self.start_time = None
+
+		# For keeping track of current date at start of session (in case session 
+		# begins at around 00:00 so the date won't be counted as the "next" day)
+		self.start_date = None
 
 
 	def back_clicked(self):
@@ -64,7 +71,7 @@ class Pomodoro(Frame):
 
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
-		self.btn_left = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.left_button_clicked)
+		self.btn_left = BooterButton(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.left_button_clicked)
 		self.btn_right = BooterButton(self.frame_buttons, text='Start', command=self.right_button_clicked, width=6)
 
 		self.lbl_time.grid(row=0, column=0)
@@ -159,18 +166,18 @@ class Pomodoro(Frame):
 		# Change state of cancel button and
 		# change text of control button
 		if self.mode == RUNNING:
-			self.btn_left.config(state=NORMAL)
+			self.btn_left.config(state=tk.NORMAL)
 			new_control = 'Pause'
 
 		elif self.mode == PAUSED:
-			self.btn_left.config(state=NORMAL)
+			self.btn_left.config(state=tk.NORMAL)
 			new_control = 'Resume'
 
 		elif self.mode == STOPPED:
 			if self.pomo_mode == BREAK:
-				self.btn_left.config(state=NORMAL)
+				self.btn_left.config(state=tk.NORMAL)
 			else:
-				self.btn_left.config(state=DISABLED)
+				self.btn_left.config(state=tk.DISABLED)
 			new_control = 'Start'
 		self.btn_right.config(text=new_control)
 	
@@ -188,6 +195,8 @@ class Pomodoro(Frame):
 		self.original_time = seconds
 		self.end_type = AUTOMATIC
 		self.timer_loop(seconds)
+		self.start_time = self.get_current_time()
+		self.start_date = self.get_current_date()
 
 
 	def timer_loop(self, seconds):
@@ -225,18 +234,63 @@ class Pomodoro(Frame):
 
 
 	def reset_timer(self):
-		"""Ask user if they want to save the session; save if yes, nothing if no
-		Visually reset the timer"""
+		"""
+		"""
 		self.mode = STOPPED
 		self.after_cancel(self.timer_id)
-		if self.pomo_mode == WORK:
-			if self.end_type == MANUAL or storedsettings.AUTOSAVE == '0':
-				ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
-				if ans:
-					self.save_session()
-			else:
-				self.save_session()
+		self.session_done()
 		self._redraw_clock_label(0,0)
+
+
+	def session_done(self):
+		"""
+		Deals with taking care of things when the timer is done.
+		Depending on user settings, different things will need to happen.
+		"""
+		# Nothing to do for a break being done
+		if self.pomo_mode == BREAK:
+			return
+		if self.parent.get_current_task() == self.parent.DEFAULT_TASK:
+			self.untracked_session_done()
+		else:
+			self.tracked_session_done()
+		
+
+	def untracked_session_done(self):
+		"""
+		Takes care of when the timer is done and no task is selected.
+		Why? Depends on if the user wants there to be a popup notification when 
+		an untracked session is done
+		"""
+		if storedsettings.UNTRACKED_POPUP == ON:
+			messagebox.showinfo("Popup", "Pomodoro is done")
+
+
+	def tracked_session_done(self):
+		"""
+		Takes care of when the timer is done and a task is selected.
+		Why? Depends on if the user manually ended or if time ran out 
+		& if autosave is on
+		"""
+		if self.end_type == MANUAL or storedsettings.AUTOSAVE == OFF:
+			# Prompt user to save session
+			ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
+			if ans: # user wants to save session
+				self.save_session()
+		else: # automatic pomo end and autosave is on
+			self.save_session()
+
+
+	def get_current_time(self):
+		"""Returns string of current time in format HH:MM"""
+		now = datetime.datetime.now()
+		return now.strftime("%H:%M")
+
+
+	def get_current_date(self):
+		"""Returns string of current date in format MM-DD-YY"""
+		today = datetime.datetime.now()
+		return today.strftime("%m-%d-%y")
 
 
 	def save_session(self):
@@ -246,7 +300,7 @@ class Pomodoro(Frame):
 		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
-		session = Session(task, task_time)
+		session = Session(task, task_time, self.start_time, self.start_date)
 		sessiondao.insert_session(session)
 
 		
