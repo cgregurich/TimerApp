@@ -95,3 +95,14 @@ class SessionDAO():
 			tup_list = self.c.fetchall()
 
 		return self._convert_tup_list_to_session_list(tup_list)
+
+	# def get_all_sessions_by_task_between_dates(self, task, start_date, end_date):
+	# 	"""
+	# 	"""
+	# 	sessions = self.get_all_sessions_between_dates(start_date, end_date)
+	# 	task_sessions = []
+	# 	for s in sessions:
+	# 		if s.task == task:
+	# 			task_sessions.append(s)
+	# 	return s
+

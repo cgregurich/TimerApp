@@ -46,6 +46,7 @@ POMO_WORK_TIME = int(mgr.get("SETTINGS", "POMO_WORK_TIME")) # in seconds
 POMO_BREAK_TIME = int(mgr.get("SETTINGS", "POMO_BREAK_TIME")) # in seconds
 
 AUTOSAVE = mgr.get("SETTINGS", "AUTOSAVE")
+UNTRACKED_POPUP = mgr.get("SETTINGS", "UNTRACKED_POPUP")
 
 
 debug = mgr.get("SETTINGS", "DEBUG") == "1"
@@ -73,5 +74,7 @@ VIEWLOG_WIN_SIZE =       "470x300"
 MAINMENU_WIN_SIZE =      "300x575"
 GOALS_WIN_SIZE =         ""
 
+
+SETTINGS_BUTTON_FONT = (FONT, 14)
 
 

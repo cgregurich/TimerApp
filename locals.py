@@ -11,8 +11,8 @@ BREAK = "break"
 
 # Constants for autosave options
 
-OFF = 'off'
-ON = 'on'
+OFF = "off"
+ON = "on"
 AUTOSAVE = 'AUTOSAVE'
 
 # Constants for DisplayData

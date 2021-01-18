@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from locals import *
@@ -14,9 +14,9 @@ import datetime
 sessiondao = SessionDAO()
 
 
-class Stopwatch(Frame):
+class Stopwatch(tk.Frame):
 	def __init__(self, parent):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 
 		
 		self.parent = parent
@@ -26,9 +26,9 @@ class Stopwatch(Frame):
 		self.mode = STOPPED
 
 		# Create sub-frames
-		self.frame_back_button = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_timer_display = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_buttons = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_back_button = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_timer_display = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_buttons = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
 		# Put sub-frames on main frame
 		self.frame_back_button.grid(row=0, column=0)
@@ -39,6 +39,13 @@ class Stopwatch(Frame):
 		self.draw_clock()
 
 		self.is_visible = True
+
+		# For keeping track of current time of day at start of session
+		self.start_time = None
+
+		# For keeping track of current date at start of session (in case session 
+		# begins at around 00:00 so the date won't be counted as the "next" day)
+		self.start_date = None
 
 
 	def back_clicked(self):
@@ -64,7 +71,7 @@ class Stopwatch(Frame):
 		# Bind left click to toggle clock visibility
 		self.lbl_time.bind("<Button-1>", self.clock_clicked)
 
-		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=DISABLED, command=self.left_button_clicked)
+		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.left_button_clicked)
 		self.btn_control = BooterButton(self.frame_buttons, text='Start', command=self.right_button_clicked, width=6)
 
 		self.lbl_time.grid(row=1, column=0)
@@ -125,19 +132,35 @@ class Stopwatch(Frame):
 	def change_control(self):
 		"""Changes text of control button based on what current mode is"""
 		if self.mode == RUNNING:
-			self.btn_cancel.config(state=NORMAL)
+			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Pause'
 		elif self.mode == PAUSED:
-			self.btn_cancel.config(state=NORMAL)
+			self.btn_cancel.config(state=tk.NORMAL)
 			new_control = 'Resume'
 		elif self.mode == STOPPED:
-			self.btn_cancel.config(state=DISABLED)
+			self.btn_cancel.config(state=tk.DISABLED)
 			new_control = 'Start'
 		self.btn_control.config(text=new_control)
 
 
 	def start_stopwatch(self):
 		self.stopwatch_loop(0)
+		self.start_time = self.get_current_time()
+		self.start_date = self.get_current_date()
+
+
+	def get_current_time(self):
+		"""Returns string of current time in format HH:MM"""
+		now = datetime.datetime.now()
+		return now.strftime("%H:%M")
+
+
+	def get_current_date(self):
+		"""Returns string of current date in format MM-DD-YY"""
+		today = datetime.datetime.now()
+		return today.strftime("%m-%d-%y")
+
+
 
 
 	def stopwatch_loop(self, s):
@@ -187,7 +210,7 @@ class Stopwatch(Frame):
 		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
-		session = Session(task, task_time)
+		session = Session(task, task_time, self.start_time, self.start_date)
 		sessiondao.insert_session(session)
 
 		

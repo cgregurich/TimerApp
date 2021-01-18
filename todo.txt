@@ -1,15 +1,27 @@
 todo (recent at top):
+WHERE I LEFT OFF: added ability to search by task and date in view log. prob needs further testing but seems to be working.gj
 
-# TODO FOR THE NEXT TIME I WORK ON THIS:
+
+
+COMPLETED 1-16-21
+** - Add setting/change functionality -> log sessions based on when timer started??
 BUG: CAN'T SELECT UNTRACKED TASK?????
 resizing works except the un-resizable is only triggered when you hit the back button on the ViewLog window.
+
 - if working on an untracked, don't ask to log it??
-- ^^ not sure, the notification is nice. Maybe add an option in settings to have a popup notification when a timer/pomo goes off? This is useful for when using two virtual desktops; the timer becomes highlighted orange on the task bar
-- Add setting for "time completed" to be set at start of clock or at end??
-- Clear this mess of a todo.txt!
-- Maybe make a stopwatch + pomo/timer combo? So I can know when I've done X amount of time, but if I want to finish something I'm working on, I don't have to stop what I'm doing, focus the timer, log the session, then set a stopwatch. What a hassle!
+- BUG: Double error popup when time entered in Timer is invalid (such as letters)
 - Add a start and end date selection in ViewLog when searching by task
-** - Add setting/change functionality -> log sessions based on when timer started??
+- Refactor functions that have to do with resetting the timer/pomo so it's more readable; clear commented code
+
+
+# TODO FOR THE NEXT TIME I WORK ON THIS:
+
+
+-*** Get rid of windows dialog sound when notifying that untracked is done
+- Clear this mess of a todo.txt!
+-*** Maybe make a stopwatch + pomo/timer combo? So I can know when I've done X amount of time, but if I want to finish something I'm working on, I don't have to stop what I'm doing, focus the timer, log the session, then set a stopwatch. What a hassle!
+
+
 
 
 # TODO:
@@ -44,56 +56,18 @@ ADD GOALS TO THE TIMER APP:
 - View streaks? How many days have I hit my goal?
 - Calculate how many hours or w/e will be done if I stick to this goal for x days
 
-Not sure how this works but here's a reply from a redditor about how to 
-implement multiple accounts and data syncing and whatnot: 
-*********************************
-It's not the choice of database that is decisive, although maybe MySQL might be a better choice. You're really describing something that needs a local application that connects to a remote database, probably through an API.
-
-But how does it work where if someone else has this program, it accesses their own data? That's something I don't understand
-
-You're describing a basic account based setup that you already use every day of your life for other things. Every user has an account, or login, and it saves their data to the central database, identified with their account, like any app on your phone or laptop or desktop that saves something remotely - twitter, instagram, facebook, dropbox, gmail the list goes on.
-
-I don't know how your local app works, but it's great that it does so let's stick with that. To make it multi user you're going to have to do the following:
-
-Build a web app that provides an API and a database with authentication. Django Rest API is ideal for this (and also python), but for sure not the only choice
-Host it on any of the cloud services or hosting platforms. Many have free levels.
-Update your app to have a login account, and use the API you built in step 1 so that it sends data to the central database for each user and pulls totals when you want to show them.
-It's probably a lot more work than you expected, but that's basically how these things work.
-***************************************
--trying to get sql server set up to access same data on different devices
--get python package thing so updating it and downloading it is streamlined
 
 
-
-
-
-TEXT OF TOTALS SECTION TIME IS WRONG; WRONG FONT/SIZE
-
-Change icon size. Seems sort of small??
-
-not sure what makes this type of color good? sat? no idea
+not sutre what makes this ype of color good? sat? no idea
 orange ellow: FFF29C
 yellow: FEFF9C
 green: #ACFF9C
 
-****Get a border around data in View Log!!!*********
 
 BUG: when you're in the timer entry (or any entry) and go to a different frame and type
 that keyboard input is sent to the last active entry
 
-- Add hover color to settings???
 
-- Validation in Settings for time entered
-
-** -Change pomo break noise back to ding
-
-- Make "skip break" in pomo clickable when timer isn't running??
-
-- Add ALL option to view log
-
-- figure out proper frames -- includes all organization of program, shifting widgets
-
-- properly sized buttons
 
 - make scrollbar work when necessary, not work when not
 
@@ -103,32 +77,9 @@ that keyboard input is sent to the last active entry
 
 - line up settings rows better
 
-- enlarge clocks
-
-- clean up total section in log
-
-- remove print statements
-
-- dynamic resizing
-
-- maybe make settings a cog instead of a normal button with text
-
-- change how buttons look when clicked (not necessary!)
-
-- change pomo change pomo mode text/functionality (only skip break)
-
-- organize stored settings module 
-
-BUG: Double error message when timer input is invalid
-BUG: when auto save is off, when the timer (and maybe pomo) ends, there is still 1 second on the clock when the prompt shows up
 BUG: Should probably fix how shit the scrollbar is; scrolls when youre not in the log; scrolls when there's not enough data being displayed
 	to warrant a scrollable frame
 
-$$$$ make a quality executable
-
-
-DESIGN ISSUE TO PONDER: the autocomplete search box only searches current tasks; delete tasks won't show up even though they still exist
-	within the log
 
 
 
