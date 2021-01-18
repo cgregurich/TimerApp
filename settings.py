@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from locals import *
 import storedsettings
@@ -16,19 +16,19 @@ import storedsettings
 from tkinter import colorchooser
 from configmanager import ConfigManager
 
-class Settings(Frame):
+class Settings(tk.Frame):
 	def __init__(self, parent):
-		Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent)
 
 		self.mgr = ConfigManager()
 		
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		
-		self.frame_settings = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_settings = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
-		self.frame_labels = Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_options = Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_example = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_labels = tk.Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_options = tk.Frame(self.frame_settings, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_example = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
 		self.frame_settings.grid(row=2, column=1)
 
@@ -40,12 +40,26 @@ class Settings(Frame):
 
 		self.parent = parent
 
-		if storedsettings.AUTOSAVE == '1':
+		self.save_mode = None
+		self.untracked_popup_mode = None
+
+		self.set_toggle_btns()
+
+		self.draw_window()
+
+
+	def set_toggle_btns(self):
+		"""Uses saved settings to display toggle buttons with appropriate word (on/off)"""
+		if storedsettings.AUTOSAVE == ON:
 			self.save_mode = ON
 		else:
 			self.save_mode = OFF
 
-		self.draw_window()
+		if storedsettings.UNTRACKED_POPUP == ON:
+			self.untracked_popup_mode = ON
+		else:
+			self.untracked_popup_mode = OFF
+
 
 		
 
@@ -60,6 +74,7 @@ class Settings(Frame):
 		lbl_pomo_work = BooterLabel(self.frame_settings, text="Pomo Work Time")
 		lbl_pomo_break = BooterLabel(self.frame_settings, text="Pomo Break Time")
 		lbl_autosave = BooterLabel(self.frame_settings, text="Time Autosave")
+		lbl_popup = BooterLabel(self.frame_settings, text="Untracked Popup")
 		
 
 		# Colored button for changing clock color
@@ -70,8 +85,11 @@ class Settings(Frame):
 		self.btn_color.disable_hover()
 		
 
-		self.btn_autosave_option = BooterButton(self.frame_settings, width=5, text=self.save_mode.upper(), command=self.autosave_clicked)
-		self.btn_autosave_option.config(font=(storedsettings.FONT, 14),height=1)
+		self.btn_autosave_option = BooterButton(self.frame_settings, 
+			width=5, text=self.save_mode, command=self.autosave_clicked)
+
+		self.btn_untracked_popup = BooterButton(self.frame_settings,
+			width=5, text=self.untracked_popup_mode, command=self.untracked_popup_clicked)
 
 		
 		
@@ -106,19 +124,23 @@ class Settings(Frame):
 		lbl_pomo_work.grid(row=1, column=0)
 		lbl_pomo_break.grid(row=2, column=0)
 		lbl_autosave.grid(row=3, column=0)
+		lbl_popup.grid(row=4, column=0)
 
 		self.btn_color.grid(row=0, column=1)
 		self.entry_pomo_work.grid(row=1, column=1)
 		self.entry_pomo_break.grid(row=2, column=1)
 		self.btn_autosave_option.grid(row=3, column=1)
-		self.lbl_status.grid(row=4, column=0, columnspan=2, pady=(20,0))
+		self.btn_untracked_popup.grid(row=4, column=1)
+		self.lbl_status.grid(row=5, column=0, columnspan=2, pady=(20,0))
 
-		self.btn_save.grid(row=5, column=0, columnspan=2, pady=(0,0))
+		self.btn_save.grid(row=6, column=0, columnspan=2, pady=(0,0))
+
 
 
 	def save_clicked(self):
 		self.save_settings()
 		self.indicate_saved()
+
 
 	def save_settings(self):
 		"""For when user clicks Save Changes button"""
@@ -133,16 +155,23 @@ class Settings(Frame):
 		storedsettings.POMO_WORK_TIME = pomo_work
 		storedsettings.POMO_BREAK_TIME = pomo_break
 
-		if self.save_mode == ON:
-			self.mgr.change_setting('AUTOSAVE', str(1))
-			storedsettings.AUTOSAVE = '1'
-		else:
-			self.mgr.change_setting('AUTOSAVE', str(0))
-			storedsettings.AUTOSAVE = '0'
-
-
+		self.mgr.change_setting("AUTOSAVE", self.save_mode)
+		self.mgr.change_setting("UNTRACKED_POPUP", self.untracked_popup_mode)
 
 		
+		self.update_stored_settings()
+		
+
+
+	def update_stored_settings(self):
+		"""
+		Update storedsettings to be current
+		If this isn't done, then the changed settings won't
+		take effect until the program is restarted.
+		"""
+		storedsettings.AUTOSAVE = self.save_mode
+		storedsettings.UNTRACKED_POPUP = self.untracked_popup_mode
+
 
 
 	def indicate_saved(self):
@@ -173,6 +202,12 @@ class Settings(Frame):
 	def autosave_clicked(self):
 		self.change_auto_save_mode()
 		self.change_auto_save_button()
+
+
+	def untracked_popup_clicked(self):
+		self.change_untracked_popup_mode()
+		self.change_untracked_popup_button()		
+
 	
 
 	def change_auto_save_mode(self):
@@ -182,10 +217,28 @@ class Settings(Frame):
 			self.save_mode = OFF
 
 	def change_auto_save_button(self):
-		if self.save_mode == ON:
-			self.btn_autosave_option.config(text='ON')
+		self.btn_autosave_option.config(text=self.save_mode)
+		# if self.save_mode == ON:
+		# 	self.btn_autosave_option.config(text="ON")
+		# else:
+		# 	self.btn_autosave_option.config(text="OFF")
+
+
+	def change_untracked_popup_mode(self):
+		if self.untracked_popup_mode == OFF:
+			self.untracked_popup_mode = ON
 		else:
-			self.btn_autosave_option.config(text='OFF')
+			self.untracked_popup_mode = OFF
+
+
+	def change_untracked_popup_button(self):
+		self.btn_untracked_popup.config(text=self.untracked_popup_mode)
+		# if self.untracked_popup_mode == ON:
+		# 	self.btn_untracked_popup.config(text="ON")
+		# else:
+		# 	self.btn_untracked_popup.config(text="OFF")
+
+
 
 	def back_clicked(self):
 		"""Saves settings and goes back to main menu"""
@@ -216,5 +269,4 @@ class Settings(Frame):
 		
 
 	def reset(self):
-		# self.parent.geometry(storedsettings.SETTINGS_WIN_SIZE)
 		pass
