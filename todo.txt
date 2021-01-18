@@ -16,7 +16,7 @@ resizing works except the un-resizable is only triggered when you hit the back b
 
 # TODO FOR THE NEXT TIME I WORK ON THIS:
 
-
+- Make it so all 3 .db files and usersettings.ini is in some folder. eg. userfiles
 -*** Get rid of windows dialog sound when notifying that untracked is done
 - Clear this mess of a todo.txt!
 -*** Maybe make a stopwatch + pomo/timer combo? So I can know when I've done X amount of time, but if I want to finish something I'm working on, I don't have to stop what I'm doing, focus the timer, log the session, then set a stopwatch. What a hassle!
