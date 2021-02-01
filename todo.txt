@@ -1,6 +1,8 @@
 todo (recent at top):
 WHERE I LEFT OFF: added ability to search by task and date in view log. prob needs further testing but seems to be working.gj
 
+PECULIAR ASS BUG: when pomo work time is set to 60 minutes it just.... doesn't work. The clock runs down all the way then just chills with 1 second left, no notification or anything
+
 
 
 COMPLETED 1-16-21
