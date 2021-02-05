@@ -1,9 +1,14 @@
 todo (recent at top):
+
+-MAJOR DESIRABLE IMPROVEMENT: ViewLog left and right arrows to cycle between days, weeks, etc. instead of having to manually click on days
+
+- also, is there a way to make the calendar bigger, and be sunday - saturday instead of monday - sunday??
+
 WHERE I LEFT OFF: added ability to search by task and date in view log. prob needs further testing but seems to be working.gj
 
-FIND OUT HOW TO MAKE THE PROGRAM BE A LITTLE BUTTHOLE IF I'm TRYING TO SHUT OFF THE COMPUTER WHILE THE PROGRAM IS RUNNING/A TIMER IS RUNNING??
+- FIND OUT HOW TO MAKE THE PROGRAM BE A LITTLE BUTTHOLE IF I'm TRYING TO SHUT OFF THE COMPUTER WHILE THE PROGRAM IS RUNNING/A TIMER IS RUNNING??
 
-PECULIAR ASS BUG: when pomo work time is set to 60 minutes it just.... doesn't work. The clock runs down all the way then just chills with 1 second left, no notification or anything
+- PECULIAR ASS BUG: when pomo work time is set to 60 minutes it just.... doesn't work. The clock runs down all the way then just chills with 1 second left, no notification or anything
 
 
 
