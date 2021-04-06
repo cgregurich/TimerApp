@@ -10,6 +10,9 @@ WHERE I LEFT OFF: added ability to search by task and date in view log. prob nee
 
 - PECULIAR ASS BUG: when pomo work time is set to 60 minutes it just.... doesn't work. The clock runs down all the way then just chills with 1 second left, no notification or anything
 
+- When setting a timer, have a little thing that says at what clock time the timer will be done (recalculate
+when paused and shit)
+
 
 
 COMPLETED 1-16-21
