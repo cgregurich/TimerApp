@@ -13,6 +13,8 @@ WHERE I LEFT OFF: added ability to search by task and date in view log. prob nee
 - When setting a timer, have a little thing that says at what clock time the timer will be done (recalculate
 when paused and shit)
 
+- Have two modes of input for timer: enter the time to run the timer for (eg. 60 minutes) or set the clock time of when you want the timer to be done (eg. 13:00). The former will calculate what time the timer will finish at, once it's started (and recalculate each time it's paused then resumed). The latter will calculate how much time the timer needs to be run for. But then how do I deal with pausing and resuming here?
+
 
 
 COMPLETED 1-16-21
