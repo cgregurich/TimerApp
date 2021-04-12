@@ -29,7 +29,7 @@ ENTRY_FONT_TUPLE = (FONT, 14)
 DROPDOWN_FONT = ('Orator STD', 14)
 
 GOAL_FONT = ("Orator STD", 17)
-
+CALENDAR_FONT = ("Orator STD", 15)
 
 
 LOG_FONT = "Bahnschrift Light"
