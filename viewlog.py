@@ -14,7 +14,14 @@ from addsession import AddSession
 import autocomplete
 import calendar
 
-
+# things i need as far as buttons and controls go:
+# - back button
+# - task search
+# - date entry(s)
+# - mode optionmenu
+# - view button
+# - add button
+# - arrow buttons
 
 
 sessiondao = SessionDAO()
@@ -31,27 +38,14 @@ class ViewLog(Frame):
 
 		# OVERHAUL FRAMES
 		self.frame_upper = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_lower = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_left = Frame(self.frame_upper, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_right = Frame(self.frame_upper, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_cal = Frame(self.frame_left, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_mode = Frame(self.frame_right, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_controls = Frame(self.frame_right, bg=storedsettings.APP_MAIN_COLOR)
-		self.frame_totals = Frame(self.frame_lower, bg=storedsettings.APP_MAIN_COLOR)
 
+		self.frame_lower = Frame(self, bg=storedsettings.APP_MAIN_COLOR)
+		self.frame_totals = Frame(self.frame_lower, bg=storedsettings.APP_MAIN_COLOR)
 
 		self.frame_upper.grid(row=0, column=0)
 		self.frame_lower.grid(row=1, column=0)
-		self.frame_left.grid(row=0, column=0, sticky="nw")
-		self.frame_right.grid(row=0, column=1)
-		self.frame_cal.grid(row=1, column=0)
-		self.frame_mode.grid(row=0, column=0)
-		self.frame_controls.grid(row=1, column=0)
 		self.frame_totals.grid(row=0, column=0)
 
-
-		self.frame_left.grid_rowconfigure(0, weight=1)
-		self.frame_left.grid_columnconfigure(0, weight=1)
 
 		self.session_rows = [] # list of lists of labels
 
@@ -65,7 +59,7 @@ class ViewLog(Frame):
 		PADY = 5
 		PADX = 5
 
-		btn_back = BooterButton(self.frame_left, command=self.back_clicked)
+		btn_back = BooterButton(self.frame_upper, command=self.back_clicked)
 		btn_back.grid(row=0, column=0, sticky="n", pady=PADY)
 		btn_back.apply_back_image()
 
@@ -74,28 +68,20 @@ class ViewLog(Frame):
 		self.mode_var = StringVar()
 		self.mode_var.set(DAY)
 
-		self.btn_day = BooterSelect(self.frame_mode, text="Day", command=lambda: self.mode_btn_clicked(self.btn_day, DAY))
-		self.btn_week = BooterSelect(self.frame_mode, text="Week", command=lambda: self.mode_btn_clicked(self.btn_week, WEEK))
-		self.btn_month = BooterSelect(self.frame_mode, text="Month", command=lambda: self.mode_btn_clicked(self.btn_month, MONTH))
-		self.btn_task = BooterSelect(self.frame_mode, text="Task", command=lambda: self.mode_btn_clicked(self.btn_task, TASK))
-		self.select_btns = [self.btn_day, self.btn_week, self.btn_month, self.btn_task]
-		self.btn_day.selected()
+		modes = (DAY, WEEK, MONTH, TASK)
+		self.mode_om = BooterOptionMenu(self.frame_upper, self.mode_var, command=self.mode_changed, *modes)
+		self.mode_om.config(width=90)
+		self.mode_om.change_fontsize(17)
 
 
-
-		self.btn_day.grid(row=0, column=1, padx=PADX, pady=PADY)
-		self.btn_week.grid(row=0, column=2, padx=PADX, pady=PADY)
-		self.btn_month.grid(row=0, column=3, padx=PADX, pady=PADY)
-		self.btn_task.grid(row=0, column=4, padx=PADX, pady=PADY)
-
-
-		self.btn_view = BooterButton(self.frame_controls, text="View", command=self.draw_sessions)
+		self.mode_om.grid(row=0, column=1, padx=PADX, pady=PADY)
+	
+		self.btn_view = BooterButton(self.frame_upper, text="View", command=self.view_clicked)
 		
+		self.btn_add = BooterButton(self.frame_upper, text="Add", command=self.add_clicked)
 
-		self.btn_add = BooterButton(self.frame_controls, text="Add", command=self.add_clicked)
-
-		self.btn_view.grid(row=0, column=0, padx=PADX)
-		self.btn_add.grid(row=0, column=1, padx=PADX)
+		self.btn_view.grid(row=0, column=2, padx=PADX)
+		self.btn_add.grid(row=0, column=3, padx=PADX)
 		
 
 		# CREATE SCROLLABLE WINDOW
@@ -124,10 +110,9 @@ class ViewLog(Frame):
 
 		self.parent.bind_all("<MouseWheel>", self._on_mousewheel)
 
-
-
-		self.change_input_widgets()
+		self.init_input_widgets()
 		self.draw_sessions()
+
 
 
 	def add_clicked(self):
@@ -142,93 +127,155 @@ class ViewLog(Frame):
 		self.parent.show_frame("MainMenu")
 		self.parent.resizable(False, False)
 
+	def init_input_widgets(self):
+		"""Since the autocomplete only needs to be drawn once, it's in its own init function, and the other widgets that 
+		will change depending on the selected mode are also created here for the first time"""
+		self.draw_autocomplete()
+		self.mode_changed()
+
+	def mode_changed(self, event=None):
+		"""Takes arg event because this func is a command of an option menu"""
+		self.reset_calendars()
 
 
-	def mode_btn_clicked(self, button, mode):
-		self.mode_var.set(mode)
-		for btn in self.select_btns:
-			btn.deselected()
-		button.selected()
-		self._clear_input_widgets()
-		self.change_input_widgets()
+	def _calc_week_ago(self):
+		"""Return the date 7 days ago from today"""
+		return dt.datetime.now() - dt.timedelta(days=7)
 
 
+	def _calc_month_ago(self):
+		"""Returns the dat 30 days ago from today"""
+		return dt.datetime.now() - dt.timedelta(days=30)
 
 
-	def change_input_widgets(self):
+	def reset_calendars(self):
+		"""When TASK mode is selected, the calendars and arrows and destroyed and deleted. Otherwise, the calendars are either
+		created or their dates are changed, depending on the previous selected mode."""
+
 		mode = self.mode_var.get()
 		if mode == DAY:
-			self.draw_day_widgets()
-
+			self.draw_calendars(dt.datetime.today(), dt.datetime.today())
 		elif mode == WEEK:
-			self.draw_week_widgets()
-
+			self.draw_calendars(self._calc_week_ago(), dt.datetime.today())
 		elif mode == MONTH:
-			self.draw_month_widgets()
-
+			self.draw_calendars(self._calc_month_ago(), dt.datetime.today())
 		elif mode == TASK:
-			self.draw_task_widgets()
+			self.destroy_calendars()
 
+	def destroy_calendars(self):
+		"""Only need to destroy calendars (and arrows) when task mode is selected"""
+		self.input_widgets["cal1"].destroy()
+		self.input_widgets["cal2"].destroy()
+		self.input_widgets["leftbtn1"].destroy()
+		self.input_widgets["rightbtn1"].destroy()
+		self.input_widgets["leftbtn2"].destroy()
+		self.input_widgets["rightbtn2"].destroy()
 
-	def draw_day_widgets(self):
-		self.draw_autocomplete()
-		PADY = 5
-		today = dt.datetime.now()
-		cal = DateEntry(self.frame_cal, selectmode="day", year=today.year, month=today.month, day=today.day)
-		cal.grid(row=1, column=0, pady=PADY)
-		self.input_widgets['calendar_end'] = cal
-
-
-	def draw_month_widgets(self):
-		"""Draws two calendar pickers; one set to today, one set to a week ago"""
-
-		today = dt.datetime.now()
-		# Quick and dirty fix for if it's January; a month ago is Dec(12) not 0. 1 - 1 != 12
-		if today.month == 1:
-			days_in_month = calendar.monthrange(today.year, 12)[1]
-		else:
-			days_in_month = calendar.monthrange(today.year, today.month-1)[1]
-		month_ago = today - dt.timedelta(days=days_in_month)
-		self.draw_autocomplete()
-		self._draw_cal_widgets(month_ago, today, start_row=1, end_row=2)
+		del self.input_widgets["cal1"]
+		del self.input_widgets["cal2"]
+		del self.input_widgets["leftbtn1"]
+		del self.input_widgets["rightbtn1"]
+		del self.input_widgets["leftbtn2"]
+		del self.input_widgets["rightbtn2"]
 		
 
+	def create_calendar(self, date):
+		"""Helper function for creating and returning a DateEntry object.
+		Date is a dt.datetime object"""
+		cal = DateEntry(self.frame_upper, selectmode="day", year=date.year, month=date.month, day=date.day, firstweekday="sunday", font=storedsettings.CALENDAR_FONT)
+		return cal
 
-	def draw_week_widgets(self):
-		"""Draws two calendar pickers; one set to today, one set to a week ago"""
-		today = dt.datetime.now()
-		week_ago = today - dt.timedelta(days=7)
-		self.draw_autocomplete()
-		self._draw_cal_widgets(week_ago, today, start_row=1, end_row=2)
-
-
-	def _draw_cal_widgets(self, start_date, end_date, start_row=0, end_row=1):
-		"""
-		Expects datetime.datetime object for args start_date and end_date 
-		"""
-		start = DateEntry(self.frame_cal, selectmode="day", year=start_date.year, month=start_date.month, day=start_date.day)
-		end = DateEntry(self.frame_cal, selectmode="day", year=end_date.year, month=end_date.month, day=end_date.day)
+	def draw_calendars(self, date1, date2):
+		"""Creates two DateEntry objects: one with date1, one with date2. Grids them and saves them, and draws the arrows for both."""
+		# if the calendars already exist, then just change the dates on them don't create new ones
+		if "cal1" in self.input_widgets.keys() and "cal2" in self.input_widgets.keys():
+			self.set_calendar_dates(date1, date2)
+			return
 
 		PADY = 5
-		start.grid(row=start_row, column=0, pady=PADY)
-		end.grid(row=end_row, column=0, pady=PADY)
+		cal1 = self.create_calendar(date1)
+		cal1.grid(row=1, column=2, pady=PADY)
+		self.input_widgets["cal1"] = cal1
 
-		self.input_widgets["calendar_start"] = start
-		self.input_widgets["calendar_end"] = end
+		
+		cal2 = self.create_calendar(date2)
+		cal2.grid(row=2, column=2)
+		self.input_widgets["cal2"] = cal2
+
+		self._draw_cal_arrows()
 
 
+	def set_calendar_dates(self, date1, date2):
+		"""Func to optimize when the view mode is changed. Instead of destroying then remaking the calendar widgets, it's
+		more efficient to simply change the date, if possible (not possible when the last mode was TASK)"""
+		self.input_widgets["cal1"].set_date(date1)
+		self.input_widgets["cal2"].set_date(date2)
+
+
+	def view_clicked(self):
+		self.draw_sessions()
+
+
+	def _draw_cal_arrows(self):
+		"""Creates, grids, and saves all arrows for the calendar widgets."""
+		btn_left = BooterButton(self.frame_upper, text="<", command=lambda: self.left_arrow("cal1"))
+		btn_right = BooterButton(self.frame_upper, text=">", command=lambda: self.right_arrow("cal1"))
+		btn_left.grid(row=1, column=1)
+		btn_right.grid(row=1, column=3)
+		self.input_widgets["leftbtn1"] = btn_left
+		self.input_widgets["rightbtn1"] = btn_right
+
+
+		btn_left = BooterButton(self.frame_upper, text="<", command=lambda: self.left_arrow("cal2"))
+		btn_right = BooterButton(self.frame_upper, text=">", command=lambda: self.right_arrow("cal2"))
+		btn_left.grid(row=2, column=1)
+		btn_right.grid(row=2, column=3)
+		self.input_widgets["leftbtn2"] = btn_left
+		self.input_widgets["rightbtn2"] = btn_right
+		
+
+	def left_arrow(self, cal_name):
+		"""Func bound to the left arrow widgets. Arg cal_name indicates which calendar is to be decremented"""
+		if self.mode_var.get() == DAY:
+			self.change_cal_date(days=-1, cal_name=cal_name)
+
+		elif self.mode_var.get() == WEEK:
+			self.change_cal_date(days=-7, cal_name=cal_name)
+
+		elif self.mode_var.get() == MONTH:
+			self.change_cal_date(days=-30, cal_name=cal_name)
+
+
+	def right_arrow(self, cal_name):
+		"""Func bound to the right arrow widgets. Arg cal_name indicates which calendar is to be incremented."""
+		if self.mode_var.get() == DAY:
+			self.change_cal_date(days=1, cal_name=cal_name)
+
+		elif self.mode_var.get() == WEEK:
+			self.change_cal_date(days=7, cal_name=cal_name)
+
+		elif self.mode_var.get() == MONTH:
+			self.change_cal_date(days=30, cal_name=cal_name)
+
+
+
+	def change_cal_date(self, days, cal_name):
+		"""For incrementing/decrementing caledar by number of days. Days is negative if it's to be decremented"""
+		cal = self.input_widgets[cal_name]
+		delta = dt.timedelta(days=days)
+		tmp = cal.get_date()
+		cal.set_date(cal.get_date() + delta)
+		if (self.input_widgets["cal1"].get_date() > self.input_widgets["cal2"].get_date()):
+			cal.set_date(tmp)
 
 
 	def draw_task_widgets(self):
 		self.draw_autocomplete()
-		# self._draw_cal_widgets(dt.datetime.now(), dt.datetime.now(), 1, 2)
-
-
 
 	def draw_autocomplete(self):
-		entry = autocomplete.AutoComplete(self.frame_cal, options=taskdao.get_all_tasks(), width=16)
+		entry = autocomplete.AutoComplete(self.frame_upper, options=taskdao.get_all_tasks(), width=16)
 		entry.config(relief=SOLID, bd=1)
-		entry.grid(row=0, column=0)
+		entry.grid(row=1, column=0)
 		self.input_widgets["entry"] = entry
 		entry.bind("<Return>", self._bind_func)
 
@@ -250,29 +297,21 @@ class ViewLog(Frame):
 		year += 2000
 		date_obj = dt.datetime(year, month, day).date()
 		return date_obj
-		
+	
 
 	def draw_sessions(self):
 		self._clear_screen()
 
-		# If user wants to view tasks of today
-		if self.mode_var.get() == DAY:
-			if self._is_task_entered():
-				sessions_list = self.get_selected_day_sessions_by_task()
-			else:
-				sessions_list = self.get_selected_day_sessions()
+		# If user is searching for all sessions of a specific task
+		if self.mode_var.get() == TASK:
+			task = self.input_widgets["entry"].get()
+			sessions_list = sessiondao.get_all_sessions_by_task(task)
 
-		# If user wants to view tasks of the past 7 days or the past 30 days
-		elif self.mode_var.get() == WEEK or self.mode_var.get() == MONTH:
+		else:
 			if self._is_task_entered():
 				sessions_list = self.get_selected_timeframe_sessions_by_task()
 			else:
 				sessions_list = self.get_selected_timeframe_sessions()
-
-		# If user is searching for all sessions of a specific task
-		elif self.mode_var.get() == TASK:
-			task = self.input_widgets["entry"].get()
-			sessions_list = sessiondao.get_all_sessions_by_task(task)
 
 		self.draw_sessions_to_screen(sessions_list)
 		self.draw_totals(sessions_list)
@@ -284,16 +323,6 @@ class ViewLog(Frame):
 
 	def _is_task_entered(self):
 		return self.input_widgets["entry"].get() != ""
-
-
-	def get_selected_day_sessions_by_task(self):
-		sessions = self.get_selected_day_sessions()
-		task = self._get_entered_task()
-		task_sessions = []
-		for s in sessions:
-			if s.task == task:
-				task_sessions.append(s)
-		return task_sessions
 
 
 	def get_selected_timeframe_sessions_by_task(self):
@@ -314,12 +343,11 @@ class ViewLog(Frame):
 		return self.input_widgets["entry"].get()
 
 
-
 	def get_selected_timeframe_sessions(self):
 		"""Method used for when in week or month mode (two calendar widgets exist)
 		Grabs date from both and retrieves all Sessions from between those dates, inclusive"""
-		start = self.grab_date_from_cal('calendar_start')
-		end = self.grab_date_from_cal('calendar_end')
+		start = self.grab_date_from_cal("cal1")
+		end = self.grab_date_from_cal("cal2")
 
 		sessions = sessiondao.get_all_sessions_between_dates(start, end)
 		return sessions
@@ -396,8 +424,6 @@ class ViewLog(Frame):
 		self.col_widths[0] = 20
 
 
-
-
 	def draw_sessions_to_screen(self, all_sessions):
 		"""sessions is a list of Session objects"""
 		self._calc_col_widths(all_sessions)
@@ -407,13 +433,6 @@ class ViewLog(Frame):
 			self.session_rows.append(row)
 			self._draw_row(row)
 
-
-
-	def get_selected_day_sessions(self):	
-		day = self.grab_date_from_cal('calendar_end')
-		selected_day_sessions = sessiondao.get_all_sessions_from_date(day)
-
-		return selected_day_sessions
 	
 	def create_session_row(self, session):
 		"""Receives Session obj as arg.
@@ -450,11 +469,6 @@ class ViewLog(Frame):
 			label.destroy()
 		self.total_labels = []
 
-	def _clear_input_widgets(self):
-		# Clear input section (calendar/entry)
-		for widget in self.input_widgets.values():
-			widget.destroy()
-		self.input_widgets = {}
 
 
 
