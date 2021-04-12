@@ -138,8 +138,9 @@ class Settings(tk.Frame):
 
 
 	def save_clicked(self):
-		self.save_settings()
-		self.indicate_saved()
+		if self.save_settings():
+			self.indicate_saved()
+		
 
 
 	def save_settings(self):
@@ -160,6 +161,7 @@ class Settings(tk.Frame):
 
 		
 		self.update_stored_settings()
+		return True
 		
 
 
@@ -195,6 +197,9 @@ class Settings(tk.Frame):
 				return False
 			if float(e) < 0:
 				messagebox.showerror("Error", "Time can't be negative")
+				return False
+			if float(e) > 59:
+				messagebox.showerror("Error", "Pomo times must be under 60")
 				return False
 		return True
 
