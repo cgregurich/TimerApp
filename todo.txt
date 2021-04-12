@@ -1,19 +1,24 @@
+4/10/21 changes:
+
+SETTINGS: limited pomo settings to uner 60 minutes
+TIMER: Fixed popup when manually ending timer when untracked popup is on
+VIEWLOG: Refactored buttons, added calendar arrows, increased calendar size, changed calendar week layout
+TIMER: Added entry_mode functionality
+
+--------------------------------------------------------------------------
+
+*********************
+brainspace
+
+*********************
+
 todo (recent at top):
 
--MAJOR DESIRABLE IMPROVEMENT: ViewLog left and right arrows to cycle between days, weeks, etc. instead of having to manually click on days
+-Setting for how to calculate a week in ViewLog. Two options: 7 day week, where end date will be today and the start date will be 7 days ago. Or the sunday to sunday option where the start date will be the most recent sunday the end day will be today
 
-- also, is there a way to make the calendar bigger, and be sunday - saturday instead of monday - sunday??
-
-WHERE I LEFT OFF: added ability to search by task and date in view log. prob needs further testing but seems to be working.gj
 
 - FIND OUT HOW TO MAKE THE PROGRAM BE A LITTLE BUTTHOLE IF I'm TRYING TO SHUT OFF THE COMPUTER WHILE THE PROGRAM IS RUNNING/A TIMER IS RUNNING??
 
-- PECULIAR ASS BUG: when pomo work time is set to 60 minutes it just.... doesn't work. The clock runs down all the way then just chills with 1 second left, no notification or anything
-
-- When setting a timer, have a little thing that says at what clock time the timer will be done (recalculate
-when paused and shit)
-
-- Have two modes of input for timer: enter the time to run the timer for (eg. 60 minutes) or set the clock time of when you want the timer to be done (eg. 13:00). The former will calculate what time the timer will finish at, once it's started (and recalculate each time it's paused then resumed). The latter will calculate how much time the timer needs to be run for. But then how do I deal with pausing and resuming here?
 
 
 
