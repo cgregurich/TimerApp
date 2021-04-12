@@ -53,6 +53,7 @@ class TimerApp(tk.Tk):
 		self.current_frame.reset()
 		self.current_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 		self.geometry("")
+		self.current_frame.focus_set()
 
 
 	def change_bindings(self, gui_class, frame):
