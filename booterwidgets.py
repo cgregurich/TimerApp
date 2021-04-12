@@ -214,6 +214,8 @@ class BooterOptionMenu(tk.OptionMenu):
 
 		self.config(indicatoron=0, image=self.img, compound="right")
 
+	def change_fontsize(self, fontsize):
+		self.config(font=(storedsettings.FONT, fontsize))
 
 
 
