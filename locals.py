@@ -21,3 +21,7 @@ WEEK = "week"
 MONTH = "month"
 TASK = "task"
 
+
+# Constants for Timer's entry modes
+TIMER = "timer"
+CLOCK = "clock"
