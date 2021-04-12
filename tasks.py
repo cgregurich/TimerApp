@@ -63,10 +63,6 @@ class Tasks(Frame):
 		self.om_tasks.grid(row=2, column=1)
 		self.btn_del.grid(row=2, column=2)
 
-
-
-
-
 	def del_clicked(self):
 		task = self.selected_task.get()
 		if task == "Select...":
