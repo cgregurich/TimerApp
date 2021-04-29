@@ -14,6 +14,8 @@ brainspace
 
 todo (recent at top):
 
+- Calendar showing streaks for goals. Simple green dot or some shish
+
 -Setting for how to calculate a week in ViewLog. Two options: 7 day week, where end date will be today and the start date will be 7 days ago. Or the sunday to sunday option where the start date will be the most recent sunday the end day will be today
 
 
