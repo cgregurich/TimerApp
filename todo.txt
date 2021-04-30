@@ -12,6 +12,7 @@ brainspace
 
 *********************
 
+bug/undesirable: stopping an untracked stopwatch asks to log the session
 todo (recent at top):
 
 - Calendar showing streaks for goals. Simple green dot or some shish
