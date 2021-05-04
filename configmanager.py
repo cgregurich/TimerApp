@@ -26,6 +26,7 @@ class ConfigManager(configparser.ConfigParser):
 			'POMO_BREAK_TIME': '300', # aka 5 minutes
 			'AUTOSAVE': '1',
 			'UNTRACKED_POPUP': '1',
+			'SOUND_VOLUME': '100', # 0 to 100
 			'DEBUG': '0'
 		}
 		with open(self.FILE_NAME, 'w') as configfile:
