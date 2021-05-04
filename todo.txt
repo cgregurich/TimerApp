@@ -12,8 +12,6 @@ brainspace
 
 *********************
 
-bug/undesirable: stopping an untracked stopwatch asks to log the session
-todo (recent at top):
 
 - Quick little disappearing message that says what time the timer/pomo will finish at when you hit start/resume (resume will be slightly more tricky but ayuh)
 
