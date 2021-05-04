@@ -7,7 +7,8 @@ from tkinter import messagebox
 from booterwidgets import *
 from session import Session
 from sessiondao import SessionDAO
-import datetime
+import datetime as dt
+
 
 sessiondao = SessionDAO()
 
@@ -23,9 +24,11 @@ class Pomodoro(tk.Frame):
 		self.frame_timer_display = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_buttons = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
-		self.frame_back_button.grid(row=0, column=0)
-		self.frame_timer_display.grid(row=1, column=1)
-		self.frame_buttons.grid(row=2, column=1)
+		self.grid_rowconfigure(0, weight=1)
+		self.frame_back_button.grid_columnconfigure(1, weight=1)
+		self.frame_back_button.grid(row=0, column=0, sticky="nsew")
+		self.frame_timer_display.grid(row=1, column=0)
+		self.frame_buttons.grid(row=2, column=0, pady=(10, 0))
 
 		self.pomo_mode = WORK
 		self.mode = STOPPED
@@ -54,11 +57,11 @@ class Pomodoro(tk.Frame):
 	def draw_clock(self):
 		"""Draws buttons and display label on to main frame"""
 		btn_back = BooterButton(self.frame_back_button, command=self.back_clicked)
-		btn_back.grid(row=0, column=0, padx=10)
+		btn_back.grid(row=0, column=0)
 		btn_back.apply_back_image()
 
-		self.lbl_task = BooterLabel(self)
-		self.lbl_task.grid(row=0, column=1)
+		self.lbl_task = BooterLabel(self.frame_back_button)
+		self.lbl_task.grid(row=0, column=1, padx=(10,0))
 		self.display_task()
 
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00', fg=storedsettings.CLOCK_FG)
@@ -98,8 +101,34 @@ class Pomodoro(tk.Frame):
 		if prev_mode == STOPPED:
 			self.start_timer()
 
+		self.display_message()
+
+
 		# make button text match the state of the timer
 		self.change_control()
+
+	def display_message(self):
+		"""
+		Tells user what clock time the timer will be done at. This occurs
+		when the user starts the timer, or resumes the timer after it's 
+		paused.
+		"""
+		if self.mode == RUNNING:
+			lbl = BooterLabel(self, text=self.create_endtime_message())
+			lbl.place(relx=0.5, rely=0.625, anchor=tk.CENTER)
+			lbl.config(font=(storedsettings.FONT, 12))
+			self.after(2000, lbl.destroy)
+
+	def create_endtime_message(self):
+		"""
+		get the time left on the timer.
+		use that to calculate what time it will be when that much
+		time has elapsed. display this time in an HH:MM format.
+		"""
+		now = dt.datetime.now()
+		delta = dt.timedelta(seconds=self.time_left)
+		time_str = (now + delta).strftime("Ends at %H:%M")
+		return time_str
 
 
 	def change_mode_right(self):
@@ -145,8 +174,6 @@ class Pomodoro(tk.Frame):
 			self.mode = prev_mode
 		self.change_control()
 
-	def change_mode_left(self):
-		pass
 
 
 	def change_pomo_mode(self):
@@ -259,7 +286,10 @@ class Pomodoro(tk.Frame):
 		Why? Depends on if the user wants there to be a popup notification when 
 		an untracked session is done
 		"""
-		if storedsettings.UNTRACKED_POPUP == ON:
+
+		# Display notification if setting is enabled, however only
+		# when the user didn't manually end the timer.
+		if storedsettings.UNTRACKED_POPUP == ON and self.end_type == AUTOMATIC:
 			messagebox.showinfo("Popup", "Pomodoro is done")
 
 
@@ -280,13 +310,13 @@ class Pomodoro(tk.Frame):
 
 	def get_current_time(self):
 		"""Returns string of current time in format HH:MM"""
-		now = datetime.datetime.now()
+		now = dt.datetime.now()
 		return now.strftime("%H:%M")
 
 
 	def get_current_date(self):
 		"""Returns string of current date in format MM-DD-YY"""
-		today = datetime.datetime.now()
+		today = dt.datetime.now()
 		return today.strftime("%m-%d-%y")
 
 
@@ -311,7 +341,7 @@ class Pomodoro(tk.Frame):
 		"""Returns a datetime.time object"""
 		total_seconds = self.get_task_time_as_seconds()
 		minutes, seconds = divmod(total_seconds, 60)
-		time_obj = datetime.time(0, minutes, seconds)
+		time_obj = dt.time(0, minutes, seconds)
 		return time_obj
 
 
