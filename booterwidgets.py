@@ -240,6 +240,18 @@ class BooterRadiobutton(tk.Radiobutton):
 
 		self.config(bg="white")
 
+
+class BooterScale(tk.Scale):
+	def __init__(self, *args, **kwargs):
+		tk.Scale.__init__(self, *args, **kwargs)
+
+		self.config(bg=storedsettings.APP_WIDGET_COLOR)
+		self.config(fg=storedsettings.APP_FONT_COLOR)
+		self.config(highlightbackground=storedsettings.APP_WIDGET_COLOR)
+		self.config(font=(storedsettings.FONT, 10, "bold"))
+		self.config(troughcolor="white")
+		self.config(activebackground=storedsettings.HOVER_COLOR)
+		self.config(relief=None)
 	
 
 
