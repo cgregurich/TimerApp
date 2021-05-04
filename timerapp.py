@@ -24,7 +24,7 @@ class TimerApp(tk.Tk):
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
-		self.resizable(False, False)
+		# self.resizable(False, False)
 
 		# Volume / sound setup
 		self.volume = tk.IntVar()
@@ -32,7 +32,6 @@ class TimerApp(tk.Tk):
 		pygame.mixer.init()
 		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 		pygame.mixer.music.set_volume(self.volume.get()/100)
-		print(f"volume set to: {self.volume.get()}") # FOR TESTING, REMOVE
 
 		self.current_task = tk.StringVar()
 		self.DEFAULT_TASK = "untracked"
