@@ -9,6 +9,7 @@ from viewlog import ViewLog
 from goals import Goals
 from configmanager import ConfigManager
 import storedsettings
+import pygame
 
 
 
@@ -18,10 +19,20 @@ class TimerApp(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
 
+		self.mgr = ConfigManager()
+
 		self.title("Productivity Time")
 		self.iconbitmap("resources/images/icon.ico")
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		self.resizable(False, False)
+
+		# Volume / sound setup
+		self.volume = tk.IntVar()
+		self.volume.set(int(self.mgr.get_setting("SETTINGS", "SOUND_VOLUME")))
+		pygame.mixer.init()
+		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
+		pygame.mixer.music.set_volume(self.volume.get()/100)
+		print(f"volume set to: {self.volume.get()}") # FOR TESTING, REMOVE
 
 		self.current_task = tk.StringVar()
 		self.DEFAULT_TASK = "untracked"
@@ -65,6 +76,16 @@ class TimerApp(tk.Tk):
 
 	def get_current_task(self):
 		return self.current_task.get()
+
+	def play_sound(self):
+		"""Plays the timer end sound"""
+		pygame.mixer.music.play()
+
+	def volume_changed(self, value=None):
+		volume = int(value) / 100
+		pygame.mixer.music.set_volume(volume)
+		self.mgr.change_setting("SOUND_VOLUME", value)
+		self.play_sound()
 
 
 def main():
