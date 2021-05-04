@@ -3,7 +3,6 @@ from tkinter import ttk
 from stopwatch import Stopwatch
 from locals import *
 import storedsettings
-import pygame
 from tkinter import messagebox
 from booterwidgets import *
 from session import Session
@@ -17,8 +16,6 @@ class Pomodoro(tk.Frame):
 	def __init__(self, parent):
 		tk.Frame.__init__(self, parent)
 		self.parent = parent
-		pygame.mixer.init()
-		pygame.mixer.music.load("resources/sounds/dingsoundeffect.wav")
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
 		
@@ -221,7 +218,7 @@ class Pomodoro(tk.Frame):
 	
 
 	def _play_timer_end_sound(self):
-		pygame.mixer.music.play()
+		self.parent.play_sound()
 
 
 	def _redraw_clock_label(self, m, s):

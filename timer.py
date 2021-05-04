@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import messagebox
 from locals import *
 import storedsettings
-import pygame
 
 from booterwidgets import *
 
@@ -19,7 +18,6 @@ class Timer(tk.Frame):
 	def __init__(self, parent):
 		tk.Frame.__init__(self, parent)
 
-		pygame.mixer.init()
 
 		self.parent = parent
 		
@@ -398,7 +396,7 @@ class Timer(tk.Frame):
 
 
 	def _play_timer_end_sound(self):
-		pygame.mixer.music.play()
+		self.parent.play_sound()
 
 
 	def _redraw_clock_label(self, h, m, s):
