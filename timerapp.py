@@ -82,9 +82,10 @@ class TimerApp(tk.Tk):
 		pygame.mixer.music.play()
 
 	def volume_changed(self, value=None):
+		"""Saves the new volume in usersettings.ini, sets the mixer's volume, then plays the ding sound so the user can test the new volume."""
+		self.mgr.change_setting("SOUND_VOLUME", value)
 		volume = int(value) / 100
 		pygame.mixer.music.set_volume(volume)
-		self.mgr.change_setting("SOUND_VOLUME", value)
 		self.play_sound()
 
 
