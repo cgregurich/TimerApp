@@ -107,11 +107,39 @@ class Stopwatch(tk.Frame):
 
 	def reset_clock(self):
 		self.mode = STOPPED
-		ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted() }")
-		if ans:
-			self.save_session()
+
+		self.session_done()
 		self.after_cancel(self.timer_id)
 		self._redraw_clock_label(0, 0, 0)
+
+
+	def session_done(self):
+		"""
+		Deals with taking care of things when the stopwatch is stopped.
+		Depending on user settings, different things should happen.
+		i.e. if the task is untracked, then user settings don't matter
+		and there should be no message asking to log it.
+		if there is a task, and autosave is on, it should be auto logged
+		when cancelled. If there is a task and autosave is off, user should
+		be asked whether to save or not.
+		"""
+		if self.parent.get_current_task() == self.parent.DEFAULT_TASK:
+			# nothing needs to happen when no task selected
+			return 
+		else:
+			self.tracked_session_done()
+
+	def tracked_session_done(self):
+		if storedsettings.AUTOSAVE == OFF:
+			# Prompt the user to save session
+			ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
+			if ans:
+				self.save_session()
+		else: # autosave is on, so save it without asking
+			self.save_session()
+
+
+	
 
 
 	def right_button_clicked(self, event=None):
