@@ -22,40 +22,39 @@ class Timer(tk.Frame):
 		self.parent = parent
 		
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
-		
+
+
 		self.frame_back_button = tk.Frame(self, bg=storedsettings.APP_WIDGET_COLOR)
+		self.frame_timer_display = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_entries = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
 		self.frame_buttons = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
-		self.frame_timer_display = tk.Frame(self, bd=3, bg=storedsettings.APP_WIDGET_COLOR)
+
+		# Makes row 0 expand to the max width of other frames
+		self.grid_rowconfigure(0, weight=1)
+		# Makes the task display expand to fill empty space; keeps back btn to the left no matter the length of task string
+		self.frame_back_button.grid_columnconfigure(1, weight=1)
+		
 
 		self.mode = STOPPED
 		self.entry_mode = TIMER
 
-		self.frame_back_button.grid(row=0, column=0)
-
-		self.frame_timer_display.grid(row=1, column=1)
-		
-		
-		
-		self.frame_entries.grid(row=2, column=1)
-		
-		self.frame_buttons.grid(row=3, column=1)
-		
-		
-
+		self.frame_back_button.grid(row=0, column=1, sticky="NSEW")
+		self.frame_timer_display.grid(row=2, column=1)
+		self.frame_entries.grid(row=3, column=1)
+		self.frame_buttons.grid(row=4, column=1)
 
 		self.end_type = None
 		self.timer_id = None
 
 		self.draw_clock()
+		self.time_left = None 
 
 		self.is_visible = True
 
 		# For keeping track of current time of day at start of session
 		self.start_time = None
 
-		# For keeping track of current date at start of session (in case session 
-		# begins at around 00:00 so the date won't be counted as the "next" day)
+		# For keeping track of current date at start of session (in case session begins at around 00:00 so the date won't be counted as the "next" day)
 		self.start_date = None
 
 		
@@ -67,13 +66,14 @@ class Timer(tk.Frame):
 
 
 	def draw_clock(self):
-
 		# Create widgets
 		btn_back = BooterButton(self.frame_back_button, text="Back", command=self.back_clicked)
-		btn_back.grid(row=0, column=0, padx=10)
+		btn_back.grid(row=0, column=0)
 		btn_back.apply_back_image()
 
-		self.lbl_task = BooterLabel(self)
+
+
+		self.lbl_task = BooterLabel(self.frame_back_button)
 		self.lbl_task.grid(row=0, column=1)
 		self.display_task()
 
@@ -155,8 +155,36 @@ class Timer(tk.Frame):
 		elif self.mode == PAUSED:
 			self.mode = RUNNING
 
+		self.display_message()
+
 		self.change_control()
 		self.change_entries_state()
+
+	def display_message(self):
+		"""
+		Tells user what clock time the timer will be done at. This occurs
+		when the user starts the timer, or resumes the timer after it's 
+		paused. This only occurs when the user is using the timer mode,
+		not the clock mode (since with clock mode, the info would be
+		redundant)
+		"""
+		if self.mode == RUNNING and self.entry_mode == TIMER:
+			lbl = BooterLabel(self, text=self.create_endtime_message())
+			lbl.place(relx=0.5, rely=0.515, anchor=tk.CENTER)
+			lbl.config(font=(storedsettings.FONT, 12))
+			self.after(2000, lbl.destroy)
+
+	def create_endtime_message(self):
+		"""
+		get the time left on the timer.
+		use that to calculate what time it will be when that much
+		time has elapsed. display this time in an HH:MM format.
+		"""
+		now = dt.datetime.now()
+		delta = dt.timedelta(seconds=self.time_left)
+		time_str = (now + delta).strftime("Ends at %H:%M")
+		return time_str
+
 
 
 	def change_control(self):
@@ -304,7 +332,9 @@ class Timer(tk.Frame):
 
 
 	def timer_loop(self, seconds):
-		"""seconds is the grand total number of seconds left in the timer"""
+		"""
+		seconds is the grand total number of seconds left in the timer
+		"""
 		hours_left, seconds_left = divmod(seconds, 3600) # divmod(a, b) -> (a//b, a%b) 
 		minutes_left, seconds_left = divmod(seconds_left, 60)
 		# Continue looping if timer is not done
