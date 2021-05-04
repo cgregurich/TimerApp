@@ -75,6 +75,8 @@ class Settings(tk.Frame):
 		lbl_pomo_break = BooterLabel(self.frame_settings, text="Pomo Break Time")
 		lbl_autosave = BooterLabel(self.frame_settings, text="Time Autosave")
 		lbl_popup = BooterLabel(self.frame_settings, text="Untracked Popup")
+		lbl_volume = BooterLabel(self.frame_settings, text="Volume")
+		
 		
 
 		# Colored button for changing clock color
@@ -117,6 +119,7 @@ class Settings(tk.Frame):
 		self.lbl_status = BooterLabel(self.frame_settings, text="")
 		self.lbl_status.config(font=(storedsettings.FONT, 15, "bold"), fg="green")
 		self.btn_save = BooterButton(self.frame_settings, text="Save Changes", width=14, command=self.save_clicked)
+		scale_vol = BooterScale(self.frame_settings, from_=0, to=100, orient=tk.HORIZONTAL, command=self.parent.volume_changed, variable=self.parent.volume)
 
 
 		# Grid the widgets
@@ -125,15 +128,17 @@ class Settings(tk.Frame):
 		lbl_pomo_break.grid(row=2, column=0)
 		lbl_autosave.grid(row=3, column=0)
 		lbl_popup.grid(row=4, column=0)
+		lbl_volume.grid(row=5, column=0)
 
 		self.btn_color.grid(row=0, column=1)
 		self.entry_pomo_work.grid(row=1, column=1)
 		self.entry_pomo_break.grid(row=2, column=1)
 		self.btn_autosave_option.grid(row=3, column=1)
 		self.btn_untracked_popup.grid(row=4, column=1)
-		self.lbl_status.grid(row=5, column=0, columnspan=2, pady=(20,0))
+		scale_vol.grid(row=5, column=1)
+		self.lbl_status.grid(row=6, column=0, columnspan=2, pady=(20,0))
 
-		self.btn_save.grid(row=6, column=0, columnspan=2, pady=(0,0))
+		self.btn_save.grid(row=7, column=0, columnspan=2, pady=(0,0))
 
 
 
@@ -271,7 +276,6 @@ class Settings(tk.Frame):
 	def redraw_timer(self):
 		self.lbl_clock.config(fg=storedsettings.CLOCK_FG)
 
-		
 
 	def reset(self):
 		pass
