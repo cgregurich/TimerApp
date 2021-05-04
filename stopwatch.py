@@ -30,10 +30,12 @@ class Stopwatch(tk.Frame):
 		self.frame_timer_display = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 		self.frame_buttons = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
 
+		self.grid_rowconfigure(0, weight=1)
+		self.frame_back_button.grid_columnconfigure(1, weight=1)
 		# Put sub-frames on main frame
-		self.frame_back_button.grid(row=0, column=0)
-		self.frame_timer_display.grid(row=1, column=1)
-		self.frame_buttons.grid(row=2, column=1)
+		self.frame_back_button.grid(row=0, column=0, sticky="nsew")
+		self.frame_timer_display.grid(row=1, column=0)
+		self.frame_buttons.grid(row=2, column=0)
 
 		self.timer_id = None
 		self.draw_clock()
@@ -60,7 +62,7 @@ class Stopwatch(tk.Frame):
 	
 		btn_back.apply_back_image()
 
-		self.lbl_task = BooterLabel(self)
+		self.lbl_task = BooterLabel(self.frame_back_button)
 		self.lbl_task.grid(row=0, column=1)
 		self.display_task()
 
@@ -105,6 +107,9 @@ class Stopwatch(tk.Frame):
 			self.mode = RUNNING
 		self.change_control()
 
+	def cancel_message(self):
+		base = "Are you sure you want to cancel?"
+
 	def reset_clock(self):
 		self.mode = STOPPED
 
@@ -130,12 +135,9 @@ class Stopwatch(tk.Frame):
 			self.tracked_session_done()
 
 	def tracked_session_done(self):
-		if storedsettings.AUTOSAVE == OFF:
-			# Prompt the user to save session
-			ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
-			if ans:
-				self.save_session()
-		else: # autosave is on, so save it without asking
+		# Prompt the user to save session
+		ans = messagebox.askyesno("Save session?", f"{self.get_task_time_formatted()}")
+		if ans:
 			self.save_session()
 
 
