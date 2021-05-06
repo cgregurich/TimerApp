@@ -5,14 +5,20 @@ TIMER: Fixed popup when manually ending timer when untracked popup is on
 VIEWLOG: Refactored buttons, added calendar arrows, increased calendar size, changed calendar week layout
 TIMER: Added entry_mode functionality
 
+5-3/4-21 changes:
+
+- added volume slider and volume functionality
+- changed layout of all three clocks
+- added display message to timer and pomo
+- fixed some popup bugs
+
+
 --------------------------------------------------------------------------
 
 *********************
 brainspace
 
 *********************
-WHERE I LEFT OFF: holy fuck I am cracked outta my goddamn mind. wow. conquered that monster of a visual layout mamma jamma. next step is to apply the same thing to pomodoro (and maybe stopwatch? And beyond?). And also, very important: RUBBER DUCK IT! I don't even know what I did to fix it, my mind is a tornado rn. Then get the little message thing to work, (funny thing is i sort of did all this to make the message thing work better but all in all I don't think it helped lmaooo), then do the same for pomo
-
 
 - Calendar showing streaks for goals. Simple green dot or some shish
 
