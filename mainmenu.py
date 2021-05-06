@@ -13,6 +13,8 @@ taskdao = TaskDAO()
 class MainMenu(tk.Frame):
 	def __init__(self, parent):
 		tk.Frame.__init__(self, parent)
+		print(f"parent: {parent}" )
+		print(f"type(parent): {type(parent)}")
 		self.parent = parent
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
@@ -43,7 +45,8 @@ class MainMenu(tk.Frame):
 		btn_pomo = BooterButton(self.frame_buttons, text="POMODORO".title(), command=lambda: self.parent.show_frame("Pomodoro"), width=BUTTON_WIDTH)
 		btn_timer = BooterButton(self.frame_buttons, text="TIMER".title(), command=lambda: self.parent.show_frame("Timer"), width=BUTTON_WIDTH)
 		btn_displaydata = BooterButton(self.frame_buttons, text="VIEW LOG".title(), command=lambda: self.parent.show_frame("ViewLog"), width=BUTTON_WIDTH)
-		check_debug = BooterCheckbutton(self.frame_buttons, text="DEBUG", variable=self.parent.debug, command=self.check_clicked)
+		
+		# check_debug = BooterCheckbutton(self.frame_buttons, text="DEBUG", variable=self.parent.debug, command=self.check_clicked)
 		
 
 
@@ -58,7 +61,7 @@ class MainMenu(tk.Frame):
 		btn_timer.grid           (row=6, column=0, pady=PADY)
 		btn_displaydata.grid     (row=7, column=0, pady=PADY)
 		btn_settings.grid        (row=8, column=0, pady=PADY)
-		check_debug.grid         (row=9, column=0)
+		# check_debug.grid         (row=9, column=0)
 	
 		self.grid_columnconfigure(0, weight=1) # centers buttons in the frame
 
@@ -81,16 +84,7 @@ class MainMenu(tk.Frame):
 
 
 	def check_clicked(self):
-		debug = self.parent.debug.get()
-		storedsettings.WAIT = 10 if debug else 1000
-		cur_value = self.mgr.get_setting('SETTINGS', 'DEBUG')
-		new_value = '1' if cur_value == '0' else '0'
-		self.mgr.change_setting('DEBUG', new_value)
-		storedsettings.WAIT = 1000 if new_value == '0' else '10'
-		if debug:
-			self.parent.resizable(True, True)
-		else:
-			self.parent.resizable(False, False)
+		self.parent.toggle_debug()
 		
 
 		
