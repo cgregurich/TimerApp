@@ -38,7 +38,9 @@ class TimerApp(tk.Tk):
 		self.current_task.set(self.DEFAULT_TASK)
 		self.debug = tk.BooleanVar()
 		self.debug.set(int(ConfigManager().get_setting('SETTINGS', 'DEBUG')))
-		# self.resizable = (False, False)
+		self.resizable(False, False)
+
+
 
 		self.frames = {}
 
@@ -86,6 +88,18 @@ class TimerApp(tk.Tk):
 		volume = int(value) / 100
 		pygame.mixer.music.set_volume(volume)
 		self.play_sound()
+
+	def toggle_debug(self):
+		debug = self.debug.get()
+		storedsettings.WAIT = 10 if debug else 1000 # changes timescales
+		cur_value = self.mgr.get_setting('SETTINGS', 'DEBUG')
+		new_value = '1' if cur_value == '0' else '0'
+		self.mgr.change_setting('DEBUG', new_value)
+		storedsettings.WAIT = 1000 if new_value == '0' else '10'
+		if debug:
+			self.resizable(True, True)
+		else:
+			self.resizable(False, False)
 
 
 def main():
