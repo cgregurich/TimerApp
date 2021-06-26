@@ -83,8 +83,7 @@ class Stopwatch(tk.Frame):
 
 	def display_task(self):
 		task = self.parent.get_current_task()
-		if task != "Select...":
-			self.lbl_task.config(text=task)
+		self.lbl_task.config(text=task)
 
 
 	def clock_clicked(self, event):
