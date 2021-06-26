@@ -47,6 +47,7 @@ POMO_BREAK_TIME = int(mgr.get("SETTINGS", "POMO_BREAK_TIME")) # in seconds
 
 AUTOSAVE = mgr.get("SETTINGS", "AUTOSAVE")
 UNTRACKED_POPUP = mgr.get("SETTINGS", "UNTRACKED_POPUP")
+LOG_MODE = mgr.get("SETTINGS", "LOG_MODE")
 
 
 debug = mgr.get("SETTINGS", "DEBUG") == "1"

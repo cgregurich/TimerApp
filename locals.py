@@ -14,6 +14,8 @@ BREAK = "break"
 OFF = "off"
 ON = "on"
 AUTOSAVE = 'AUTOSAVE'
+UPTILL = "uptill"
+CURRENT = "current"
 
 # Constants for DisplayData
 DAY = "day"
