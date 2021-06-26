@@ -12,17 +12,18 @@ TIMER: Added entry_mode functionality
 - added display message to timer and pomo
 - fixed some popup bugs
 
+6-26-21 changes:
+- added setting to choose how week and month log data is displayed.
+
 
 --------------------------------------------------------------------------
 
 *********************
 brainspace
-
+- want to maybe have each clock have a task specific to it, so I can use one instance for running a stopwatch and a timer?? not sure.
 *********************
 
 - Calendar showing streaks for goals. Simple green dot or some shish
-
--Setting for how to calculate a week in ViewLog. Two options: 7 day week, where end date will be today and the start date will be 7 days ago. Or the sunday to sunday option where the start date will be the most recent sunday the end day will be today
 
 
 - FIND OUT HOW TO MAKE THE PROGRAM BE A LITTLE BUTTHOLE IF I'm TRYING TO SHUT OFF THE COMPUTER WHILE THE PROGRAM IS RUNNING/A TIMER IS RUNNING??
