@@ -4,6 +4,7 @@ from locals import *
 import storedsettings
 from tkinter import colorchooser
 from configmanager import ConfigManager
+from tkinter import messagebox
 
 from booterwidgets import *
 
@@ -20,8 +21,6 @@ class Settings(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
 
-        self.mgr = ConfigManager()
-        
         self.config(bg=storedsettings.APP_MAIN_COLOR)
         
         self.frame_settings = tk.Frame(self, bg=storedsettings.APP_MAIN_COLOR)
@@ -162,23 +161,25 @@ class Settings(tk.Frame):
         if not self.is_pomo_entries_valid():
             return False
 
+
         # user will enter minutes, but timer logic is in seconds, so multiply by 60
         pomo_work = int(self.entry_pomo_work.get()) * 60
         pomo_break = int(self.entry_pomo_break.get()) * 60
-        self.mgr.change_setting('POMO_WORK_TIME', str(pomo_work))
-        self.mgr.change_setting('POMO_BREAK_TIME', str(pomo_break))
+        self.parent.cfg_mgr.change_setting('POMO_WORK_TIME', str(pomo_work))
+        self.parent.cfg_mgr.change_setting('POMO_BREAK_TIME', str(pomo_break))
         storedsettings.POMO_WORK_TIME = pomo_work
         storedsettings.POMO_BREAK_TIME = pomo_break
 
-        self.mgr.change_setting("AUTOSAVE", self.save_mode)
-        self.mgr.change_setting("UNTRACKED_POPUP", self.untracked_popup_mode)
-        self.mgr.change_setting("LOG_MODE", self.log_mode)
+        self.parent.cfg_mgr.change_setting("AUTOSAVE", self.save_mode)
+        self.parent.cfg_mgr.change_setting("UNTRACKED_POPUP", self.untracked_popup_mode)
+        self.parent.cfg_mgr.change_setting("LOG_MODE", self.log_mode)
+        self.parent.cfg_mgr.change_setting("SOUND_VOLUME", str(self.parent.volume.get()))        
 
-        
+             
+
         self.update_stored_settings()
         return True
         
-
 
     def update_stored_settings(self):
         """
@@ -191,12 +192,9 @@ class Settings(tk.Frame):
         storedsettings.LOG_MODE = self.log_mode
 
 
-
     def indicate_saved(self):
         self.lbl_status.config(text="Changes saved!")
         self.lbl_status.after(2000, lambda: self.lbl_status.config(text=""))
-
-    
 
 
 
@@ -251,10 +249,6 @@ class Settings(tk.Frame):
 
     def change_auto_save_button(self):
         self.btn_autosave_option.config(text=self.save_mode)
-        # if self.save_mode == ON:
-        # 	self.btn_autosave_option.config(text="ON")
-        # else:
-        # 	self.btn_autosave_option.config(text="OFF")
 
 
     def change_untracked_popup_mode(self):
@@ -266,10 +260,6 @@ class Settings(tk.Frame):
 
     def change_untracked_popup_button(self):
         self.btn_untracked_popup.config(text=self.untracked_popup_mode)
-        # if self.untracked_popup_mode == ON:
-        # 	self.btn_untracked_popup.config(text="ON")
-        # else:
-        # 	self.btn_untracked_popup.config(text="OFF")
 
 
 
@@ -290,7 +280,7 @@ class Settings(tk.Frame):
         
 
         # saves color to usersettings.ini
-        self.mgr.change_setting('CLOCK_FG', color[1])
+        self.parent.mgr.change_setting('CLOCK_FG', color[1])
         # immediately changes value in storedsettings so clock's change color
         storedsettings.CLOCK_FG = color[1]
         self.btn_color.config(bg=color[1])
