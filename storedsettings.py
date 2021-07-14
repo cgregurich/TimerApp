@@ -51,6 +51,7 @@ LOG_MODE = mgr.get("SETTINGS", "LOG_MODE")
 
 
 debug = mgr.get("SETTINGS", "DEBUG") == "1"
+# debug = True
 
 WAIT = 10 if debug else 1000
 # APP_BG_COLOR = "#FF0000"
