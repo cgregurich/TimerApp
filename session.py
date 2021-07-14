@@ -4,19 +4,19 @@ class Session():
 	"""
 	task -> str
 	task_time -> int representing seconds
-	time_completed -> time in format HH:MM (military time)
-	date_completed -> date in format MM-DD-YY
+	time_started -> time in format HH:MM (military time)
+	date_started -> date in format MM-DD-YY
 	"""
-	def __init__(self, task=None, task_time=None, time_completed=None, date_completed=None):
+	def __init__(self, task=None, task_time=None, time_started=None, date_started=None):
 
-		self.info = {"task": task, "task_time": task_time, "time_completed": time_completed, 
-								"date_completed": date_completed}
+		self.info = {"task": task, "task_time": task_time, "time_started": time_started, 
+								"date_started": date_started}
 
 		# Get current date/time if missing
-		if not self.time_completed:
-			self.info["time_completed"] = self.get_current_time()
-		if not self.date_completed:
-			self.info["date_completed"] = self.get_current_date()
+		if not self.time_started:
+			self.info["time_started"] = self.get_current_time()
+		if not self.date_started:
+			self.info["date_started"] = self.get_current_date()
 		if self.task == DEFAULT_TASK:
 			self.info["task"] = "N/A"
 
@@ -39,7 +39,7 @@ class Session():
 
 	def get_info_for_display(self):
 		"""Returns a list of the Session's info in format
-		[task, task_time -> HH:MM:SS, time_completed, date_completed]"""
+		[task, task_time -> HH:MM:SS, time_started, date_started]"""
 		info = list(self.info.values())
 		info[1] = self._format_seconds_to_time(self.task_time)
 		return info
@@ -87,7 +87,7 @@ class Session():
 
 
 	def get_date_obj(self):
-		date_list = self.date_completed.split('-')
+		date_list = self.date_started.split('-')
 		month = int(date_list[0])
 		day = int(date_list[1])
 		year = int(date_list[2]) + 2000
@@ -101,13 +101,13 @@ class Session():
 
 
 	@property
-	def time_completed(self):
-		return self.info["time_completed"]
+	def time_started(self):
+		return self.info["time_started"]
 
 
 	@property
-	def date_completed(self):
-		return self.info["date_completed"]
+	def date_started(self):
+		return self.info["date_started"]
 
 
 	@property

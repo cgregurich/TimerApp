@@ -7,7 +7,7 @@ class SessionDAO():
 		self.conn = sqlite3.connect(db_name)
 		self.c = self.conn.cursor()
 		self.c.execute("""CREATE TABLE IF NOT EXISTS sessions (
-			task text, task_time integer, time_completed text, date_completed text
+			task text, task_time integer, time_started text, date_started text
 			)""")
 		self.conn.commit()
 
@@ -15,7 +15,7 @@ class SessionDAO():
 	def insert_session(self, session):
 		with self.conn:
 			self.c.execute("""INSERT INTO sessions VALUES(
-				:task, :task_time,  :time_completed, :date_completed
+				:task, :task_time,  :time_started, :date_started
 				)""", session.info)
 
 
@@ -23,7 +23,7 @@ class SessionDAO():
 	def delete_session(self, session_to_del):
 		with self.conn:
 			self.c.execute("""DELETE FROM sessions WHERE 
-				task=? AND task_time=? AND time_completed=? AND date_completed=?""", ('reading', 120, '16:14', '8-22-2020'))
+				task=? AND task_time=? AND time_started=? AND date_started=?""", ('reading', 120, '16:14', '8-22-2020'))
 			# session_to_del.info_as_tuple()
 		return self.c.rowcount
 
@@ -32,7 +32,7 @@ class SessionDAO():
 		"""Pulls all data from database and uses helper to convert to and return
 		list of Session objects"""
 		with self.conn:
-			self.c.execute("""SELECT * FROM sessions ORDER BY date_completed, time_completed""")
+			self.c.execute("""SELECT * FROM sessions ORDER BY date_started, time_started""")
 			tup_list = self.c.fetchall()
 
 		return self._convert_tup_list_to_session_list(tup_list)
@@ -44,7 +44,7 @@ class SessionDAO():
 		session_list = []
 
 		for tup in tup_list:
-			info_dict = {'task':tup[0], 'task_time':tup[1], 'time_completed':tup[2], 'date_completed':tup[3]}
+			info_dict = {'task':tup[0], 'task_time':tup[1], 'time_started':tup[2], 'date_started':tup[3]}
 			s = Session()
 			s.set_info_from_dict(info_dict)
 			session_list.append(s)
@@ -65,7 +65,7 @@ class SessionDAO():
 
 
 	def get_all_sessions_between_dates(self, start, end):
-		"""Returns list of Session objects that have a date_completed on and between
+		"""Returns list of Session objects that have a date_started on and between
 		start and end"""
 
 		dates = self._generate_dates_between(start, end)
@@ -91,7 +91,7 @@ class SessionDAO():
 		provided by the arg task"""
 		with self.conn:
 			self.c.execute("""SELECT * FROM sessions WHERE task = ?
-				ORDER BY date_completed, time_completed""", (task,))
+				ORDER BY date_started, time_started""", (task,))
 			tup_list = self.c.fetchall()
 
 		return self._convert_tup_list_to_session_list(tup_list)
