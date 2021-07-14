@@ -42,6 +42,8 @@ class Stopwatch(tk.Frame):
 
 		self.is_visible = True
 
+		self.task_time = 0
+
 		# For keeping track of current time of day at start of session
 		self.start_time = None
 
@@ -102,12 +104,10 @@ class Stopwatch(tk.Frame):
 		ans = messagebox.askyesno(message="Are you sure you want to cancel?")
 		if ans:
 			self.reset_clock()
+			self.parent.crash_mgr.clear_crash_file()
 		else:
 			self.mode = RUNNING
 		self.change_control()
-
-	def cancel_message(self):
-		base = "Are you sure you want to cancel?"
 
 	def reset_clock(self):
 		self.mode = STOPPED
@@ -199,6 +199,7 @@ class Stopwatch(tk.Frame):
 		x = 0
 		self.task_time = s
 		if self.mode == RUNNING:
+			self.update_crash_file()
 			self._redraw_clock_label(hours, minutes, seconds)
 			x = 1
 			
@@ -206,6 +207,10 @@ class Stopwatch(tk.Frame):
 			return
 		self.timer_id = self.after(storedsettings.WAIT, self.stopwatch_loop, s+x)
 
+	def update_crash_file(self):
+		session = self.create_session()
+		if session:
+			self.parent.crash_mgr.update_crash_file(session)
 
 	def _redraw_clock_label(self, hours, minutes, seconds):
 		"""Redraws timer label in format HH:MM:SS"""
@@ -218,29 +223,35 @@ class Stopwatch(tk.Frame):
 
 
 	def get_task_time_formatted(self):
-		"""Returns time spent formatted as HH:MM:SS"""
-		time_obj = self.get_task_time()
+		"""Returns time spent formatted as HH:MM:SS
+			- 1 because of how stopwatch_loop works
+		"""
+		time_obj = self.get_task_time_as_datetime()
 		return time_obj.strftime("%H:%M:%S")
 
-	def get_task_time(self):
+	def get_task_time_as_datetime(self):
 		"""Returns a datetime.time object"""
-		total_seconds = self.get_task_time_as_seconds()
+		total_seconds = self.task_time
 		hours, seconds = divmod(total_seconds, 3600)
 		minutes, seconds = divmod(seconds, 60)
+		seconds -= 1 # to account for next stopwatch_loop recursive call
 		time_obj = datetime.time(hours, minutes, seconds)
 		return time_obj
 
-	def get_task_time_as_seconds(self):
-		# - 1 because of how the timer loop logic works, the recorded time is off by 1
-		return self.task_time - 1
-		
-	def save_session(self):
+
+
+	def create_session(self):
 		task = self.parent.get_current_task()
 		if task == self.parent.DEFAULT_TASK:
 			return
-		task_time = self.get_task_time_as_seconds()
+		task_time = self.task_time
 		session = Session(task, task_time, self.start_time, self.start_date)
-		sessiondao.insert_session(session)
+		return session
+
+	def save_session(self):
+		session = self.create_session()
+		if session:
+			sessiondao.insert_session(session)
 
 		
 	def reset(self):

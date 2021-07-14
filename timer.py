@@ -52,10 +52,10 @@ class Timer(tk.Frame):
 		self.is_visible = True
 
 		# For keeping track of current time of day at start of session
-		self.start_time = None
+		self.time_started = None
 
 		# For keeping track of current date at start of session (in case session begins at around 00:00 so the date won't be counted as the "next" day)
-		self.start_date = None
+		self.date_started = None
 
 		
 
@@ -146,7 +146,7 @@ class Timer(tk.Frame):
 		if self.mode == STOPPED:
 			
 			self.mode = RUNNING
-			self.start_timer()
+			self.timer_started()
 
 		elif self.mode == RUNNING:
 			self.mode = PAUSED
@@ -219,7 +219,7 @@ class Timer(tk.Frame):
 			self.mode_btn.config(state=tk.DISABLED)
 
 
-	def start_timer(self):
+	def timer_started(self):
 		# Used to remember time to log when the timer ends
 		if self.entry_mode == TIMER:
 			self.original_time = self._get_time_entered_in_seconds()
@@ -231,8 +231,8 @@ class Timer(tk.Frame):
 			self.timer_loop(seconds)
 		else:
 			self.mode = STOPPED
-		self.start_time = self.get_current_time()
-		self.start_date = self.get_current_date()
+		self.time_started = self.get_current_time()
+		self.date_started = self.get_current_date()
 
 
 	def _calculate_time(self):
@@ -251,8 +251,8 @@ class Timer(tk.Frame):
 		# till midnight, it would think you meant midnight of TODAY which would be 23h 30m in the past
 		# rather than 30 minutes in the future, since "then" is created using today's date
 		if delta.total_seconds() < 0:
-			new_delta = dt.timedelta(days=1)
-			then += new_delta
+			one_day = dt.timedelta(days=1)
+			then += one_day
 			delta = then - now
 
 		return int(delta.total_seconds())
@@ -292,6 +292,7 @@ class Timer(tk.Frame):
 		if ans == True:
 			self.end_type = MANUAL
 			self.reset_timer()
+			self.parent.crash_mgr.clear_crash_file()
 		else:
 			self.mode = RUNNING
 		self.change_control()
@@ -338,9 +339,11 @@ class Timer(tk.Frame):
 		minutes_left, seconds_left = divmod(seconds_left, 60)
 		# Continue looping if timer is not done
 		x = 0	
+		self.time_left = seconds
 		if seconds != 0:
-			self.time_left = seconds
+			# self.time_left = seconds
 			if self.mode == RUNNING:
+				self.update_crash_file()
 				self._redraw_clock_label(hours_left, minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
@@ -350,7 +353,12 @@ class Timer(tk.Frame):
 			self._play_timer_end_sound()
 			self.reset_timer()
 			self.change_control()
-		
+
+	def update_crash_file(self):
+		session = self.create_session()
+		if session:
+			session.set_task_time(self.get_elapsed_time())
+			self.parent.crash_mgr.update_crash_file(session)
 
 	def reset_timer(self):
 		"""Helper to reset the timer when it runs down or is cancelled."""
@@ -366,6 +374,7 @@ class Timer(tk.Frame):
 		self._redraw_clock_label(0, 0, 0)
 
 
+
 	def session_done(self):
 		"""
 		Deals with taking care of things when the timer is done.
@@ -375,6 +384,7 @@ class Timer(tk.Frame):
 			self.untracked_session_done()
 		else:
 			self.tracked_session_done()
+		self.parent.crash_mgr.clear_crash_file()
 
 	def untracked_session_done(self):
 		"""
@@ -413,15 +423,18 @@ class Timer(tk.Frame):
 		today = dt.datetime.now()
 		return today.strftime("%m-%d-%y")
 
-
-
-	def save_session(self):
+	def create_session(self):
 		task = self.parent.get_current_task()
 		if task == self.parent.DEFAULT_TASK:
 			return
 		task_time = self.get_task_time_as_seconds()
-		session = Session(task, task_time, self.start_time, self.start_date)
-		sessiondao.insert_session(session)
+		session = Session(task, task_time, self.time_started, self.date_started)
+		return session
+
+	def save_session(self):
+		session = self.create_session()
+		if session:
+			sessiondao.insert_session(session)
 
 
 	def _play_timer_end_sound(self):
@@ -455,11 +468,14 @@ class Timer(tk.Frame):
 
 	def get_task_time_as_seconds(self):
 		if self.end_type == MANUAL:
-			# - 1 because of how the timer loop logic works, the recorded time is off by 1
-			self.task_time = self.original_time - self.time_left - 1
+			# - 1 because of timer_loop's recursive call
+			self.task_time = self.get_elapsed_time() - 1
 		elif self.end_type == AUTOMATIC:
 			self.task_time = self.original_time
 		return self.task_time
+
+	def get_elapsed_time(self):
+		return self.original_time - self.time_left
 
 
 	def reset(self):

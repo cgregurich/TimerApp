@@ -169,6 +169,8 @@ class Pomodoro(tk.Frame):
 			self.reset_timer()
 			if self.pomo_mode == BREAK:
 				self.change_pomo_mode()
+			self.parent.crash_mgr.clear_crash_file()
+
 		else:
 			self.mode = prev_mode
 		self.change_control()
@@ -229,6 +231,8 @@ class Pomodoro(tk.Frame):
 		self.time_left = seconds
 		if seconds != 0:
 			if self.mode == RUNNING:
+				if self.pomo_mode == WORK:
+					self.update_crash_file()
 				self._redraw_clock_label(minutes_left, seconds_left)
 				x = 1
 			elif self.mode == STOPPED:
@@ -241,6 +245,13 @@ class Pomodoro(tk.Frame):
 			self.reset_timer()
 			self.change_pomo_mode()
 			self.change_control()
+
+	def update_crash_file(self):
+		session = self.create_session()
+		if session:
+			session.set_task_time(self.get_elapsed_time())
+			self.parent.crash_mgr.update_crash_file(session)
+			
 	
 
 	def _play_timer_end_sound(self):
@@ -257,8 +268,6 @@ class Pomodoro(tk.Frame):
 
 
 	def reset_timer(self):
-		"""
-		"""
 		self.mode = STOPPED
 		self.after_cancel(self.timer_id)
 		self.session_done()
@@ -277,6 +286,7 @@ class Pomodoro(tk.Frame):
 			self.untracked_session_done()
 		else:
 			self.tracked_session_done()
+		self.parent.crash_mgr.clear_crash_file()
 		
 
 	def untracked_session_done(self):
@@ -319,7 +329,7 @@ class Pomodoro(tk.Frame):
 		return today.strftime("%m-%d-%y")
 
 
-	def save_session(self):
+	def create_session(self):
 		"""Creates a Session object with the clock's time 
 		and saves it to the database."""
 		task = self.parent.get_current_task()
@@ -327,7 +337,13 @@ class Pomodoro(tk.Frame):
 			return
 		task_time = self.get_task_time_as_seconds()
 		session = Session(task, task_time, self.start_time, self.start_date)
-		sessiondao.insert_session(session)
+		return session
+
+	def save_session(self):
+		session = self.create_session()
+		if session:
+			sessiondao.insert_session(session)
+	
 
 		
 	def get_task_time_formatted(self):
@@ -346,12 +362,14 @@ class Pomodoro(tk.Frame):
 
 	def get_task_time_as_seconds(self):
 		if self.end_type == MANUAL:
-			# - 1 because of how the timer loop logic works, the recorded time is off by 1
-			self.task_time = self.original_time - self.time_left - 1
+			# - 1 because of timer_loop's recursive call
+			self.task_time = self.get_elapsed_time() - 1
 		elif self.end_type == AUTOMATIC:
 			self.task_time = self.original_time
 		return self.task_time
 
+	def get_elapsed_time(self):
+		return self.original_time - self.time_left
 
 	def reset(self):
 		self.change_settings()
