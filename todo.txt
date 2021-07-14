@@ -24,8 +24,7 @@ brainspace
 *********************
 
 - Calendar showing streaks for goals. Simple green dot or some shish
-
-
+-BUG OF SORTS: adding session from add on view log doesn't maintain the same format, makes the session go in at the wrong spot. it would help if date_started was actually DATE instead of TEXT!!
 - FIND OUT HOW TO MAKE THE PROGRAM BE A LITTLE BUTTHOLE IF I'm TRYING TO SHUT OFF THE COMPUTER WHILE THE PROGRAM IS RUNNING/A TIMER IS RUNNING??
 
 
@@ -194,4 +193,4 @@ ToDo for DISPLAYDATA:
 
 ideas:
 
-make todo app, connect to timer.
+ 
