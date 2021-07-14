@@ -13,8 +13,6 @@ taskdao = TaskDAO()
 class MainMenu(tk.Frame):
 	def __init__(self, parent):
 		tk.Frame.__init__(self, parent)
-		print(f"parent: {parent}" )
-		print(f"type(parent): {type(parent)}")
 		self.parent = parent
 
 		self.config(bg=storedsettings.APP_MAIN_COLOR)
