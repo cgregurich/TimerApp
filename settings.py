@@ -191,13 +191,9 @@ class Settings(tk.Frame):
         storedsettings.UNTRACKED_POPUP = self.untracked_popup_mode
         storedsettings.LOG_MODE = self.log_mode
 
-
     def indicate_saved(self):
         self.lbl_status.config(text="Changes saved!")
         self.lbl_status.after(2000, lambda: self.lbl_status.config(text=""))
-
-
-
 
     def is_pomo_entries_valid(self):
         """Validates that time entered is a positive number"""
@@ -217,11 +213,9 @@ class Settings(tk.Frame):
                 return False
         return True
 
-
     def autosave_clicked(self):
         self.change_auto_save_mode()
         self.change_auto_save_button()
-
 
     def untracked_popup_clicked(self):
         self.change_untracked_popup_mode()
@@ -280,7 +274,7 @@ class Settings(tk.Frame):
         
 
         # saves color to usersettings.ini
-        self.parent.mgr.change_setting('CLOCK_FG', color[1])
+        self.parent.cfg_mgr.change_setting('CLOCK_FG', color[1])
         # immediately changes value in storedsettings so clock's change color
         storedsettings.CLOCK_FG = color[1]
         self.btn_color.config(bg=color[1])

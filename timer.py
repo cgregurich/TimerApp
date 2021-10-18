@@ -95,6 +95,7 @@ class Timer(tk.Frame):
 		self.btn_control.bind('enter')
 		self.btn_cancel = BooterButton(self.frame_buttons, text='Cancel', state=tk.DISABLED, command=self.left_button_clicked)
 		self.lbl_time = BooterLabel(self.frame_timer_display, text='00:00:00', fg=storedsettings.CLOCK_FG)
+
 		# Have to config to override default BooterLabel options
 		self.lbl_time.config(font=storedsettings.CLOCK_FONT_TUPLE)
 
@@ -351,7 +352,8 @@ class Timer(tk.Frame):
 			self.timer_id = self.after(storedsettings.WAIT, self.timer_loop, seconds - x)
 		elif self.end_type == AUTOMATIC:
 			self._play_timer_end_sound()
-			self.reset_timer()
+			
+			# self.reset_timer()
 			self.change_control()
 
 	def update_crash_file(self):
